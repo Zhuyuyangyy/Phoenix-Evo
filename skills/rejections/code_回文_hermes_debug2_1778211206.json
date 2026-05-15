@@ -1,0 +1,11 @@
+{
+  "skill_id": "code_回文_hermes_debug2_1778211206",
+  "skill_name": "code_回文",
+  "rejected_at": "2026-05-08T11:33:26.920074",
+  "trajectory_id": "hermes_debug2_1778211206",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_artifacts', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

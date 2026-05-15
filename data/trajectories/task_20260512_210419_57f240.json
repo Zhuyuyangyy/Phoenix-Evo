@@ -1,0 +1,57 @@
+{
+  "task_id": "task_20260512_210419_57f240",
+  "task_goal": "fix WSL Chinese path null bytes 1778591059035838398",
+  "task_type": "debugging",
+  "risk_level": "low",
+  "session_id": "20260512_210419",
+  "started_at": null,
+  "completed_at": "2026-05-12T21:04:19.035997",
+  "duration": "",
+  "plan": [],
+  "actions": [
+    {
+      "action": "search_files",
+      "params": {
+        "pattern": "patch"
+      },
+      "result": "found 4",
+      "logged_at": "2026-05-12T21:04:19.035974"
+    },
+    {
+      "action": "write_file",
+      "params": {
+        "path": "/mnt/c/Users/test/a.py",
+        "content": "x=1"
+      },
+      "result": "OK",
+      "logged_at": "2026-05-12T21:04:19.035989"
+    },
+    {
+      "action": "verify",
+      "params": {
+        "path": "/mnt/c/Users/test/a.py"
+      },
+      "result": "OK",
+      "logged_at": "2026-05-12T21:04:19.035991"
+    }
+  ],
+  "tool_calls": [
+    {
+      "tool": "write_file",
+      "args": {
+        "path": "/mnt/c/Users/test/a.py",
+        "content": "x=1"
+      },
+      "raw_result": "OK",
+      "error": "",
+      "logged_at": "2026-05-12T21:04:19.035985"
+    }
+  ],
+  "errors": [],
+  "fixes": [],
+  "final_output": "OK",
+  "artifacts": [
+    "/mnt/c/Users/test/a.py"
+  ],
+  "success": true
+}

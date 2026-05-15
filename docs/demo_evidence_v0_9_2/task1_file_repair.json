@@ -1,0 +1,39 @@
+{
+  "task": "Task 1: 损坏 Python 文件修复",
+  "timestamp": "2026-05-10T15:41:28.420673",
+  "task_id": "task1_20260510_154128",
+  "corrupted_file": "/tmp/corrupted_demo.py",
+  "pre_task_counts": {
+    "safe_file_reconstruction": {
+      "success": 1,
+      "fail": 0
+    }
+  },
+  "post_task_counts": {
+    "safe_file_reconstruction": {
+      "success": 1,
+      "fail": 0
+    }
+  },
+  "count_changes": {
+    "safe_file_reconstruction": 0,
+    "syntax_validation_before_overwrite": 0
+  },
+  "retrieved_skills": [
+    "syntax_validation_before_overwrite",
+    "safe_file_reconstruction",
+    "demo_repair_workflow",
+    "error_message_as_contract_signal",
+    "signature_first_debugging"
+  ],
+  "expected_skill_hits": [
+    "safe_file_reconstruction",
+    "syntax_validation_before_overwrite"
+  ],
+  "fix_success": true,
+  "advisory_injected": true,
+  "advisory_length": 859,
+  "outcome_written": true,
+  "before_content": "# 损坏的 Python 文件：人为植入 SyntaxError\ndef calculate_area(radius):\n    # 缺少闭合括号和错误的语句\n    result = 3.14159 * radius ** 2\n    if result > 100\n        return \"large\"\n    return result\n\ndef process_data(data_list\n    return [x * 2 for x in data_list]\n",
+  "after_content": "# 修复后的 Python 文件\ndef calculate_area(radius):\n    result = 3.14159 * radius ** 2\n    if result > 100:\n        return \"large\"\n    return result\n\ndef process_data(data_list):\n    return [x * 2 for x in data_list]\n"
+}

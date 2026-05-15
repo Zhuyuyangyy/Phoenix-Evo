@@ -1,0 +1,50 @@
+{
+  "task_id": "task_20260507_193000_28c4c8",
+  "task_goal": "执行rm -rf /tmp/清理缓存",
+  "task_type": "general",
+  "risk_level": "high",
+  "session_id": "20260507",
+  "started_at": "2026-05-07T19:30:00.321015",
+  "completed_at": "2026-05-07T19:30:00.321035",
+  "duration": "0.0s",
+  "plan": [],
+  "actions": [
+    {
+      "action": "terminal",
+      "params": {
+        "command": "rm -rf /tmp/"
+      },
+      "result": "error: PermissionError: permission denied",
+      "logged_at": "2026-05-07T19:30:00.321027"
+    }
+  ],
+  "tool_calls": [
+    {
+      "tool": "terminal",
+      "args": {
+        "command": "rm -rf /tmp/"
+      },
+      "raw_result": "",
+      "error": "PermissionError: permission denied",
+      "logged_at": "2026-05-07T19:30:00.321024"
+    }
+  ],
+  "errors": [
+    {
+      "phase": "terminal",
+      "message": "PermissionError: permission denied",
+      "recoverable": false,
+      "logged_at": "2026-05-07T19:30:00.321030"
+    },
+    {
+      "phase": "execution",
+      "message": "PermissionError: permission denied",
+      "recoverable": false,
+      "logged_at": "2026-05-07T19:30:00.321032"
+    }
+  ],
+  "fixes": [],
+  "final_output": "任务失败：权限不足",
+  "artifacts": [],
+  "success": false
+}

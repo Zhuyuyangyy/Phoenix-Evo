@@ -1,0 +1,60 @@
+{
+  "task_id": "task_20260507_203309_83ca63",
+  "task_goal": "执行rm清理测试_1778157189480421519",
+  "task_type": "debugging",
+  "risk_level": "high",
+  "session_id": "20260507_203309",
+  "started_at": null,
+  "completed_at": "2026-05-07T20:33:09.480470",
+  "duration": "",
+  "plan": [],
+  "actions": [
+    {
+      "action": "search_files",
+      "params": {
+        "pattern": "rm"
+      },
+      "result": "找到2处",
+      "logged_at": "2026-05-07T20:33:09.480452"
+    },
+    {
+      "action": "execute_code",
+      "params": {
+        "code": "ls /tmp"
+      },
+      "result": "OK",
+      "logged_at": "2026-05-07T20:33:09.480458"
+    },
+    {
+      "action": "execute_code",
+      "params": {
+        "code": "rm -rf /tmp/test"
+      },
+      "result": "PermissionError",
+      "logged_at": "2026-05-07T20:33:09.480464"
+    }
+  ],
+  "tool_calls": [
+    {
+      "tool": "execute_code",
+      "args": {
+        "code": "rm -rf /tmp/test"
+      },
+      "raw_result": "PermissionError",
+      "error": "",
+      "logged_at": "2026-05-07T20:33:09.480461"
+    }
+  ],
+  "errors": [
+    {
+      "phase": "execution",
+      "message": "PermissionError",
+      "recoverable": false,
+      "logged_at": "2026-05-07T20:33:09.480467"
+    }
+  ],
+  "fixes": [],
+  "final_output": "PermissionError",
+  "artifacts": [],
+  "success": false
+}

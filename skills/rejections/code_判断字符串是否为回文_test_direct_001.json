@@ -1,0 +1,11 @@
+{
+  "skill_id": "code_判断字符串是否为回文_test_direct_001",
+  "skill_name": "code_判断字符串是否为回文",
+  "rejected_at": "2026-05-08T11:26:54.429095",
+  "trajectory_id": "test_direct_001",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

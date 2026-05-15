@@ -1,0 +1,74 @@
+# Phoenix-Evo V1.0 docker-compose.yml
+# Usage: docker-compose up -d
+
+services:
+  phoenix:
+    build: .
+    container_name: phoenix-evo
+    ports:
+      - "8000:8000"   # PhoenixRuntime HTTP API
+      - "9090:9090"   # Prometheus metrics
+    volumes:
+      - phoenix_skills:/phoenix/skills
+      - phoenix_trajectories:/phoenix/trajectories
+      - phoenix_replays:/phoenix/replays
+      - phoenix_logs:/phoenix/logs
+    environment:
+      - PHOENIX_BASE_DIR=/phoenix
+      - PHOENIX_LOG_LEVEL=INFO
+      - PYTHONDONTWRITEBYTECODE=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - phoenix-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: phoenix-prometheus
+    ports:
+      - "9091:9090"   # Prometheus UI
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - phoenix-net
+    depends_on:
+      - phoenix
+
+  # Optional: Grafana dashboard
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: phoenix-grafana
+  #   ports:
+  #     - "3030:3000"
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   restart: unless-stopped
+  #   networks:
+  #     - phoenix-net
+  #   depends_on:
+  #     - prometheus
+
+networks:
+  phoenix-net:
+    driver: bridge
+
+volumes:
+  phoenix_skills:
+  phoenix_trajectories:
+  phoenix_replays:
+  phoenix_logs:
+  prometheus_data:
+  grafana_data:

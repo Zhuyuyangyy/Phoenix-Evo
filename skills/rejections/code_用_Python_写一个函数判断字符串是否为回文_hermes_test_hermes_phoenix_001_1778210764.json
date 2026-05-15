@@ -1,0 +1,11 @@
+{
+  "skill_id": "code_用_Python_写一个函数判断字符串是否为回文_hermes_test_hermes_phoenix_001_1778210764",
+  "skill_name": "code_用_Python_写一个函数判断字符串是否为回文",
+  "rejected_at": "2026-05-08T11:26:04.835126",
+  "trajectory_id": "hermes_test_hermes_phoenix_001_1778210764",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_artifacts', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}
