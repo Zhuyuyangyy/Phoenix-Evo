@@ -1,0 +1,46 @@
+{
+  "task_id": "traj_002",
+  "task_goal": "实现TCM辨证推理API",
+  "task_type": "code",
+  "risk_level": "low",
+  "success": true,
+  "actions": [
+    {
+      "action": "write_file",
+      "params": {
+        "path": "tcm_api.py"
+      }
+    },
+    {
+      "action": "execute_code",
+      "params": {
+        "code": "pytest tcm_api.py"
+      }
+    },
+    {
+      "action": "verify",
+      "params": {
+        "check": "accuracy > 0.85"
+      }
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "write_file",
+      "args": {
+        "path": "tcm_api.py"
+      }
+    },
+    {
+      "name": "execute_code",
+      "args": {
+        "code": "import tcm_api"
+      }
+    }
+  ],
+  "error_count": 0,
+  "total_steps": 4,
+  "artifacts": [
+    "tcm_api.py"
+  ]
+}

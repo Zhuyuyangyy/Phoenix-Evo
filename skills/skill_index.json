@@ -235,5 +235,66 @@
     "success_rate": null,
     "last_used": null,
     "last_reviewed": "2026-05-10T17:13:22.160355"
+  },
+  "task_修复WSL中文路径文件写入null字节损坏问题_traj_001": {
+    "skill_id": "task_修复WSL中文路径文件写入null字节损坏问题_traj_001",
+    "skill_name": "task_修复WSL中文路径文件写入null字节损坏问题",
+    "status": "draft",
+    "source_trajectory": "traj_001",
+    "quality_score": 1.0,
+    "risk_level": "rejected",
+    "confidence": 0.875,
+    "created_at": "2026-05-15T23:57:16.912900",
+    "usage_count": 0,
+    "success_rate": null,
+    "last_used": null,
+    "verify_reason": "技能验证未通过。失败项: ['not_duplicate']",
+    "warnings": [
+      "可能与现有技能重复: 与 task_修复WSL中文路径文件写入null字节损坏问题_traj_001.md 潜在重复"
+    ],
+    "activate_level": "reject"
+  },
+  "task_实现TCM辨证推理API_traj_002": {
+    "skill_id": "task_实现TCM辨证推理API_traj_002",
+    "skill_name": "task_实现TCM辨证推理API",
+    "status": "draft",
+    "source_trajectory": "traj_002",
+    "quality_score": 1.0,
+    "risk_level": "rejected",
+    "confidence": 0.875,
+    "created_at": "2026-05-15T23:57:17.240167",
+    "usage_count": 0,
+    "success_rate": null,
+    "last_used": null,
+    "verify_reason": "技能验证未通过。失败项: ['not_duplicate']",
+    "warnings": [
+      "可能与现有技能重复: 与 task_实现TCM辨证推理API_traj_002.md 潜在重复"
+    ],
+    "activate_level": "reject"
+  },
+  "__rejected__task_批量修复Vue3组件响应式警告_traj_003": {
+    "skill_id": "task_批量修复Vue3组件响应式警告_traj_003",
+    "skill_name": "task_批量修复Vue3组件响应式警告",
+    "status": "rejected",
+    "reason": "[quarantine] 免疫隔离：待人工复核（触发规则: ['INCOMPLETE_EVIDENCE']）",
+    "rejected_at": "2026-05-15T23:57:17.553997"
+  },
+  "task_构建AutoDataFlow多节点工作流编排引擎_traj_005": {
+    "skill_id": "task_构建AutoDataFlow多节点工作流编排引擎_traj_005",
+    "skill_name": "task_构建AutoDataFlow多节点工作流编排引擎",
+    "status": "draft",
+    "source_trajectory": "traj_005",
+    "quality_score": 1.0,
+    "risk_level": "rejected",
+    "confidence": 0.875,
+    "created_at": "2026-05-15T23:57:17.869639",
+    "usage_count": 0,
+    "success_rate": null,
+    "last_used": null,
+    "verify_reason": "技能验证未通过。失败项: ['not_duplicate']",
+    "warnings": [
+      "可能与现有技能重复: 与 task_构建AutoDataFlow多节点工作流编排引擎_traj_005.md 潜在重复"
+    ],
+    "activate_level": "reject"
   }
 }

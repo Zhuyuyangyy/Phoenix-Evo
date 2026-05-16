@@ -1,0 +1,48 @@
+{
+  "task_id": "traj_001",
+  "task_goal": "修复WSL中文路径文件写入null字节损坏问题",
+  "task_type": "debug",
+  "risk_level": "medium",
+  "success": true,
+  "actions": [
+    {
+      "action": "terminal",
+      "params": {
+        "cmd": "python3 write_file.py"
+      }
+    },
+    {
+      "action": "verify",
+      "params": {
+        "check": "null_bytes == 0"
+      }
+    },
+    {
+      "action": "patch",
+      "params": {
+        "file": "write_file.py"
+      }
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "terminal",
+      "args": {
+        "cmd": "python3 verify.py"
+      }
+    },
+    {
+      "name": "patch",
+      "args": {
+        "path": "write_file.py",
+        "old": "open(path, 'w')",
+        "new": "open(path, 'wb')"
+      }
+    }
+  ],
+  "error_count": 0,
+  "total_steps": 5,
+  "artifacts": [
+    "write_file.py"
+  ]
+}

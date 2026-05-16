@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-05-15T23:57:22.889778",
+  "total_skills": 24,
+  "active": 5,
+  "draft": 5,
+  "quarantine": 0,
+  "pending": 0,
+  "archived": 0,
+  "rejected": 12,
+  "drift_detected": 0,
+  "immue_blocks": 1,
+  "newly_mined": 4,
+  "promoted": 0,
+  "archived_count": 0,
+  "framework_status": "healthy"
+}

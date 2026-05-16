@@ -1,0 +1,46 @@
+{
+  "task_id": "traj_005",
+  "task_goal": "构建AutoDataFlow多节点工作流编排引擎",
+  "task_type": "code",
+  "risk_level": "low",
+  "success": true,
+  "actions": [
+    {
+      "action": "write_file",
+      "params": {
+        "path": "orchestrator.py"
+      }
+    },
+    {
+      "action": "execute_code",
+      "params": {
+        "code": "pytest orchestrator.py"
+      }
+    },
+    {
+      "action": "verify",
+      "params": {
+        "check": "nodes == 5"
+      }
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "write_file",
+      "args": {
+        "path": "orchestrator.py"
+      }
+    },
+    {
+      "name": "execute_code",
+      "args": {
+        "code": "python3 -m pytest"
+      }
+    }
+  ],
+  "error_count": 0,
+  "total_steps": 5,
+  "artifacts": [
+    "orchestrator.py"
+  ]
+}
