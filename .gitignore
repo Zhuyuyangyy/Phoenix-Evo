@@ -3,3 +3,18 @@ __pycache__/
 .pytest_cache/
 venv/
 .env
+
+# runtime artifacts
+logs/
+data/trajectories/
+*.jsonl
+*.log
+
+# secrets / keys
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+*.pub
+.env
+.env.*
