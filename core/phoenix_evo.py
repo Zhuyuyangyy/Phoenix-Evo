@@ -56,6 +56,32 @@ class PhoenixEvo:
         self._last_trajectory: dict[str, Any] | None = None
         self._last_evaluation: EvaluationResult | None = None
         self._last_immune_decision: Any | None = None
+        self._module_config: dict[str, bool] = {
+            "evaluator": True, "miner": True, "verifier": True, "immune_guard": True,
+        }
+
+    @classmethod
+    def create_configured(
+        cls,
+        base_dir: Path | str | None = None,
+        modules: dict[str, bool] | None = None,
+    ) -> "PhoenixEvo":
+        """
+        Create a PhoenixEvo instance with selectable modules.
+
+        Args:
+            base_dir: Base directory for skills/data
+            modules: Dict of module names to enable/disable.
+                     Available: evaluator, miner, verifier, immune_guard
+                 Default: all enabled
+
+        Returns:
+            Configured PhoenixEvo instance
+        """
+        instance = cls(base_dir=base_dir)
+        if modules:
+            instance._module_config.update(modules)
+        return instance
 
     # ── 主入口 ──────────────────────────────────────────────
 
@@ -97,11 +123,26 @@ class PhoenixEvo:
         """
         给定一条轨迹，执行完整的自进化闭环。
         V0.2 在 skill_verifier 之后加入了 immune_guard 审查。
+        V1.1 支持 module config 跳过指定模块。
         """
         self._last_trajectory = trajectory
+        config = self._module_config
 
         # Step 1: 自评
-        eval_result = self.evaluator.evaluate(trajectory)
+        if config["evaluator"]:
+            eval_result = self.evaluator.evaluate(trajectory)
+        else:
+            eval_result = EvaluationResult(
+                task_success=trajectory.get("success", False),
+                quality_score=0.8,
+                reuse_potential=0.7,
+                should_extract_skill=trajectory.get("success", False),
+                reason="evaluation disabled",
+                failure_type=None,
+                root_cause=None,
+                improvement_suggestion="",
+                skill_candidate_name=None,
+            )
         self._last_evaluation = eval_result
 
         report: dict[str, Any] = {
@@ -117,7 +158,7 @@ class PhoenixEvo:
             },
             "skill_candidate": None,
             "verification":    None,
-            "immune_guard":    None,    # V0.2 新增
+            "immune_guard":    None,
             "registry_entry":  None,
             "evolution_happened": False,
         }
@@ -127,53 +168,71 @@ class PhoenixEvo:
             return report
 
         # Step 3: 提取候选技能
-        skill_candidate = self.miner.mine(trajectory, eval_result)
+        if config["miner"]:
+            skill_candidate = self.miner.mine(trajectory, eval_result)
+        else:
+            skill_candidate = {
+                "skill_id": f"skip_{trajectory.get('task_id', 'unknown')}",
+                "skill_name": "skipped",
+                "skill_md": "",
+                "source_trajectory": trajectory.get("task_id", ""),
+                "quality_score": 0.0,
+            }
         report["skill_candidate"] = skill_candidate
 
         # Step 4: 验证器审查
-        verify_result = self.verifier.verify(skill_candidate, trajectory)
-        report["verification"] = {
-            "passed":           verify_result.passed,
-            "confidence":       verify_result.confidence,
-            "risk_level":       verify_result.risk_level,
-            "activation_level": verify_result.activation_level,
-            "reason":           verify_result.reason,
-            "warnings":         verify_result.warnings,
-        }
+        verify_result = None
+        if config["verifier"]:
+            verify_result = self.verifier.verify(skill_candidate, trajectory)
+            report["verification"] = {
+                "passed":           verify_result.passed,
+                "confidence":       verify_result.confidence,
+                "risk_level":       verify_result.risk_level,
+                "activation_level": verify_result.activation_level,
+                "reason":           verify_result.reason,
+                "warnings":         verify_result.warnings,
+            }
+            if not verify_result.passed:
+                self._save_rejection(skill_candidate, verify_result, trajectory)
+                return report
+        else:
+            report["verification"] = None
 
-        # 如果验证未通过 → 直接 reject，不进入 immune_guard
-        if not verify_result.passed:
-            self._save_rejection(skill_candidate, verify_result, trajectory)
-            return report
-
-        # Step 5: immune_guard 审查（V0.2 新增）
-        immune_decision = self.immune_guard.examine(
-            skill_candidate=skill_candidate,
-            trajectory=trajectory,
-            verification_result=report["verification"],
-        )
-        self._last_immune_decision = immune_decision
-
-        report["immune_guard"] = {
-            "decision":          immune_decision.decision,
-            "risk_level":        immune_decision.risk_profile.risk_level,
-            "risk_tags":         immune_decision.risk_profile.tags,
-            "immune_rules":       immune_decision.immune_rules_triggered,
-            "reason":            immune_decision.reason,
-            "warnings":          immune_decision.risk_profile.warnings,
-        }
+        # Step 5: immune_guard 审查
+        immune_decision = None
+        if config["immune_guard"]:
+            immune_decision = self.immune_guard.examine(
+                skill_candidate=skill_candidate,
+                trajectory=trajectory,
+                verification_result=report["verification"] or {"passed": True},
+            )
+            self._last_immune_decision = immune_decision
+            report["immune_guard"] = {
+                "decision":          immune_decision.decision,
+                "risk_level":        immune_decision.risk_profile.risk_level,
+                "risk_tags":         immune_decision.risk_profile.tags,
+                "immune_rules":      immune_decision.immune_rules_triggered,
+                "reason":            immune_decision.reason,
+                "warnings":          immune_decision.risk_profile.warnings,
+            }
+        else:
+            report["immune_guard"] = {
+                "decision": "draft", "risk_level": "low",
+                "immune_rules": [], "reason": "immune_guard disabled",
+            }
 
         # Step 6: 根据免疫决策路由
         skill_md_path = self._write_skill_md(skill_candidate)
 
-        if immune_decision.decision == "reject":
-            # 危险技能 → 只记录，不入库
-            self._save_rejection(skill_candidate, verify_result, trajectory,
+        if immune_decision and immune_decision.decision == "reject":
+            from .skill_verifier import VerificationResult as VR
+            vr = verify_result or VR(passed=False, confidence=0.0, risk_level="rejected",
+                                     activation_level="reject", reason="skipped", warnings=[], checked_items={})
+            self._save_rejection(skill_candidate, vr, trajectory,
                                  immune_decision=immune_decision)
             report["evolution_happened"] = False
 
-        elif immune_decision.decision == "quarantine":
-            # 可疑技能 → 进入隔离区
+        elif immune_decision and immune_decision.decision == "quarantine":
             entry = self.immune_guard.quarantine_mgr.quarantine_skill(
                 skill_md_path=skill_md_path,
                 reason=immune_decision.reason,
@@ -187,11 +246,13 @@ class PhoenixEvo:
                 "reason":     immune_decision.reason,
                 "rules":      immune_decision.immune_rules_triggered,
             }
-            report["evolution_happened"] = True   # 进了隔离区，算"发生了"
+            report["evolution_happened"] = True
 
         else:  # "draft"
-            # 安全技能 → 进入 draft
-            path = self.registry.add_draft(skill_candidate, verify_result)
+            from .skill_verifier import VerificationResult as VR
+            vr = verify_result or VR(passed=True, confidence=1.0, risk_level="low",
+                                     activation_level="draft", reason="skipped", warnings=[], checked_items={})
+            path = self.registry.add_draft(skill_candidate, vr)
             report["registry_entry"] = {
                 "skill_id": skill_candidate["skill_id"],
                 "path":     str(path),

@@ -196,10 +196,12 @@ class SkillBenchmark:
     def get_case(self, case_id: str) -> BenchmarkCase | None:
         return self._cases.get(case_id)
 
-    def list_cases(self, difficulty: str | None = None) -> list[BenchmarkCase]:
+    def list_cases(self, difficulty: str | None = None, category: str | None = None) -> list[BenchmarkCase]:
         cases = list(self._cases.values())
         if difficulty:
             cases = [c for c in cases if c.difficulty == difficulty]
+        if category:
+            cases = [c for c in cases if any(category in tag for tag in c.risk_tags)]
         return cases
 
     def search_by_keyword(self, keyword: str) -> list[BenchmarkCase]:
@@ -322,6 +324,8 @@ class SkillBenchmark:
                 for d in data.values():
                     case = BenchmarkCase(**d)
                     self._cases[case.case_id] = case
+                # Also load external cases
+                self._load_external_cases()
                 return
             except (json.JSONDecodeError, IOError, TypeError):
                 pass
@@ -332,6 +336,26 @@ class SkillBenchmark:
             case.created_at = datetime.now().isoformat()
             self._cases[case.case_id] = case
             self._save_case(case)
+        self._save_index()
+
+        # Load additional cases from external JSON files
+        self._load_external_cases()
+
+    def _load_external_cases(self) -> None:
+        """Load additional cases from external JSON files in data/benchmarks/."""
+        for json_file in self.benchmarks_dir.glob("cases_*.json"):
+            if json_file.name == "cases_index.json":
+                continue
+            try:
+                data = json.loads(json_file.read_text(encoding="utf-8"))
+                for d in data:
+                    case = BenchmarkCase(**d)
+                    if case.case_id not in self._cases:
+                        case.created_at = case.created_at or datetime.now().isoformat()
+                        self._cases[case.case_id] = case
+                        self._save_case(case)
+            except (json.JSONDecodeError, IOError, TypeError):
+                continue
         self._save_index()
 
     def _save_case(self, case: BenchmarkCase) -> None:
