@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-SkillRetriever: ÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ Phoenix ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¥ÃÂÃÂºÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ active skills
+SkillRetriever: Phoenix active skills router for runtime skill dispatch
 V0.6 - Phoenix-Evo Runtime Skill Router
 
-ÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ´ÃÂÃÂ£ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-  1. ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ«ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ skills/active/ ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ SkillCard
-  2. ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ keyword/tag/similarity ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂÃÂÃÂ§ÃÂÃÂ»ÃÂÃÂ´ÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢
-  3. ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤ÃÂÃÂ©ÃÂÃÂÃÂÃÂ active ÃÂÃÂ§ÃÂÃÂÃÂÃÂ¶ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ skill
-  4. ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ§/evidence_score ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂºÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¡ÃÂÃÂ¨
+Capabilities:
+  1. Load active skills from skills/active/ and build SkillCard index
+  2. Search by keyword/tag/similarity to find relevant skills
+  3. Filter by task_type/risk_level to narrow candidates
+  4. Rank by relevance/evidence_score and return top candidates
+
+Ranks candidates by relevance*quality_score to surface the best skill for the task.
 """
 
 import json
@@ -23,7 +24,7 @@ from core.skill_registry import SkillRegistry
 # Chinese character segmentation: each CJK char = one word token
 # English/numbers split by word boundaries
 _CHINESE_CHAR_RE = re.compile(r'[\u4e00-\u9fff]')
-_ENGLISH_TOKEN_RE = re.compile(r'[a-zA-Z0-9]+')
+_ENGLISH_TOKEN_RE = re.compile(r'[A-Za-z0-9]+')
 
 
 def _word_split(text: str) -> set[str]:
@@ -34,10 +35,8 @@ def _word_split(text: str) -> set[str]:
     - Returns lowercase tokens as a set.
 
     Example:
-      "WSLÃÂÃÂ¨ÃÂÃÂ·ÃÂÃÂ¯ÃÂÃÂ¥ÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¿ÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂ" ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ {'wsl', 'ÃÂÃÂ¨ÃÂÃÂ·ÃÂÃÂ¯', 'ÃÂÃÂ¥ÃÂÃÂ¾ÃÂÃÂ', 'ÃÂÃÂ¤ÃÂÃÂ¿ÃÂÃÂ®', 'ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂ'}
-      "ÃÂÃÂ¤ÃÂÃÂ¿ÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂWSLÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ·ÃÂÃÂ¯ÃÂÃÂ¥ÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ¶ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¥
-ÃÂÃÂ¥nullÃÂÃÂ¥ÃÂÃÂ­ÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ" ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ {'ÃÂÃÂ¤ÃÂÃÂ¿ÃÂÃÂ®', 'ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂ', 'wsl', 'ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­', 'ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ', 'ÃÂÃÂ¨ÃÂÃÂ·ÃÂÃÂ¯', 'ÃÂÃÂ¥ÃÂÃÂ¾ÃÂÃÂ', 'ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ', 'ÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ¶', 'ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ', 'ÃÂÃÂ¥
-ÃÂÃÂ¥', 'null', 'ÃÂÃÂ¥ÃÂÃÂ­ÃÂÃÂ', 'ÃÂÃÂ¨ÃÂÃÂÃÂÃÂ'}
+      "WSL路径编码问题" -> {'wsl', '路径', '编码', '问题'}
+      "WSL路径WSL编码null字符" -> {'路径', '编码', 'null', '字符', 'wsl'}
     """
     tokens: list[str] = []
     tokens.extend(_CHINESE_CHAR_RE.findall(text))
@@ -46,20 +45,18 @@ def _word_split(text: str) -> set[str]:
 
 
 class SkillRetriever:
-    """ÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ Phoenix active skills ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½"""
+    """Phoenix active skills router - dispatches best-matching skills at runtime"""
 
-    # --- ÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ÃÂÃÂ©
-ÃÂÃÂÃÂÃÂ§ÃÂÃÂ½ÃÂÃÂ® ---
+    # --- Constants ---
     DEFAULT_TOP_K = 5
-    MIN_QUALITY_SCORE = 0.40  # ÃÂÃÂ¤ÃÂÃÂ½ÃÂÃÂÃÂÃÂ¤ÃÂÃÂºÃÂÃÂÃÂÃÂ¦ÃÂÃÂ­ÃÂÃÂ¤ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ skill ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ
+    MIN_QUALITY_SCORE = 0.40  # Minimum quality threshold for returned skills
 
     def __init__(self, base_dir: Path | str | None = None):
         self.base_dir = Path(base_dir) if base_dir else Path(__file__).parent.parent
         self.registry = SkillRegistry(root=self.base_dir)
 
     # ------------------------------------------------------------------ #
-    # ÃÂÃÂ¥
-ÃÂÃÂ¬ÃÂÃÂ¥ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¥ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ£                                                          #
+    # Public Retrieval API                                                 #
     # ------------------------------------------------------------------ #
 
     def retrieve(
@@ -69,29 +66,27 @@ class SkillRetriever:
         risk_level: str | None = None,
         top_k: int | None = None,
         min_quality_score: float | None = None,
-        project_namespace: str | None = None,  # V1.0 P0-3: ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½ÃÂÃÂ©ÃÂÃÂ¡ÃÂÃÂ¹ÃÂÃÂ§ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂ©ÃÂÃÂºÃÂÃÂ©ÃÂÃÂÃÂÃÂ´ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤
+        project_namespace: str | None = None,  # V1.0 P0-3: namespace filter
     ) -> list[dict[str, Any]]:
         """
-        ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ»ÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ÃÂÃÂ¥
-ÃÂÃÂ¥ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ£ÃÂÃÂ£ÃÂÃÂÃÂÃÂ
+        Retrieve best-matching active skills for a task.
 
-        ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ°:
-            task_description: ÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ»ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¡ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂ°ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ ÃÂÃÂ¸ÃÂÃÂ¥ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ÃÂÃÂ¥ÃÂÃÂ­ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ®ÃÂÃÂµÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-            task_type:        ÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ»ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¡ÃÂÃÂ§ÃÂÃÂ±ÃÂÃÂ»ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ§ÃÂÃÂ²ÃÂÃÂ¾ÃÂÃÂ§ÃÂÃÂ¡ÃÂÃÂ®ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-            risk_level:        ÃÂÃÂ©ÃÂÃÂ£ÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂ©ÃÂÃÂ§ÃÂÃÂ­ÃÂÃÂÃÂÃÂ§ÃÂÃÂºÃÂÃÂ§ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-            top_k:             ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ°ÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ©ÃÂÃÂ»ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ®ÃÂÃÂ¤ 5ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-            min_quality_score: ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂ½ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ´ÃÂÃÂ¨ÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ©ÃÂÃÂ»ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ®ÃÂÃÂ¤ 0.40ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
+        Args:
+            task_description: Natural-language description of the task
+            task_type:        Task type filter (e.g. 'code', 'debug', 'design')
+            risk_level:        Risk level filter (e.g. 'safe', 'caution', 'critical')
+            top_k:             Maximum number of results (default: 5)
+            min_quality_score: Minimum quality threshold (default: 0.40)
 
-        ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ:
+        Returns:
             [
                 {
                     "skill_id":       "xxx",
                     "skill_name":     "xxx",
-                    "relevance_score": 0.85,   # ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ task_description ÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ¥ÃÂÃÂºÃÂÃÂ¦
-                    "index_entry":    {...},    # skill_index.json ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ´ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¡ÃÂÃÂ§ÃÂÃÂÃÂÃÂ®
-                    "skill_card":     {...},    # ÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂ£ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ SkillCard dict
-                    "matched_on":     ["keyword", "task_type"],  # ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ 
+                    "relevance_score": 0.85,   # Relevance to task_description
+                    "index_entry":    {...},    # skill_index.json entry
+                    "skill_card":     {...},    # Parsed SkillCard dict
+                    "matched_on":     ["keyword", "task_type"],  # Match reasons
                 },
                 ...
             ]
@@ -99,37 +94,34 @@ class SkillRetriever:
         top_k = top_k or self.DEFAULT_TOP_K
         min_quality = min_quality_score if min_quality_score is not None else self.MIN_QUALITY_SCORE
 
-        # 1. ÃÂÃÂ¨ÃÂÃÂÃÂÃÂ·ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ active skills
+        # 1. Load all active skills
         active_entries = self.registry.get_active_skills()
 
-        # V1.0 P0-3: project_namespace ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤
-        # project_namespace=None ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂ´ÃÂÃÂ»ÃÂÃÂ¨ÃÂÃÂ·ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¥
-ÃÂÃÂ¼ÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂ¹ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ ÃÂÃÂ©ÃÂÃÂ¡ÃÂÃÂ¹ÃÂÃÂ§ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¦ÃÂÃÂ ÃÂÃÂÃÂÃÂ§ÃÂÃÂ­ÃÂÃÂ¾ÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-        # project_namespace="TCM-Mind-RAG" ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ÃÂÃÂ¥ÃÂÃÂÃÂÃÂªÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ project=TCM-Mind-RAG ÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½
+        # V1.0 P0-3: project_namespace filter
+        # project_namespace=None -> all namespaces
+        # project_namespace="TCM-Mind-RAG" -> only that project's skills
         if project_namespace:
             active_entries = [
                 e for e in active_entries
                 if e.get("project") == project_namespace
             ]
 
-        # 2. ÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂ£ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂª skill_card ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ°ÃÂÃÂ¥ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ÃÂÃÂ¥ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ°ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ®
+        # 2. Load skill_card for each candidate
         candidates: list[dict[str, Any]] = []
         for entry in active_entries:
             skill_id = entry.get("skill_id", "")
             quality = float(entry.get("quality_score", 0.0))
 
-            # ÃÂÃÂ¨ÃÂÃÂ´ÃÂÃÂ¨ÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ»ÃÂÃÂ¤ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ¥ÃÂÃÂ¦ÃÂÃÂ ÃÂÃÂ¼ÃÂÃÂ¥ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¤ÃÂÃÂºÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
+            # Skip low-quality skills
             if quality < min_quality:
                 continue
 
-            # ÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂ»ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ SkillCard ÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ´ÃÂÃÂ¥ÃÂÃÂ
-ÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂ¹
+            # Load SkillCard
             card = self._load_skill_card(skill_id, "active")
             if card is None:
                 continue
 
-            # 3. ÃÂÃÂ¨ÃÂÃÂ®ÃÂÃÂ¡ÃÂÃÂ§ÃÂÃÂ®ÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ¥ÃÂÃÂºÃÂÃÂ¦
+            # 3. Compute relevance score
             relevance, matched_on = self._compute_relevance(
                 task_description, task_type, risk_level, entry, card
             )
@@ -146,7 +138,7 @@ class SkillRetriever:
                 "matched_on":      matched_on,
             })
 
-        # 4. ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂºÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂrelevance_score * quality_score
+        # 4. Sort by relevance_score * quality_score
         candidates.sort(
             key=lambda x: x["relevance_score"] * x["index_entry"].get("quality_score", 0.5),
             reverse=True,
@@ -159,11 +151,7 @@ class SkillRetriever:
         keyword: str,
         top_k: int | None = None,
     ) -> list[dict[str, Any]]:
-        """ÃÂÃÂ§ÃÂÃÂºÃÂÃÂ¯ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ©ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ£ÃÂÃÂÃÂÃÂ§ÃÂÃÂ´ÃÂÃÂ¢ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¤ÃÂÃÂºÃÂÃÂÃÂÃÂ¥ÃÂÃÂ·ÃÂÃÂ¥ÃÂÃÂ¥
-ÃÂÃÂ·ÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂ¯ÃÂÃÂ§ÃÂÃÂ ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂ·ÃÂÃÂ¥ÃÂÃÂ¥
-ÃÂÃÂ·ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂ­ÃÂÃÂÃÂÃÂ§ÃÂÃÂ²ÃÂÃÂ¾ÃÂÃÂ§ÃÂÃÂ¡ÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¹ÃÂÃÂ©
-ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂºÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ"""
+        """Retrieve skills by keyword search across skill_name/procedure/tags"""
         top_k = top_k or self.DEFAULT_TOP_K
         active_entries = self.registry.get_active_skills()
         results: list[dict[str, Any]] = []
@@ -175,8 +163,7 @@ class SkillRetriever:
             if card is None:
                 continue
 
-            # ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ©ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂskill_name / skill_id / procedure / when_to_use
+            # Search in skill_name/procedure/when_to_use/risk_tags
             text = " ".join([
                 skill_id.lower(),
                 entry.get("skill_name", "").lower(),
@@ -198,8 +185,7 @@ class SkillRetriever:
         return results[:top_k]
 
     # ------------------------------------------------------------------ #
-    # ÃÂÃÂ¥ÃÂÃÂ
-ÃÂÃÂ©ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ°                                                          #
+    # Internal Scoring                                                     #
     # ------------------------------------------------------------------ #
 
     def _compute_relevance(
@@ -211,11 +197,10 @@ class SkillRetriever:
         card: dict[str, Any],
     ) -> tuple[float, list[str]]:
         """
-        ÃÂÃÂ¨ÃÂÃÂ®ÃÂÃÂ¡ÃÂÃÂ§ÃÂÃÂ®ÃÂÃÂ task_description ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ skill ÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ¥ÃÂÃÂºÃÂÃÂ¦ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ0.0 ~ 1.0ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ
-        ÃÂÃÂ¤ÃÂÃÂ½ÃÂÃÂ¿ÃÂÃÂ§ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂ­ÃÂÃÂÃÂÃÂ§ÃÂÃÂ¬ÃÂÃÂ¦ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂ + ÃÂÃÂ¨ÃÂÃÂÃÂÃÂ±ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂ£ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ³ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ§ÃÂÃÂ»ÃÂÃÂ­ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ ÃÂÃÂ¦ÃÂÃÂ³ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¹ÃÂÃÂ©
-ÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂ®ÃÂÃÂ©ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ£ÃÂÃÂÃÂÃÂ
-        ÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ (relevance_score, matched_on[])
+        Compute relevance between task_description and a skill.
+        Returns (score 0.0~1.0, matched_on[]).
+        
+        Scoring: task_type match + when_to_use overlap + name match + procedure match + risk_level match
         """
         score = 0.0
         matched: list[str] = []
@@ -224,15 +209,14 @@ class SkillRetriever:
         if not desc_words:
             desc_words = {task_description.lower().strip()}
 
-        # ---- 1. task_type ÃÂÃÂ§ÃÂÃÂ²ÃÂÃÂ¾ÃÂÃÂ§ÃÂÃÂ¡ÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¹ÃÂÃÂ©
-ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂ«ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ----
+        # ---- 1. task_type exact match ----
         if task_type:
             card_type = index_entry.get("task_type", "")
             if card_type and task_type.lower() == card_type.lower():
                 score += 0.30
                 matched.append("task_type")
 
-        # ---- 2. when_to_use ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¿ÃÂÃÂ°ÃÂÃÂ§ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ¤ÃÂÃÂ¼ÃÂÃÂ¼ÃÂÃÂ¥ÃÂÃÂºÃÂÃÂ¦ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ©ÃÂÃÂ«ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ----
+        # ---- 2. when_to_use word overlap ----
         when_to_use = card.get("when to use", card.get("when_to_use", "")).lower()
         if when_to_use:
             card_words = _word_split(when_to_use)
@@ -241,11 +225,10 @@ class SkillRetriever:
                 # Jaccard-like
                 union = desc_words | card_words
                 sim = len(overlap) / max(len(union), 1)
-                score += 0.35 * (1 + sim)  # ÃÂÃÂ¦ÃÂÃÂÃÂÃÂoverlapÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¶ boost
+                score += 0.35 * (1 + sim)  # overlap boost
                 matched.append("when_to_use")
 
-        # ---- 3. skill_name / skill_id ÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¹ÃÂÃÂ©
-ÃÂÃÂ ----
+        # ---- 3. skill_name / skill_id match ----
         skill_name = index_entry.get("skill_name", "").lower()
         skill_id_lower = index_entry.get("skill_id", "").lower()
         name_words = _word_split(skill_name)
@@ -254,9 +237,7 @@ class SkillRetriever:
             score += 0.15
             matched.append("name")
 
-        # ---- 4. procedure ÃÂÃÂ¦ÃÂÃÂ­ÃÂÃÂ¥ÃÂÃÂ©ÃÂÃÂªÃÂÃÂ¤ÃÂÃÂ¥
-ÃÂÃÂ³ÃÂÃÂ©ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¹ÃÂÃÂ©
-ÃÂÃÂ ----
+        # ---- 4. procedure word overlap ----
         procedure = card.get("procedure", "").lower()
         if procedure:
             proc_words = _word_split(procedure)
@@ -264,29 +245,28 @@ class SkillRetriever:
                 score += 0.10
                 matched.append("procedure")
 
-        # ---- 5. risk_level ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¨ÃÂÃÂÃÂÃÂ´ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ§ ----
+        # ---- 5. risk_level match ----
         if risk_level and index_entry.get("risk_level"):
             if risk_level.lower() == index_entry.get("risk_level").lower():
                 score += 0.10
                 matched.append("risk_level")
 
-        # ÃÂÃÂ¥ÃÂÃÂ½ÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ©ÃÂÃÂÃÂÃÂ
+        # Clamp and return
         return (min(score, 1.0), matched)
 
     def _load_skill_card(self, skill_id: str, status: str) -> dict[str, Any] | None:
-        """ÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂ£ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ skill .md ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ¶ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ frontmatter + ÃÂÃÂ¥ÃÂÃÂ
-        return None
-        ÃÂÃÂ¥
-ÃÂÃÂ¼ÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂ¹ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ¤ÃÂÃÂ§ÃÂÃÂ§ÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂ½ÃÂÃÂÃÂÃÂ§ÃÂÃÂ»ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
-          1. Phoenix ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂskills/active/{skill_id}.md
-          2. demo helperÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂskills/{skill_id}.md
+        """Load skill .md file and parse into SkillCard dict.
+        Returns None if file not found or parse fails.
+        
+        Search paths:
+          1. Phoenix main: skills/active/{skill_id}.md
+          2. Demo helper: skills/{skill_id}.md
         """
         candidates: list[Path] = []
         if status == "active":
             candidates = [
                 self.base_dir / "skills" / "active" / f"{skill_id}.md",
-                self.base_dir / "skills" / f"{skill_id}.md",         # demo helper ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¥
-ÃÂÃÂ¥ÃÂÃÂ¤ÃÂÃÂ½ÃÂÃÂÃÂÃÂ§ÃÂÃÂ½ÃÂÃÂ®
+                self.base_dir / "skills" / f"{skill_id}.md",
             ]
         elif status == "draft":
             candidates = [
@@ -297,17 +277,17 @@ class SkillRetriever:
             if file_path.exists():
                 try:
                     text = file_path.read_text(encoding="utf-8")
-        return None
+                    return self._parse_skill_card(text)
                 except (UnicodeDecodeError, IOError):
                     pass
         return None
 
     @staticmethod
-        return None
+    def _parse_skill_card(text: str) -> dict[str, Any]:
         """
-        ÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂ£ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ SkillCard markdown ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¬ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¥
-ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ°ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ®ÃÂÃÂ¥ÃÂÃÂ­ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ®ÃÂÃÂµÃÂÃÂ£ÃÂÃÂÃÂÃÂ
-        ÃÂÃÂ¦ÃÂÃÂ ÃÂÃÂ¼ÃÂÃÂ¥ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ¦ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
+        Parse SkillCard markdown into a dict.
+        
+        Expected format:
           # Skill: xxx
           ## Metadata
           - **skill_id**: xxx
@@ -320,11 +300,11 @@ class SkillRetriever:
         card: dict[str, Any] = {}
         current_section = ""
 
-        # ÃÂÃÂ§ÃÂÃÂ®ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¡ÃÂÃÂÃÂÃÂ§ÃÂÃÂºÃÂÃÂ§ÃÂÃÂ¨ÃÂÃÂ§ÃÂÃÂ£ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂ®ÃÂÃÂÃÂÃÂ¦ÃÂÃÂÃÂÃÂ´ Markdown parserÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
+        # Parse section headers and key-value metadata
         for line in text.splitlines():
             line_stripped = line.strip()
 
-            # ÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂ¦ÃÂÃÂ ÃÂÃÂÃÂÃÂ©ÃÂÃÂ¢ÃÂÃÂ
+            # Section header
             if line_stripped.startswith("## "):
                 current_section = line_stripped[3:].strip().lower()
                 card[current_section] = ""
@@ -339,23 +319,20 @@ class SkillRetriever:
                 current_section = ""
                 continue
 
-            # ÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¡ÃÂÃÂ¨ÃÂÃÂ©ÃÂÃÂ¡ÃÂÃÂ¹ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂProcedure / Inputs / Failure CasesÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
+            # Procedure / Inputs / Failure Cases: list items
             if current_section in ("procedure", "inputs", "failure cases", "validation") and line.startswith(("1.", "2.", "- ", "| ")):
                 existing = card.get(current_section, "")
                 card[current_section] = existing + "\n" + line_stripped if existing else line_stripped
                 continue
 
-            # When to Use / Safety NoteÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ®ÃÂÃÂµÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¯ÃÂÃÂ¼ÃÂÃÂ
+            # When to Use / Safety Note: freeform text
             if current_section in ("when to use", "safety note", "description"):
                 existing = card.get(current_section, "")
                 card[current_section] = (existing + " " + line_stripped).strip()
                 continue
 
-        # risk_tags ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¨ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¥ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¥ÃÂÃÂ
-ÃÂÃÂ¨ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¡ÃÂÃÂ¨ÃÂÃÂ¤ÃÂÃÂ¸ÃÂÃÂ­
+        # Extract risk_tags from Safety Note bracketed patterns
         if "risk_tags" not in card:
-            # ÃÂÃÂ¥ÃÂÃÂ°ÃÂÃÂÃÂÃÂ¨ÃÂÃÂ¯ÃÂÃÂÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂ Safety Note ÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥
-ÃÂÃÂ¶ÃÂÃÂ¤ÃÂÃÂ»ÃÂÃÂÃÂÃÂ¦ÃÂÃÂ®ÃÂÃÂµÃÂÃÂ¦ÃÂÃÂÃÂÃÂÃÂÃÂ¥ÃÂÃÂÃÂÃÂ
             safety = card.get("safety note", "")
             if safety:
                 tags = re.findall(r"\[([^\]]+)\]", safety)
