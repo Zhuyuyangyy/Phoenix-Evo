@@ -138,7 +138,27 @@ class SkillRetriever:
                 "matched_on":      matched_on,
             })
 
-        # 4. Sort by relevance_score * quality_score
+        # 4. Compute evidence_score for each candidate (fallback to quality_score)
+        for c in candidates:
+            idx = c["index_entry"]
+            card = c["skill_card"]
+            for field in ("evidence_score", "evidence_summary_score", "quality_score", "confidence", "replay_confidence"):
+                val = idx.get(field)
+                if val is not None:
+                    try:
+                        fval = float(val)
+                        if 0.0 <= fval <= 1.0:
+                            c["evidence_score"] = fval
+                            break
+                    except (ValueError, TypeError):
+                        pass
+            else:
+                import re
+                ev = card.get("evidence", card.get("evidence_summary", ""))
+                m = re.search(r'(\d+\.?\d*)', str(ev))
+                c["evidence_score"] = float(m.group(1)) / 100.0 if m else 0.50
+
+        # 5. Sort by relevance_score * quality_score
         candidates.sort(
             key=lambda x: x["relevance_score"] * x["index_entry"].get("quality_score", 0.5),
             reverse=True,
