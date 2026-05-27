@@ -113,7 +113,7 @@
     "verify_reason": "技能验证通过（置信度 100%，风险等级 low）。无警告。",
     "warnings": [],
     "activate_level": "draft",
-    "last_reviewed": "2026-05-10T17:13:22.160362"
+    "last_reviewed": "2026-05-26T09:51:45.074297"
   },
   "__rejected__debug_修复patch工具在WSL中文路径下写入null字节损坏_task_20260507_193403_dd708e": {
     "skill_id": "debug_修复patch工具在WSL中文路径下写入null字节损坏_task_20260507_193403_dd708e",
@@ -144,12 +144,13 @@
     "verify_reason": "技能验证通过（置信度 88%，风险等级 low）。无警告。",
     "warnings": [],
     "activate_level": "draft",
-    "last_reviewed": "2026-05-10T17:13:22.160364"
+    "last_reviewed": "2026-05-26T09:51:45.074302"
   },
   "safe_file_reconstruction": {
     "skill_id": "safe_file_reconstruction",
     "skill_name": "Safe File Reconstruction",
     "status": "active",
+    "evidence_score": 0.76,
     "source": "seed_pack_v0.9.0",
     "seed": true,
     "quality_score": 0.82,
@@ -162,12 +163,13 @@
     "success_count": 2,
     "success_rate": 1.0,
     "last_used": "2026-05-10T17:13:22.050242",
-    "last_reviewed": "2026-05-10T17:13:22.160363"
+    "last_reviewed": "2026-05-26T09:51:45.074301"
   },
   "signature_first_debugging": {
     "skill_id": "signature_first_debugging",
     "skill_name": "Signature First Debugging",
     "status": "active",
+    "evidence_score": 0.4,
     "source": "seed_pack_v0.9.0",
     "seed": true,
     "quality_score": 0.85,
@@ -180,12 +182,13 @@
     "success_count": 2,
     "success_rate": 1.0,
     "last_used": "2026-05-10T17:13:22.074908",
-    "last_reviewed": "2026-05-10T17:13:22.160366"
+    "last_reviewed": "2026-05-26T09:51:45.074300"
   },
   "syntax_validation_before_overwrite": {
     "skill_id": "syntax_validation_before_overwrite",
     "skill_name": "Syntax Validation Before Overwrite",
     "status": "active",
+    "evidence_score": 0.94,
     "source": "seed_pack_v0.9.0",
     "seed": true,
     "quality_score": 0.8,
@@ -198,12 +201,13 @@
     "success_count": 2,
     "success_rate": 1.0,
     "last_used": "2026-05-10T17:13:22.026536",
-    "last_reviewed": "2026-05-10T17:13:22.160360"
+    "last_reviewed": "2026-05-26T09:51:45.074296"
   },
   "error_message_as_contract_signal": {
     "skill_id": "error_message_as_contract_signal",
     "skill_name": "Error Message as Contract Signal",
     "status": "active",
+    "evidence_score": 0.56,
     "source": "seed_pack_v0.9.0",
     "seed": true,
     "quality_score": 0.78,
@@ -216,12 +220,13 @@
     "success_count": 0,
     "success_rate": null,
     "last_used": null,
-    "last_reviewed": "2026-05-10T17:13:22.160365"
+    "last_reviewed": "2026-05-26T09:51:45.074292"
   },
   "demo_repair_workflow": {
     "skill_id": "demo_repair_workflow",
     "skill_name": "Demo Repair Workflow",
     "status": "active",
+    "evidence_score": 0.6,
     "source": "seed_pack_v0.9.0",
     "seed": true,
     "quality_score": 0.83,
@@ -234,7 +239,7 @@
     "success_count": 0,
     "success_rate": null,
     "last_used": null,
-    "last_reviewed": "2026-05-10T17:13:22.160355"
+    "last_reviewed": "2026-05-26T09:51:45.074298"
   },
   "task_修复WSL中文路径文件写入null字节损坏问题_traj_001": {
     "skill_id": "task_修复WSL中文路径文件写入null字节损坏问题_traj_001",
@@ -252,7 +257,8 @@
     "warnings": [
       "可能与现有技能重复: 与 task_修复WSL中文路径文件写入null字节损坏问题_traj_001.md 潜在重复"
     ],
-    "activate_level": "reject"
+    "activate_level": "reject",
+    "last_reviewed": "2026-05-26T09:51:45.074295"
   },
   "task_实现TCM辨证推理API_traj_002": {
     "skill_id": "task_实现TCM辨证推理API_traj_002",
@@ -270,7 +276,8 @@
     "warnings": [
       "可能与现有技能重复: 与 task_实现TCM辨证推理API_traj_002.md 潜在重复"
     ],
-    "activate_level": "reject"
+    "activate_level": "reject",
+    "last_reviewed": "2026-05-26T09:51:45.074299"
   },
   "__rejected__task_批量修复Vue3组件响应式警告_traj_003": {
     "skill_id": "task_批量修复Vue3组件响应式警告_traj_003",
@@ -295,6 +302,7 @@
     "warnings": [
       "可能与现有技能重复: 与 task_构建AutoDataFlow多节点工作流编排引擎_traj_005.md 潜在重复"
     ],
-    "activate_level": "reject"
+    "activate_level": "reject",
+    "last_reviewed": "2026-05-26T09:51:45.074293"
   }
 }

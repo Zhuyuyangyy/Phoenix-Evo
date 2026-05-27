@@ -116,9 +116,16 @@ class OutcomeTracker:
 
     def _ensure_phoenix(self) -> None:
         if _PHOENIX_LOADED and self._phoenix is None:
-            self._phoenix = PhoenixEvo.load(self.base_dir)
-            self._registry = self._phoenix.registry
-            self._quarantine = getattr(self._phoenix, 'quarantine_manager', None)
+            try:
+                # PhoenixEvo 无 load() 方法，用 create_configured() 代替
+                self._phoenix = PhoenixEvo.create_configured(self.base_dir)
+                self._registry = self._phoenix.registry
+                self._quarantine = getattr(self._phoenix, 'quarantine_manager', None)
+            except Exception:
+                # 无法加载 Phoenix 核心，降级到无 Phoenix 模式
+                self._phoenix = None
+                self._registry = None
+                self._quarantine = None
 
     # ── 已处理 ID 持久化 ────────────────────────────────────────────────────
 

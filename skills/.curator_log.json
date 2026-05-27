@@ -138,5 +138,19 @@
     "actions_summary": "保留 7 个稳定技能",
     "run_at": "2026-05-10T17:13:22.165129",
     "errors": []
+  },
+  {
+    "run_id": "curator_20260526_095145",
+    "scanned_count": 24,
+    "merge_groups": 0,
+    "archived_count": 0,
+    "quarantined_count": 0,
+    "downgraded_count": 0,
+    "review_count": 0,
+    "kept_count": 10,
+    "skipped_count": 0,
+    "actions_summary": "保留 10 个稳定技能",
+    "run_at": "2026-05-26T09:51:45.079652",
+    "errors": []
   }
 ]

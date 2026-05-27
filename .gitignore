@@ -18,3 +18,5 @@ id_rsa.pub
 *.pub
 .env
 .env.*
+
+docs/
