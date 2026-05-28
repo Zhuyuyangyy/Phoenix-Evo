@@ -236,10 +236,11 @@ class FeedbackDispatcher:
         **kwargs: Any,
     ) -> dict[str, Any]:
         """skipped 处理路径：通知 FallbackManager 记录无匹配"""
+        duration = kwargs.pop("duration", 0.0)
         self._record_to_reporter(
             skill_id=skill_id, execution_result="skipped",
             task_id=task_id, session_id=session_id,
-            failure_reason=reason, **kwargs,
+            duration=duration, failure_reason=reason, **kwargs,
         )
 
         if self.mode == "sync":
@@ -306,6 +307,7 @@ class FeedbackDispatcher:
             **kwargs,
         }
         try:
-            log_path.write_text(json.dumps(record, ensure_ascii=False) + "\n", encoding="utf-8")
+            with log_path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
         except Exception as e:
             logger.warning("failed to write reporter log: %s", e)
