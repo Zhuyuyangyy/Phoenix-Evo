@@ -1,178 +1,142 @@
-# Phoenix-Evo — 不死鸟自进化 Agent 系统
-
 <p align="center">
-  <strong>不是让 Agent 单次完成任务，而是让 Agent 在每次任务结束后自动沉淀经验、修复缺陷、生成技能，并通过免疫系统防止错误经验污染长期能力。</strong>
+  <h1 align="center">Phoenix-Evo</h1>
+  <p align="center"><strong>Closed-Loop Agent Experience Governance System</strong></p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/Python-3.12-blue" alt="Python 3.12">
+    <img src="https://img.shields.io/badge/FastAPI-0.100+-green" alt="FastAPI">
+    <img src="https://img.shields.io/badge/Docker-Supported-2496ED" alt="Docker">
+    <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
+  </p>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12-blue" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/FastAPI-0.100+-green" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Docker-Supported-2496ED" alt="Docker">
-  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
-</p>
-
 ---
 
-## 一句话定位
+## Overview
+
+Phoenix-Evo is an experience governance layer for autonomous agents. Rather than focusing on how an agent completes a task, Phoenix-Evo addresses the problem of how an agent can learn from tasks -- transforming execution trajectories into verified, safety-checked, and reusable skill assets.
+
+Traditional agent frameworks (LangChain, AutoGPT, etc.) concentrate on task execution and discard the experience gained during that process. Phoenix-Evo introduces a closed-loop governance pipeline: every task execution produces a trajectory that is automatically evaluated, mined for reusable skills, verified for safety, subjected to pattern-based filtering, and stored in a governed skill registry. This creates a feedback loop where agents accumulate verified capabilities while a safety system prevents erroneous or dangerous experiences from contaminating the long-term skill corpus.
+
+The system is designed as a middleware layer that sits alongside any agent execution framework. It does not replace the agent's execution logic; instead, it captures, validates, and governs the knowledge produced during execution. The architecture spans five evolutionary stages -- from basic trajectory-to-skill extraction (V0.1) through safety filtering (V0.2), lifecycle governance (V0.3), replay verification (V0.4), and full runtime integration with task lifecycle management, hook systems, and feedback loops (V0.5-V1.0).
+
+## Key Features
+
+- **Closed-Loop Governance Pipeline** -- Pipeline: Trajectory Logging, Post-Task Evaluation, Skill Mining, Verification, Safety Filter, and Registry Storage. Every task execution contributes to the agent's skill corpus with quality checks at each stage.
+
+- **Pattern-Based Safety Filtering** -- Multi-layered safety checks using pattern matching. Detects dangerous operations (destructive commands, financial exploits, injection attacks, deceptive behaviors). Safety memory accumulates failure counts and triggers automatic quarantine after repeated failures.
+
+- **Skill Lifecycle Governance (Curator)** -- Automated lifecycle management including similarity-based deduplication (merge threshold > 0.85), adaptive drift detection with automatic downgrade, archival of unused skills, and quarantine review workflows.
+
+- **Replay Verification** -- Every skill is bound to its source trajectory and supports replay-based validation. Evidence scores are computed from source success, replay pass rate, runtime success rate, usage count, and recency factors.
+
+- **Runtime Safety Gate** -- Eight hard rules evaluated before skill injection: draft/quarantine/archived status denial, evidence score thresholds, risk score limits, replay regression checks, and critical-task safety constraints.
+
+- **Agent Runtime with Hook System** -- Complete task state machine (CREATED, ROUTING, INJECTING, RUNNING, SUCCESS, FAILED, CANCELLED) with 12 lifecycle hook points for extensible monitoring and intervention.
+
+- **Feedback Loop** -- Runtime outcomes automatically flow back through OutcomeTracker and FeedbackDispatcher to update skill metadata, trigger quarantine reviews, and drive quality evolution.
+
+- **Semantic Retrieval (V1.2)** -- Skills are retrieved using sentence-transformers embeddings (all-MiniLM-L6-v2) with cosine similarity, enabling true semantic matching between paraphrased queries and skill descriptions. TF-IDF + cosine similarity retained as a fallback when sentence-transformers is not installed. This addresses the limitation of bag-of-words models in capturing semantic equivalence.
+
+- **Adaptive Drift Detection (V1.1)** -- Success rate and staleness thresholds are computed from the population distribution (mean +/- k*std) rather than fixed constants, enabling the system to adapt to the actual health profile of the skill corpus.
+
+- **CLI and Daemon** -- Command-line interface for status monitoring, skill management, quarantine review, curator operations, daemon control, and metrics inspection.
+
+## Architecture
 
 ```
-Phoenix-Evo 不是 Agent 执行框架，而是 Agent 的自进化经验治理层。
-它把任务执行轨迹转化为经过验证、免疫、回放、治理和安全复用的技能资产。
+                         +------------------------------------------+
+                         |           CLI / API Layer                 |
+                         +------------------------------------------+
+                                          |
+                         +------------------------------------------+
+                         |       AgentRuntime (V0.8)                |
+                         |  Task Lifecycle + Hooks + TaskStore       |
+                         +------------------------------------------+
+                                          |
+                         +------------------------------------------+
+                         |       PhoenixRuntime (V0.6)              |
+                         |  SkillRouter -> RuntimeGuard -> Inject   |
+                         +------------------------------------------+
+                                          |
+                         +------------------------------------------+
+                         |       Feedback Loop (V0.7)               |
+                         |  OutcomeTracker -> FeedbackDispatcher    |
+                         +------------------------------------------+
+                                          |
+         +----------------------------------------------------------------+
+         |              Core Governance Engine (V0.1 - V0.4)              |
+         |  Trajectory -> Evaluate -> Mine -> Verify -> SafetyFilter     |
+         |  -> Registry -> Curator -> Replay -> Evidence                 |
+         +----------------------------------------------------------------+
+                                          |
+                         +------------------------------------------+
+                         |       Integration Layer (V0.5)           |
+                         |  HermesAdapter -> PhoenixBridge          |
+                         +------------------------------------------+
 ```
 
-```
-Hermes：负责执行任务
-Phoenix-Evo：负责从任务中成长
-AgentShield：负责行为和风险审计
-```
-
----
-
-## 版本演进
-
-| 版本 | 主题 | 状态 |
-|------|------|------|
-| V0.1 | 造血：轨迹 → 自评 → 技能提取 | ✅ 完成 |
-| V0.2 | 免疫：风险识别 → reject/quarantine/draft | ✅ 完成 |
-| V0.3 | 代谢：相似合并 → 漂移检测 → 降级归档 | ✅ 完成 |
-| V0.4 | 记忆：SkillCard → Replay → 晋级判断 | ✅ 完成 |
-| V0.5 | 桥接：Hermes 轨迹 → Phoenix draft skill | ✅ 完成 |
-| V0.6 | PhoenixRuntime：Skill Router + Guard + Context Injector | ✅ 完成 |
-| V0.7 | Runtime Feedback Loop：OutcomeTracker + FeedbackDispatcher | ✅ 完成 |
-| V0.8 | AgentRuntime：任务生命周期 + Hook 系统 + TaskStore | ✅ 完成 |
-| V0.9 | Daemon + Metrics + CLI + 稳定性补丁 | ✅ 完成 |
-| V1.0 | 生产就绪：项目路由 + 任务分类 + 命名空间治理 | ✅ 完成 |
-
----
-
-## 核心架构
-
-### 自进化闭环
+### Closed-Loop Pipeline
 
 ```
-任务 → 轨迹记录 → 自评 → 提取 → 验证 → 入库(draft) → 下次复用
-              │
-          失败归因 → 免疫防御 → 拒绝危险经验
+Task Execution
+       |
+       v
+Trajectory Logging
+       |
+       v
+Post-Task Evaluation (rule-based, no LLM dependency)
+       |
+       v
+Skill Mining (extract reusable skill candidate)
+       |
+       v
+Skill Verification (safety + confidence check)
+       |
+       v
+Safety Filter (approve / quarantine / reject)
+       |
+       v
+Skill Registry (stored as draft, pending activation)
+       |
+       v
+Next Task Reuse -> New Trajectory -> Loop
 ```
 
-### V1.0 运行时架构
+### Feedback Loop Data Flow
 
 ```
-AgentRuntime.run(task)
-  1. TaskContext 创建 (CREATED)
-     on_task_created hook
-  2. PhoenixRuntime.route() (ROUTING)
-     on_before_route → SkillRouter → RuntimeGuard → on_after_route
-  3a. skill_found=False → NO_SKILL → FeedbackDispatcher.report_skipped()
-  3b. skill_found=True
-        4. 上下文注入 (INJECTING)
-           on_before_inject → on_after_inject
-        5. execute_fn(ctx) (RUNNING)
-           on_before_execute
-           success → SUCCESS → on_success → FeedbackDispatcher.report_success()
-           failure → FAILED  → on_failure → FeedbackDispatcher.report_failure()
-```
-
-### Feedback Loop 数据流
-
-```
-RuntimeReporter（每条调用写一行 JSONL）
-  → OutcomeTracker（定时扫描日志文件）
-      累计失败≥3 → 触发 quarantine
-  → FeedbackDispatcher（同步分发）
+RuntimeReporter (one JSONL record per invocation)
+  -> OutcomeTracker (periodic log scanning)
+      3+ cumulative failures -> trigger quarantine
+  -> FeedbackDispatcher (synchronous dispatch)
       SkillRegistry.record_outcome()
-        SkillCard metadata 更新（usage_count, success_rate...）
-          Curator.scan() 审查 quarantine_skills
-            quarantine_skill → 降级/删除/恢复
+        SkillCard metadata update (usage_count, success_rate, ...)
+          Curator.scan() reviews quarantine_skills
+            quarantine_skill -> downgrade / delete / restore
 ```
 
----
+## Tech Stack
 
-## 目录结构
+| Category | Technology |
+|----------|------------|
+| Language | Python 3.12 |
+| Web Framework | FastAPI + Uvicorn |
+| Data Validation | Pydantic v2 |
+| Database | SQLAlchemy + aiosqlite |
+| Numerical Computing | NumPy + SciPy |
+| HTTP Client | httpx |
+| Monitoring | Prometheus |
+| Containerization | Docker + Docker Compose |
+| Testing | pytest + pytest-asyncio |
 
-```
-Phoenix-Evo/
-├── core/                          # 核心模块
-│   ├── phoenix_evo.py             # V0.1 主调度器
-│   ├── trajectory_logger.py       # 轨迹记录器
-│   ├── post_task_evaluator.py     # 任务后自评器
-│   ├── skill_miner.py             # 技能提取器
-│   ├── skill_verifier.py          # 技能验证器（免疫层）
-│   ├── skill_registry.py          # 技能库管理器
-│   ├── skill_curator.py           # 技能治理器（去重/漂移/归档）
-│   ├── skill_evidence.py          # 证据绑定
-│   ├── skill_replay.py            # 回放验证
-│   ├── skill_similarity.py        # 相似度计算
-│   ├── skill_benchmark.py         # 技能基准测试
-│   ├── immune_guard.py            # 免疫守卫
-│   ├── immune_memory.py           # 免疫记忆
-│   ├── quarantine_manager.py      # 隔离管理
-│   ├── replay_manager.py          # 回放管理
-│   ├── replay_reporter.py         # 回放报告
-│   ├── drift_detector.py          # 漂移检测
-│   ├── risk_policy.py             # 风险策略
-│   ├── execution_guard.py         # 执行守卫
-│   ├── curator_policy.py          # 治理策略
-│   └── runtime_reporter.py        # 调用日志记录器
-├── runtime/                       # 运行时模块
-│   ├── phoenix_runtime.py         # Skill Router 运行时
-│   ├── phoenix_daemon.py          # 后台守护进程
-│   ├── phoenix_metrics.py         # 指标采集
-│   ├── agent_runtime.py           # 任务生命周期管理器
-│   ├── skill_retriever.py         # 向量检索 + 中文分词
-│   ├── skill_router.py            # 路由决策（DENY/ALLOW/REVIEW）
-│   ├── runtime_guard.py           # Security Gate（8条规则）
-│   ├── context_injector.py        # Hermite 插值上下文注入
-│   ├── fallback_manager.py        # 无匹配时降级策略
-│   ├── outcome_tracker.py         # 任务结果追踪
-│   ├── feedback_dispatcher.py     # 反馈分发
-│   ├── project_router.py          # 项目级路由
-│   ├── task_type_classifier.py    # 任务类型分类器
-│   ├── skill_injection_policy.py  # 技能注入策略
-│   ├── runtime_skill_bridge.py    # 运行时技能桥接
-│   ├── seed_skills.py             # 种子技能
-│   ├── demo_v0.6.py              # V0.6 Demo
-│   ├── demo_v0.7_feedback.py     # V0.7 Demo
-│   └── demo_v0.8_agent_runtime.py # V0.8 Demo
-├── integrations/                  # 集成模块
-│   ├── hermes_adapter.py          # Hermes 事件适配层
-│   ├── hermes_skill_exporter.py   # Hermes 技能导出
-│   ├── phoenix_bridge.py          # Phoenix 桥接
-│   ├── async_bridge.py            # 异步桥接
-│   └── integration_policy.py      # 集成策略
-├── cli/                           # 命令行工具
-│   └── phoenix_cli.py             # CLI 入口
-├── skills/                        # 技能存储
-│   ├── draft/                     # 候选技能（待激活）
-│   ├── active/                    # 已激活技能
-│   ├── archived/                  # 已归档技能
-│   └── rejections/                # 被拒绝的技能
-├── data/
-│   └── trajectories/              # 轨迹历史
-├── logs/                          # 运行日志
-├── tests/                         # 测试用例
-│   ├── test_self_evolution_loop.py
-│   ├── test_immune_guard.py
-│   ├── test_runtime_router.py
-│   ├── test_curator.py
-│   └── test_evidence_replay.py
-├── docs/                          # 技术文档
-├── Dockerfile                     # 多阶段构建
-├── docker-compose.yml             # Docker Compose 编排
-├── requirements.txt               # Python 依赖
-└── start.sh                       # 启动脚本
-```
+## Quick Start
 
----
+### Prerequisites
 
-## 快速开始
+- Python 3.12 or higher
+- pip package manager
 
-### 环境要求
-
-- Python 3.12+
-- pip
-
-### 本地安装
+### Installation
 
 ```bash
 git clone https://github.com/your-org/Phoenix-Evo.git
@@ -180,27 +144,31 @@ cd Phoenix-Evo
 pip install -r requirements.txt
 ```
 
-### 运行 Demo
+### Running Demos
 
 ```bash
+# V0.6: Skill Router runtime demonstration
 python runtime/demo_v0.6.py
+
+# V0.7: Feedback loop demonstration
 python runtime/demo_v0.7_feedback.py
+
+# V0.8: Agent runtime with full task lifecycle
 python runtime/demo_v0.8_agent_runtime.py
 ```
 
-### Docker 部署
+### Docker Deployment
 
 ```bash
 docker-compose up -d
 ```
 
-服务端口：
-| 端口 | 服务 |
-|------|------|
+| Port | Service |
+|------|---------|
 | 8000 | PhoenixRuntime HTTP API |
 | 9090 | Prometheus Metrics |
 
-### CLI 使用
+### CLI Usage
 
 ```bash
 python -m cli.phoenix_cli status --base-dir ./Phoenix-Evo
@@ -213,11 +181,7 @@ python -m cli.phoenix_cli metrics --base-dir ./Phoenix-Evo
 python -m cli.phoenix_cli replay <task_id> --base-dir ./Phoenix-Evo
 ```
 
----
-
-## 代码示例
-
-### AgentRuntime
+### Code Example
 
 ```python
 from runtime.agent_runtime import AgentRuntime
@@ -227,7 +191,7 @@ runtime = AgentRuntime(phoenix_base_dir=Path("Phoenix-Evo"))
 runtime.hooks.on_success(lambda ctx: print(f"Done: {ctx.task_id}"))
 
 ctx = runtime.run(
-    task_description="修复WSL中文路径",
+    task_description="Fix WSL Chinese path encoding",
     task_type="debugging",
     risk_level="low",
     execute_fn=lambda c: fix_path(c.injected_context),
@@ -235,68 +199,154 @@ ctx = runtime.run(
 # ctx.state == TaskState.SUCCESS
 ```
 
-### Hermes 集成
+## Project Structure
 
-```python
-from integrations.hermes_adapter import HermesAdapter
-
-adapter = HermesAdapter(phoenix_base_dir=Path("Phoenix-Evo"))
-adapter.on_step_callback(api_call_count=1, prev_tools=[])
-adapter.on_tool_complete(tool_name="edit", tool_args={}, tool_result="ok")
+```
+Phoenix-Evo/
+├── core/                          # Core governance modules
+│   ├── phoenix_evo.py             # V0.1 main orchestrator
+│   ├── trajectory_logger.py       # Trajectory recording
+│   ├── post_task_evaluator.py     # Post-task evaluation
+│   ├── skill_miner.py             # Skill extraction
+│   ├── skill_verifier.py          # Skill verification (safety layer)
+│   ├── skill_registry.py          # Skill registry manager
+│   ├── skill_curator.py           # Skill governance (dedup/drift/archive)
+│   ├── skill_evidence.py          # Evidence binding
+│   ├── skill_replay.py            # Replay verification
+│   ├── skill_similarity.py        # Similarity computation (TF-IDF)
+│   ├── skill_benchmark.py         # Skill benchmarking
+│   ├── immune_guard.py            # Safety filter
+│   ├── immune_memory.py           # Safety memory
+│   ├── quarantine_manager.py      # Quarantine management
+│   ├── replay_manager.py          # Replay management
+│   ├── replay_reporter.py         # Replay reporting
+│   ├── drift_detector.py          # Adaptive drift detection
+│   ├── risk_policy.py             # Risk policy
+│   ├── execution_guard.py         # Execution guard
+│   ├── curator_policy.py          # Governance policy
+│   └── runtime_reporter.py        # Invocation log recorder
+├── runtime/                       # Runtime modules
+│   ├── phoenix_runtime.py         # Skill Router runtime
+│   ├── phoenix_daemon.py          # Background daemon
+│   ├── phoenix_metrics.py         # Metrics collection
+│   ├── agent_runtime.py           # Task lifecycle manager
+│   ├── skill_retriever.py         # Semantic retrieval (TF-IDF + cosine)
+│   ├── semantic_retriever.py      # Sentence-embedding retrieval (V1.2)
+│   ├── skill_router.py            # Routing decisions (DENY/ALLOW/REVIEW)
+│   ├── runtime_guard.py           # Security gate (8 rules)
+│   ├── context_injector.py        # Context injection
+│   ├── fallback_manager.py        # Fallback strategy
+│   ├── outcome_tracker.py         # Task outcome tracking
+│   ├── feedback_dispatcher.py     # Feedback dispatch
+│   ├── project_router.py          # Project-level routing
+│   ├── task_type_classifier.py    # Task type classifier
+│   ├── skill_injection_policy.py  # Skill injection policy
+│   ├── runtime_skill_bridge.py    # Runtime-skill bridge
+│   └── seed_skills.py             # Seed skills
+├── integrations/                  # Integration modules
+│   ├── hermes_adapter.py          # Hermes event adapter
+│   ├── hermes_skill_exporter.py   # Hermes skill exporter
+│   ├── phoenix_bridge.py          # Phoenix bridge
+│   ├── async_bridge.py            # Async bridge
+│   └── integration_policy.py      # Integration policy
+├── cli/                           # Command-line interface
+│   └── phoenix_cli.py             # CLI entry point
+├── skills/                        # Skill storage
+│   ├── draft/                     # Candidate skills (pending activation)
+│   ├── active/                    # Activated skills
+│   ├── archived/                  # Archived skills
+│   └── rejections/                # Rejected skills
+├── data/trajectories/             # Trajectory history
+├── logs/                          # Runtime logs
+├── tests/                         # Test suite
+│   ├── test_smoke.py              # Smoke tests
+│   ├── test_self_evolution_loop.py
+│   ├── test_immune_guard.py
+│   ├── test_runtime_router.py
+│   ├── test_curator.py
+│   ├── test_evidence_replay.py
+│   ├── test_drift_detector.py
+│   ├── test_retrieval_comparison.py
+│   └── test_semantic_retrieval.py  # V1.2: Semantic retrieval tests
+├── docs/                          # Technical documentation
+├── Dockerfile                     # Multi-stage Docker build
+├── docker-compose.yml             # Docker Compose orchestration
+├── requirements.txt               # Python dependencies
+└── start.sh                       # Startup script
 ```
 
----
+## Runtime Guard Rules
 
-## Runtime Guard 规则
-
-| # | 规则 | 决策 |
-|---|------|------|
-| 1 | draft skill | DENY |
-| 2 | quarantine skill | DENY |
-| 3 | archived skill | DENY |
+| # | Rule | Decision |
+|---|------|----------|
+| 1 | Skill status is draft | DENY |
+| 2 | Skill status is quarantine | DENY |
+| 3 | Skill status is archived | DENY |
 | 4 | evidence_score < 0.60 | DENY |
 | 5 | risk_score > 0.50 | DENY |
 | 6 | replay_regression = true | DENY |
-| 7 | task_risk = critical + skill_risk ≠ low | DENY |
-| 8 | high/critical task + no replay | REVIEW_REQUIRED |
+| 7 | task_risk = critical AND skill_risk != low | DENY |
+| 8 | high/critical task AND no replay record | REVIEW_REQUIRED |
+
+## Security Constraints
+
+- Candidate skills are always stored in `skills/draft/` and never auto-activated
+- Skills involving deletion, payment, bypass, or attack patterns are rejected by the safety system
+- All skills are traceable to their original trajectory
+- Automatic modification of active skills is prohibited
+- Automatic deletion of skills is prohibited
+
+## Benchmarks & Results
+
+Benchmarks and comparative experiments are defined in the test suite (`tests/test_retrieval_comparison.py`). Formal benchmark results are pending publication.
+
+## Research & Publications
+
+Phoenix-Evo addresses the problem of governing agent-accumulated procedural knowledge:
+
+- **Experience Governance** -- A framework for managing agent-accumulated knowledge with safety guarantees, addressing the gap between task execution and experience reuse in autonomous agents.
+- **Pattern-Based Safety Filtering** -- Multi-layer pattern matching and failure memory to prevent experience poisoning in agents that accumulate skills over time.
+- **Skill Lifecycle Management** -- Automated governance of skill assets including similarity-based deduplication, adaptive drift detection, evidence-based quality scoring, and replay verification.
+
+Related technical documentation is available in the `docs/` directory, covering the evolution from V0.1 through V1.0.
+
+## Roadmap
+
+| Phase | Focus | Status |
+|-------|-------|--------|
+| V0.1 | Trajectory to skill extraction | Completed |
+| V0.2 | Safety filtering system | Completed |
+| V0.3 | Lifecycle governance (merge/drift/archive) | Completed |
+| V0.4 | Replay verification and evidence scoring | Completed |
+| V0.5 | Hermes integration bridge | Completed |
+| V0.6 | PhoenixRuntime skill router | Completed |
+| V0.7 | Runtime feedback loop | Completed |
+| V0.8 | Agent runtime with task lifecycle | Completed |
+| V0.9 | Daemon, metrics, CLI, stability patches | Completed |
+| V1.0 | Production-ready: project routing, task classification, namespace governance | Completed |
+| V1.1 | Semantic retrieval (TF-IDF), adaptive drift detection | Completed |
+| V1.2 | Sentence-embedding semantic retrieval, SCI Q2 review fixes | Completed |
+
+### Future Directions
+
+- **V1.3** -- Skill versioning, cross-project skill sharing, automated replay test framework
+- **V2.0** -- Multi-agent collaborative evolution with shared safety memory, composite skill generation, adaptive routing
+- **Long-term** -- Distributed skill library, federated skill sharing with privacy preservation, self-repairing architecture
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit changes (`git commit -m 'Add your feature'`)
+4. Push to remote (`git push origin feature/your-feature`)
+5. Create a Pull Request
+
+All new features must include tests. Run `pytest tests/` to ensure all tests pass before submitting. Follow PEP 8 code style. Core module changes require corresponding documentation updates in `docs/`.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 安全约束
-
-- 候选技能只进 `skills/draft/`，不自动激活
-- 涉及删除/支付/绕过/攻击的技能被免疫系统拒绝
-- 所有技能可追溯到原始轨迹
-- 禁止自动修改 active skills
-- 禁止自动删除技能
-
----
-
-## 技术栈
-
-| 类别 | 技术 |
-|------|------|
-| 语言 | Python 3.12 |
-| Web 框架 | FastAPI + Uvicorn |
-| 数据校验 | Pydantic v2 |
-| 数据库 | SQLAlchemy + aiosqlite |
-| 数值计算 | NumPy + SciPy |
-| HTTP 客户端 | httpx |
-| 监控 | Prometheus |
-| 容器化 | Docker + Docker Compose |
-| 测试 | pytest + pytest-asyncio |
-
----
-
-## 项目文档
-
-| 文档 | 说明 |
-|------|------|
-| [V0.1 技术说明](docs/Phoenix_Evo_V0.1_技术说明.md) | 基础闭环设计 |
-| [V0.2 Immune Guard](docs/Phoenix_Evo_V0.2_Immune_Guard_技术说明.md) | 免疫系统设计 |
-| [V0.5 Hermes Bridge](docs/Phoenix_Evo_V0.5_Hermes_Bridge_技术说明.md) | Hermes 集成设计 |
-| [V0.6-V1.0 Roadmap](docs/Phoenix_Evo_V0.6-V1.0_Roadmap_锁定版.md) | 完整路线图 |
-
----
-
-自进化不是自动相信自己，而是自动怀疑自己、验证自己、沉淀自己。
+*"Governance is not about automatically trusting accumulated experience -- it is about automatically verifying, monitoring, and curating it."*

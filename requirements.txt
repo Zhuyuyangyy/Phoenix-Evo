@@ -1,15 +1,60 @@
+# Phoenix-Evo V1.0 Requirements
+# ================================
+
+# --- Web Framework ---
 fastapi>=0.100.0
 uvicorn[standard]>=0.23.0
+
+# --- Data Validation ---
 pydantic>=2.0.0
+
+# --- Database ---
 sqlalchemy>=2.0.0
 aiosqlite>=0.19.0
+
+# --- HTTP Client ---
 httpx>=0.24.0
+
+# --- Tokenization ---
 tiktoken>=0.4.0
+
+# --- Numerical Computing ---
 numpy>=1.24.0
 scipy>=1.10.0
+
+# --- Semantic Retrieval (V1.3) ---
+sentence-transformers>=2.2.0  # For sentence-embedding-based semantic search (EmbeddingRetriever)
+                               # 3-tier fallback: Embedding -> TF-IDF -> Keyword
+                               # Model: all-MiniLM-L6-v2 (80MB, 384-dim)
+
+# --- Monitoring ---
 prometheus-client>=0.17.0
+
+# --- Retry Logic ---
 tenacity>=8.2.0
+
+# --- Configuration ---
+pyyaml>=6.0
+
+# --- Rate Limiting ---
+slowapi>=0.1.7
+
+# --- Testing ---
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
-slowapi>=0.1.7
-pyyaml>=6.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.3.0
+
+# --- Linting ---
+ruff>=0.1.0
+
+# --- Type Checking ---
+mypy>=1.5.0
+
+# --- Security ---
+bandit>=1.7.0
+safety>=2.3.0
+
+# --- Documentation ---
+# mkdocs>=1.5.0          # Optional: for docs site
+# mkdocs-material>=9.0.0 # Optional: for docs theme

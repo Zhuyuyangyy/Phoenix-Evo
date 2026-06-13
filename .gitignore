@@ -19,4 +19,10 @@ id_rsa.pub
 .env
 .env.*
 
-docs/
+# temp / backup files
+*.bak
+*.tmp
+*.orig
+*~
+*.swp
+

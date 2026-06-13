@@ -1,0 +1,50 @@
+{
+  "no_memory": {
+    "success_rate_mean": 0.544,
+    "success_rate_std": 0.49905935615300856,
+    "time_mean": 11555.29788,
+    "time_std": 6914.770537655985,
+    "tokens_mean": 1152.144,
+    "tokens_std": 683.5414772113489,
+    "quality_mean": 0.5681112,
+    "quality_std": 0.21590436366958002,
+    "skills_reused_mean": 0.0,
+    "retrieval_accuracy_mean": 0.0
+  },
+  "keyword_memory": {
+    "success_rate_mean": 0.732,
+    "success_rate_std": 0.44380610115419405,
+    "time_mean": 10348.64724,
+    "time_std": 6329.027596678122,
+    "tokens_mean": 1055.196,
+    "tokens_std": 632.6763239663948,
+    "quality_mean": 0.7565052000000001,
+    "quality_std": 0.2564549337116762,
+    "skills_reused_mean": 2.668,
+    "retrieval_accuracy_mean": 0.5334788
+  },
+  "tfidf_memory": {
+    "success_rate_mean": 0.736,
+    "success_rate_std": 0.4416835262372795,
+    "time_mean": 9415.41424,
+    "time_std": 5822.181325481193,
+    "tokens_mean": 992.896,
+    "tokens_std": 592.8597472451764,
+    "quality_mean": 0.783098,
+    "quality_std": 0.271629774978036,
+    "skills_reused_mean": 2.928,
+    "retrieval_accuracy_mean": 0.8193412
+  },
+  "full_phoenix": {
+    "success_rate_mean": 0.812,
+    "success_rate_std": 0.39149594672898064,
+    "time_mean": 8611.65924,
+    "time_std": 5325.16576820011,
+    "tokens_mean": 923.54,
+    "tokens_std": 551.5118108527143,
+    "quality_mean": 0.8554596,
+    "quality_std": 0.24744951975534038,
+    "skills_reused_mean": 2.928,
+    "retrieval_accuracy_mean": 0.8193412
+  }
+}

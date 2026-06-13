@@ -1,0 +1,71 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info
+dist
+build
+eggs
+*.egg
+venv
+.venv
+env
+.env
+.env.*
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+coverage.xml
+*.cover
+*.log
+.tox
+.nox
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Logs
+logs/
+*.log
+
+# Runtime artifacts
+data/trajectories/
+evidence/runtime_logs/
+runtime/fallback_logs/
+
+# Temporary files
+*.tmp
+*.bak
+*.orig

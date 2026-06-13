@@ -1,0 +1,6564 @@
+{
+  "experiment_config": {
+    "num_runs_per_task": 5,
+    "random_seed": 42,
+    "baseline_params": {
+      "success_rate_base": 0.65,
+      "time_multiplier": 1.0,
+      "token_multiplier": 1.0
+    },
+    "phoenix_params": {
+      "success_rate_base": 0.82,
+      "time_multiplier": 0.75,
+      "token_multiplier": 0.8
+    }
+  },
+  "timestamp": "2026-05-29T14:29:11.036967",
+  "total_tasks": 50,
+  "total_results": 500,
+  "results": [
+    {
+      "task_id": "T01",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4050.02,
+      "tokens_consumed": 477,
+      "output_quality_score": 0.6946,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3037.52,
+      "tokens_consumed": 382,
+      "output_quality_score": 0.7946,
+      "skills_used": [
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5353.4,
+      "tokens_consumed": 539,
+      "output_quality_score": 0.2261,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4015.05,
+      "tokens_consumed": 431,
+      "output_quality_score": 0.8474,
+      "skills_used": [
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4059.59,
+      "tokens_consumed": 471,
+      "output_quality_score": 0.7511,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3044.7,
+      "tokens_consumed": 377,
+      "output_quality_score": 0.9311,
+      "skills_used": [
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4397.68,
+      "tokens_consumed": 514,
+      "output_quality_score": 0.759,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3298.26,
+      "tokens_consumed": 411,
+      "output_quality_score": 0.939,
+      "skills_used": [
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5178.53,
+      "tokens_consumed": 530,
+      "output_quality_score": 0.6513,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T01",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3883.9,
+      "tokens_consumed": 424,
+      "output_quality_score": 0.8313,
+      "skills_used": [
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 12951.07,
+      "tokens_consumed": 1161,
+      "output_quality_score": 0.2466,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 9713.3,
+      "tokens_consumed": 929,
+      "output_quality_score": 0.2466,
+      "skills_used": [
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 1,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 11215.65,
+      "tokens_consumed": 1102,
+      "output_quality_score": 0.229,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 8411.74,
+      "tokens_consumed": 881,
+      "output_quality_score": 0.229,
+      "skills_used": [
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 2,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 12497.88,
+      "tokens_consumed": 1273,
+      "output_quality_score": 0.4189,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 9373.41,
+      "tokens_consumed": 1018,
+      "output_quality_score": 0.4189,
+      "skills_used": [
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 2,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 14270.96,
+      "tokens_consumed": 1170,
+      "output_quality_score": 0.7604,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10703.22,
+      "tokens_consumed": 936,
+      "output_quality_score": 0.9404,
+      "skills_used": [
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 12568.89,
+      "tokens_consumed": 1286,
+      "output_quality_score": 0.3732,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T02",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 9426.67,
+      "tokens_consumed": 1029,
+      "output_quality_score": 0.3732,
+      "skills_used": [
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 2,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20458.24,
+      "tokens_consumed": 2363,
+      "output_quality_score": 0.2868,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15343.68,
+      "tokens_consumed": 1891,
+      "output_quality_score": 0.2868,
+      "skills_used": [
+        "skill_69fdffc3",
+        "skill_a66a0683",
+        "skill_1febff01"
+      ],
+      "skills_reused": 2,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 22327.91,
+      "tokens_consumed": 2300,
+      "output_quality_score": 0.7056,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 16745.93,
+      "tokens_consumed": 1840,
+      "output_quality_score": 0.8856,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 23648.32,
+      "tokens_consumed": 2435,
+      "output_quality_score": 0.2629,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 17736.24,
+      "tokens_consumed": 1948,
+      "output_quality_score": 0.8719,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 29366.55,
+      "tokens_consumed": 2574,
+      "output_quality_score": 0.7718,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 22024.91,
+      "tokens_consumed": 2059,
+      "output_quality_score": 0.9518,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 27291.27,
+      "tokens_consumed": 2331,
+      "output_quality_score": 0.7259,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T03",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 20468.45,
+      "tokens_consumed": 1865,
+      "output_quality_score": 0.9059,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_69fdffc3",
+        "skill_a66a0683"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4224.0,
+      "tokens_consumed": 404,
+      "output_quality_score": 0.4054,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 3168.0,
+      "tokens_consumed": 323,
+      "output_quality_score": 0.4054,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_69fdffc3",
+        "skill_a66a0683",
+        "skill_55c2ca09"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4441.6,
+      "tokens_consumed": 378,
+      "output_quality_score": 0.2096,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3331.2,
+      "tokens_consumed": 302,
+      "output_quality_score": 0.8364,
+      "skills_used": [
+        "skill_55c2ca09",
+        "skill_1febff01",
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3628.39,
+      "tokens_consumed": 376,
+      "output_quality_score": 0.8386,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2721.29,
+      "tokens_consumed": 301,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_55c2ca09",
+        "skill_1febff01",
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 3703.48,
+      "tokens_consumed": 412,
+      "output_quality_score": 0.3187,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2777.61,
+      "tokens_consumed": 329,
+      "output_quality_score": 0.9091,
+      "skills_used": [
+        "skill_55c2ca09",
+        "skill_1febff01",
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 3934.16,
+      "tokens_consumed": 381,
+      "output_quality_score": 0.274,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T04",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2950.62,
+      "tokens_consumed": 304,
+      "output_quality_score": 0.8793,
+      "skills_used": [
+        "skill_55c2ca09",
+        "skill_1febff01",
+        "skill_69fdffc3"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 18101.93,
+      "tokens_consumed": 2033,
+      "output_quality_score": 0.4693,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13576.45,
+      "tokens_consumed": 1627,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_55c2ca09",
+        "skill_1febff01",
+        "skill_69fdffc3",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 17754.57,
+      "tokens_consumed": 2199,
+      "output_quality_score": 0.7519,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13315.92,
+      "tokens_consumed": 1759,
+      "output_quality_score": 0.9319,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 16376.93,
+      "tokens_consumed": 1843,
+      "output_quality_score": 0.7755,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12282.7,
+      "tokens_consumed": 1475,
+      "output_quality_score": 0.9555,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 19377.28,
+      "tokens_consumed": 1825,
+      "output_quality_score": 0.3145,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 14532.96,
+      "tokens_consumed": 1460,
+      "output_quality_score": 0.9063,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20232.91,
+      "tokens_consumed": 2188,
+      "output_quality_score": 0.4582,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T05",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15174.69,
+      "tokens_consumed": 1750,
+      "output_quality_score": 0.4582,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3264.87,
+      "tokens_consumed": 310,
+      "output_quality_score": 0.7574,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2448.65,
+      "tokens_consumed": 248,
+      "output_quality_score": 0.9374,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_44be7daa",
+        "skill_16a3fb2d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3169.15,
+      "tokens_consumed": 276,
+      "output_quality_score": 0.737,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2376.87,
+      "tokens_consumed": 221,
+      "output_quality_score": 0.917,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_16a3fb2d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3544.58,
+      "tokens_consumed": 322,
+      "output_quality_score": 0.7027,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2658.43,
+      "tokens_consumed": 258,
+      "output_quality_score": 0.8827,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_16a3fb2d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 2614.38,
+      "tokens_consumed": 324,
+      "output_quality_score": 0.8241,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 1960.79,
+      "tokens_consumed": 259,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_16a3fb2d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3166.74,
+      "tokens_consumed": 306,
+      "output_quality_score": 0.6806,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T06",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2375.05,
+      "tokens_consumed": 245,
+      "output_quality_score": 0.8606,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_16a3fb2d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4063.01,
+      "tokens_consumed": 422,
+      "output_quality_score": 0.3591,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 3047.25,
+      "tokens_consumed": 337,
+      "output_quality_score": 0.3591,
+      "skills_used": [
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_16a3fb2d",
+        "skill_c1fa4d7b"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3718.65,
+      "tokens_consumed": 361,
+      "output_quality_score": 0.8358,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2788.99,
+      "tokens_consumed": 289,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4530.66,
+      "tokens_consumed": 384,
+      "output_quality_score": 0.2174,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 3398.0,
+      "tokens_consumed": 307,
+      "output_quality_score": 0.2174,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4715.12,
+      "tokens_consumed": 366,
+      "output_quality_score": 0.3458,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 3536.34,
+      "tokens_consumed": 293,
+      "output_quality_score": 0.3458,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4416.96,
+      "tokens_consumed": 421,
+      "output_quality_score": 0.6757,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T07",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3312.72,
+      "tokens_consumed": 337,
+      "output_quality_score": 0.8557,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 8159.37,
+      "tokens_consumed": 762,
+      "output_quality_score": 0.4617,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6119.53,
+      "tokens_consumed": 609,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_fd9c54b7"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 7077.75,
+      "tokens_consumed": 806,
+      "output_quality_score": 0.796,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5308.32,
+      "tokens_consumed": 645,
+      "output_quality_score": 0.976,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_fd9c54b7"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 7397.49,
+      "tokens_consumed": 879,
+      "output_quality_score": 0.78,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5548.12,
+      "tokens_consumed": 703,
+      "output_quality_score": 0.96,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_fd9c54b7"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8056.24,
+      "tokens_consumed": 739,
+      "output_quality_score": 0.6949,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6042.18,
+      "tokens_consumed": 591,
+      "output_quality_score": 0.8749,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_fd9c54b7"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8282.59,
+      "tokens_consumed": 756,
+      "output_quality_score": 0.694,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T08",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6211.94,
+      "tokens_consumed": 605,
+      "output_quality_score": 0.874,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_fd9c54b7"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10524.41,
+      "tokens_consumed": 945,
+      "output_quality_score": 0.8311,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7893.31,
+      "tokens_consumed": 756,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_13fe929b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 8283.43,
+      "tokens_consumed": 947,
+      "output_quality_score": 0.4007,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 6212.57,
+      "tokens_consumed": 758,
+      "output_quality_score": 0.4007,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_13fe929b"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8529.25,
+      "tokens_consumed": 1087,
+      "output_quality_score": 0.7642,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6396.94,
+      "tokens_consumed": 869,
+      "output_quality_score": 0.9442,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_13fe929b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 11138.48,
+      "tokens_consumed": 1061,
+      "output_quality_score": 0.6881,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8353.86,
+      "tokens_consumed": 849,
+      "output_quality_score": 0.8681,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_13fe929b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9724.2,
+      "tokens_consumed": 984,
+      "output_quality_score": 0.7434,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T09",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7293.15,
+      "tokens_consumed": 787,
+      "output_quality_score": 0.9234,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_13fe929b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 3208.04,
+      "tokens_consumed": 329,
+      "output_quality_score": 0.2295,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2406.03,
+      "tokens_consumed": 263,
+      "output_quality_score": 0.8497,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_1febff01",
+        "skill_55c2ca09",
+        "skill_436b2a48"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 2807.16,
+      "tokens_consumed": 321,
+      "output_quality_score": 0.6997,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2105.37,
+      "tokens_consumed": 257,
+      "output_quality_score": 0.8797,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 2938.34,
+      "tokens_consumed": 295,
+      "output_quality_score": 0.7057,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2203.75,
+      "tokens_consumed": 236,
+      "output_quality_score": 0.8857,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3507.92,
+      "tokens_consumed": 296,
+      "output_quality_score": 0.8223,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2630.94,
+      "tokens_consumed": 237,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 2460.71,
+      "tokens_consumed": 329,
+      "output_quality_score": 0.8172,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T10",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 1845.53,
+      "tokens_consumed": 263,
+      "output_quality_score": 0.9972,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9364.37,
+      "tokens_consumed": 855,
+      "output_quality_score": 0.2499,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 7023.28,
+      "tokens_consumed": 684,
+      "output_quality_score": 0.2499,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 7083.99,
+      "tokens_consumed": 784,
+      "output_quality_score": 0.6617,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5312.99,
+      "tokens_consumed": 627,
+      "output_quality_score": 0.8417,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9552.99,
+      "tokens_consumed": 762,
+      "output_quality_score": 0.8068,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7164.74,
+      "tokens_consumed": 609,
+      "output_quality_score": 0.9868,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 7753.62,
+      "tokens_consumed": 873,
+      "output_quality_score": 0.8491,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5815.22,
+      "tokens_consumed": 698,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 8698.91,
+      "tokens_consumed": 744,
+      "output_quality_score": 0.289,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T11",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6524.18,
+      "tokens_consumed": 595,
+      "output_quality_score": 0.8893,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 15475.08,
+      "tokens_consumed": 1512,
+      "output_quality_score": 0.4244,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 11606.31,
+      "tokens_consumed": 1210,
+      "output_quality_score": 0.4244,
+      "skills_used": [
+        "skill_77b1e038",
+        "skill_72963b0e"
+      ],
+      "skills_reused": 1,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 15505.07,
+      "tokens_consumed": 1500,
+      "output_quality_score": 0.8205,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 11628.8,
+      "tokens_consumed": 1200,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_72963b0e",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 17764.67,
+      "tokens_consumed": 1374,
+      "output_quality_score": 0.6872,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13323.51,
+      "tokens_consumed": 1099,
+      "output_quality_score": 0.8672,
+      "skills_used": [
+        "skill_72963b0e",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 16051.28,
+      "tokens_consumed": 1420,
+      "output_quality_score": 0.236,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12038.46,
+      "tokens_consumed": 1136,
+      "output_quality_score": 0.854,
+      "skills_used": [
+        "skill_72963b0e",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 13477.29,
+      "tokens_consumed": 1528,
+      "output_quality_score": 0.3858,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T12",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10107.97,
+      "tokens_consumed": 1222,
+      "output_quality_score": 0.3858,
+      "skills_used": [
+        "skill_72963b0e",
+        "skill_77b1e038"
+      ],
+      "skills_reused": 2,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4133.88,
+      "tokens_consumed": 401,
+      "output_quality_score": 0.8369,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3100.41,
+      "tokens_consumed": 321,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_1febff01",
+        "skill_23ebc4f2"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4345.91,
+      "tokens_consumed": 379,
+      "output_quality_score": 0.7292,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3259.43,
+      "tokens_consumed": 303,
+      "output_quality_score": 0.9092,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_c1fa4d7b",
+        "skill_436b2a48"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 3680.0,
+      "tokens_consumed": 385,
+      "output_quality_score": 0.4256,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2760.0,
+      "tokens_consumed": 308,
+      "output_quality_score": 0.9804,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_c1fa4d7b",
+        "skill_436b2a48"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3933.26,
+      "tokens_consumed": 439,
+      "output_quality_score": 0.8492,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2949.94,
+      "tokens_consumed": 351,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_c1fa4d7b",
+        "skill_436b2a48"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3541.05,
+      "tokens_consumed": 381,
+      "output_quality_score": 0.8367,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T13",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2655.79,
+      "tokens_consumed": 304,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_c1fa4d7b",
+        "skill_436b2a48"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 6910.25,
+      "tokens_consumed": 584,
+      "output_quality_score": 0.2473,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 5182.69,
+      "tokens_consumed": 467,
+      "output_quality_score": 0.2473,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_c1fa4d7b",
+        "skill_436b2a48",
+        "skill_a6a1435e"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 6488.5,
+      "tokens_consumed": 613,
+      "output_quality_score": 0.4962,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 4866.37,
+      "tokens_consumed": 490,
+      "output_quality_score": 0.4962,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4818.78,
+      "tokens_consumed": 638,
+      "output_quality_score": 0.2898,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3614.08,
+      "tokens_consumed": 510,
+      "output_quality_score": 0.8899,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 7053.43,
+      "tokens_consumed": 556,
+      "output_quality_score": 0.2346,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5290.07,
+      "tokens_consumed": 444,
+      "output_quality_score": 0.8531,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6127.74,
+      "tokens_consumed": 572,
+      "output_quality_score": 0.771,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T14",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4595.8,
+      "tokens_consumed": 458,
+      "output_quality_score": 0.951,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 17628.78,
+      "tokens_consumed": 2053,
+      "output_quality_score": 0.2792,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 13221.58,
+      "tokens_consumed": 1642,
+      "output_quality_score": 0.2792,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_b6520b04"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 23242.69,
+      "tokens_consumed": 2138,
+      "output_quality_score": 0.2277,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 17432.02,
+      "tokens_consumed": 1710,
+      "output_quality_score": 0.8485,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_b6520b04"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 18213.44,
+      "tokens_consumed": 1801,
+      "output_quality_score": 0.8042,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13660.08,
+      "tokens_consumed": 1441,
+      "output_quality_score": 0.9842,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_b6520b04"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 18095.64,
+      "tokens_consumed": 2096,
+      "output_quality_score": 0.3655,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13571.73,
+      "tokens_consumed": 1677,
+      "output_quality_score": 0.9403,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_b6520b04"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 16077.36,
+      "tokens_consumed": 1830,
+      "output_quality_score": 0.8266,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T15",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12058.02,
+      "tokens_consumed": 1464,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_b6520b04"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 8145.89,
+      "tokens_consumed": 853,
+      "output_quality_score": 0.3748,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6109.42,
+      "tokens_consumed": 682,
+      "output_quality_score": 0.9465,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_40c501ed"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6807.83,
+      "tokens_consumed": 769,
+      "output_quality_score": 0.8298,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5105.87,
+      "tokens_consumed": 615,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_40c501ed"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9154.25,
+      "tokens_consumed": 863,
+      "output_quality_score": 0.263,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6865.69,
+      "tokens_consumed": 691,
+      "output_quality_score": 0.872,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_40c501ed"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6728.94,
+      "tokens_consumed": 844,
+      "output_quality_score": 0.8268,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5046.7,
+      "tokens_consumed": 675,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_40c501ed"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8386.12,
+      "tokens_consumed": 744,
+      "output_quality_score": 0.836,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T16",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6289.59,
+      "tokens_consumed": 595,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_40c501ed"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14285.79,
+      "tokens_consumed": 1274,
+      "output_quality_score": 0.4644,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10714.34,
+      "tokens_consumed": 1019,
+      "output_quality_score": 0.4644,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_cc75c1e5"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 13135.51,
+      "tokens_consumed": 1159,
+      "output_quality_score": 0.8362,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 9851.63,
+      "tokens_consumed": 927,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_cc75c1e5"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 13747.51,
+      "tokens_consumed": 1274,
+      "output_quality_score": 0.28,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10310.63,
+      "tokens_consumed": 1019,
+      "output_quality_score": 0.8834,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_cc75c1e5"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 10118.86,
+      "tokens_consumed": 1289,
+      "output_quality_score": 0.4576,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7589.14,
+      "tokens_consumed": 1031,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_cc75c1e5"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 13519.62,
+      "tokens_consumed": 1190,
+      "output_quality_score": 0.711,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T17",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10139.71,
+      "tokens_consumed": 952,
+      "output_quality_score": 0.891,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_cc75c1e5"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 13365.57,
+      "tokens_consumed": 1357,
+      "output_quality_score": 0.2579,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10024.18,
+      "tokens_consumed": 1085,
+      "output_quality_score": 0.2579,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_f4697454"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 17186.12,
+      "tokens_consumed": 1640,
+      "output_quality_score": 0.7058,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12889.59,
+      "tokens_consumed": 1312,
+      "output_quality_score": 0.8858,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_f4697454"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14398.07,
+      "tokens_consumed": 1644,
+      "output_quality_score": 0.3609,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10798.55,
+      "tokens_consumed": 1315,
+      "output_quality_score": 0.9372,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_f4697454"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 12692.05,
+      "tokens_consumed": 1641,
+      "output_quality_score": 0.2536,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 9519.04,
+      "tokens_consumed": 1312,
+      "output_quality_score": 0.2536,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_f4697454"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 13592.8,
+      "tokens_consumed": 1382,
+      "output_quality_score": 0.3304,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T18",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10194.6,
+      "tokens_consumed": 1106,
+      "output_quality_score": 0.3304,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_f4697454"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 18509.42,
+      "tokens_consumed": 2042,
+      "output_quality_score": 0.3534,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 13882.06,
+      "tokens_consumed": 1633,
+      "output_quality_score": 0.3534,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_432bb8ad"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 20612.7,
+      "tokens_consumed": 1901,
+      "output_quality_score": 0.7918,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 15459.53,
+      "tokens_consumed": 1521,
+      "output_quality_score": 0.9718,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_432bb8ad"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 23404.6,
+      "tokens_consumed": 2015,
+      "output_quality_score": 0.7939,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 17553.45,
+      "tokens_consumed": 1612,
+      "output_quality_score": 0.9739,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_432bb8ad"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 21365.03,
+      "tokens_consumed": 1945,
+      "output_quality_score": 0.221,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 16023.77,
+      "tokens_consumed": 1556,
+      "output_quality_score": 0.221,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_432bb8ad"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 18641.6,
+      "tokens_consumed": 1925,
+      "output_quality_score": 0.4544,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T19",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 13981.2,
+      "tokens_consumed": 1540,
+      "output_quality_score": 0.4544,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_432bb8ad"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5520.77,
+      "tokens_consumed": 577,
+      "output_quality_score": 0.3225,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4140.58,
+      "tokens_consumed": 461,
+      "output_quality_score": 0.9117,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_c1fa4d7b",
+        "skill_5c49ec58"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5509.57,
+      "tokens_consumed": 555,
+      "output_quality_score": 0.7341,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4132.18,
+      "tokens_consumed": 444,
+      "output_quality_score": 0.9141,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_5c49ec58"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 6425.56,
+      "tokens_consumed": 648,
+      "output_quality_score": 0.3847,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 4819.17,
+      "tokens_consumed": 518,
+      "output_quality_score": 0.3847,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_5c49ec58"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6115.05,
+      "tokens_consumed": 540,
+      "output_quality_score": 0.7074,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4586.29,
+      "tokens_consumed": 432,
+      "output_quality_score": 0.8874,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_5c49ec58"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6191.96,
+      "tokens_consumed": 618,
+      "output_quality_score": 0.743,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T20",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4643.97,
+      "tokens_consumed": 494,
+      "output_quality_score": 0.923,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_5c49ec58"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5312.88,
+      "tokens_consumed": 596,
+      "output_quality_score": 0.8302,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3984.66,
+      "tokens_consumed": 477,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_2a5c69fa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5207.26,
+      "tokens_consumed": 550,
+      "output_quality_score": 0.3546,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3905.44,
+      "tokens_consumed": 440,
+      "output_quality_score": 0.9331,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_2a5c69fa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5604.45,
+      "tokens_consumed": 638,
+      "output_quality_score": 0.8002,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4203.34,
+      "tokens_consumed": 510,
+      "output_quality_score": 0.9802,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_2a5c69fa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5339.14,
+      "tokens_consumed": 563,
+      "output_quality_score": 0.2073,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4004.35,
+      "tokens_consumed": 451,
+      "output_quality_score": 0.8349,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_2a5c69fa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5940.33,
+      "tokens_consumed": 641,
+      "output_quality_score": 0.6646,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T21",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4455.25,
+      "tokens_consumed": 513,
+      "output_quality_score": 0.8446,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_2a5c69fa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10519.06,
+      "tokens_consumed": 938,
+      "output_quality_score": 0.7893,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7889.3,
+      "tokens_consumed": 751,
+      "output_quality_score": 0.9693,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_44be7daa",
+        "skill_77b1e038",
+        "skill_238e19ee"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8975.94,
+      "tokens_consumed": 1031,
+      "output_quality_score": 0.6511,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6731.95,
+      "tokens_consumed": 824,
+      "output_quality_score": 0.8311,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 11080.18,
+      "tokens_consumed": 921,
+      "output_quality_score": 0.3275,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8310.14,
+      "tokens_consumed": 737,
+      "output_quality_score": 0.915,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 11831.86,
+      "tokens_consumed": 1003,
+      "output_quality_score": 0.66,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8873.9,
+      "tokens_consumed": 802,
+      "output_quality_score": 0.84,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 11393.35,
+      "tokens_consumed": 991,
+      "output_quality_score": 0.8103,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T22",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8545.01,
+      "tokens_consumed": 793,
+      "output_quality_score": 0.9903,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 23903.14,
+      "tokens_consumed": 2038,
+      "output_quality_score": 0.485,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 17927.35,
+      "tokens_consumed": 1630,
+      "output_quality_score": 0.485,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_56281109"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20901.22,
+      "tokens_consumed": 2087,
+      "output_quality_score": 0.3514,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15675.91,
+      "tokens_consumed": 1670,
+      "output_quality_score": 0.3514,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_56281109"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20382.98,
+      "tokens_consumed": 2158,
+      "output_quality_score": 0.4231,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15287.23,
+      "tokens_consumed": 1727,
+      "output_quality_score": 0.4231,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_56281109"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 18073.53,
+      "tokens_consumed": 1898,
+      "output_quality_score": 0.3913,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13555.15,
+      "tokens_consumed": 1519,
+      "output_quality_score": 0.9575,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_56281109"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20170.4,
+      "tokens_consumed": 2050,
+      "output_quality_score": 0.2824,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T23",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15127.8,
+      "tokens_consumed": 1640,
+      "output_quality_score": 0.2824,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_56281109"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10971.5,
+      "tokens_consumed": 1145,
+      "output_quality_score": 0.7139,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8228.62,
+      "tokens_consumed": 916,
+      "output_quality_score": 0.8939,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_b3546dc9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10264.2,
+      "tokens_consumed": 1135,
+      "output_quality_score": 0.7888,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7698.15,
+      "tokens_consumed": 908,
+      "output_quality_score": 0.9688,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_b3546dc9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9908.3,
+      "tokens_consumed": 1177,
+      "output_quality_score": 0.3628,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7431.22,
+      "tokens_consumed": 942,
+      "output_quality_score": 0.9385,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_b3546dc9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10592.81,
+      "tokens_consumed": 1180,
+      "output_quality_score": 0.831,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7944.6,
+      "tokens_consumed": 944,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_b3546dc9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 12938.51,
+      "tokens_consumed": 1285,
+      "output_quality_score": 0.4297,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T24",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 9703.88,
+      "tokens_consumed": 1028,
+      "output_quality_score": 0.9831,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_b3546dc9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6418.87,
+      "tokens_consumed": 776,
+      "output_quality_score": 0.8007,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4814.15,
+      "tokens_consumed": 621,
+      "output_quality_score": 0.9807,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_44be7daa",
+        "skill_a124397d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9450.98,
+      "tokens_consumed": 787,
+      "output_quality_score": 0.4243,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7088.23,
+      "tokens_consumed": 629,
+      "output_quality_score": 0.9795,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8330.41,
+      "tokens_consumed": 755,
+      "output_quality_score": 0.6939,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6247.81,
+      "tokens_consumed": 604,
+      "output_quality_score": 0.8739,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6492.88,
+      "tokens_consumed": 773,
+      "output_quality_score": 0.7858,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4869.66,
+      "tokens_consumed": 619,
+      "output_quality_score": 0.9658,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6928.14,
+      "tokens_consumed": 794,
+      "output_quality_score": 0.6755,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T25",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5196.11,
+      "tokens_consumed": 635,
+      "output_quality_score": 0.8555,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 16215.73,
+      "tokens_consumed": 1957,
+      "output_quality_score": 0.3693,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 12161.8,
+      "tokens_consumed": 1566,
+      "output_quality_score": 0.3693,
+      "skills_used": [
+        "skill_37ce6186"
+      ],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 21142.0,
+      "tokens_consumed": 1854,
+      "output_quality_score": 0.7423,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 15856.5,
+      "tokens_consumed": 1483,
+      "output_quality_score": 0.9223,
+      "skills_used": [
+        "skill_37ce6186"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 19032.83,
+      "tokens_consumed": 1884,
+      "output_quality_score": 0.7154,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 14274.62,
+      "tokens_consumed": 1507,
+      "output_quality_score": 0.8954,
+      "skills_used": [
+        "skill_37ce6186"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 19033.01,
+      "tokens_consumed": 2100,
+      "output_quality_score": 0.4496,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 14274.76,
+      "tokens_consumed": 1680,
+      "output_quality_score": 0.4496,
+      "skills_used": [
+        "skill_37ce6186"
+      ],
+      "skills_reused": 1,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 16655.25,
+      "tokens_consumed": 1807,
+      "output_quality_score": 0.7579,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T26",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12491.44,
+      "tokens_consumed": 1446,
+      "output_quality_score": 0.9379,
+      "skills_used": [
+        "skill_37ce6186"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 23499.6,
+      "tokens_consumed": 2575,
+      "output_quality_score": 0.4344,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 17624.7,
+      "tokens_consumed": 2060,
+      "output_quality_score": 0.4344,
+      "skills_used": [
+        "skill_a6a1435e",
+        "skill_37ce6186",
+        "skill_a66a0683",
+        "skill_b5e39a3c"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 27542.33,
+      "tokens_consumed": 2724,
+      "output_quality_score": 0.2598,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 20656.75,
+      "tokens_consumed": 2179,
+      "output_quality_score": 0.2598,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_a6a1435e",
+        "skill_37ce6186"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 21523.82,
+      "tokens_consumed": 2313,
+      "output_quality_score": 0.7839,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 16142.87,
+      "tokens_consumed": 1850,
+      "output_quality_score": 0.9639,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_a6a1435e",
+        "skill_37ce6186"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 22179.65,
+      "tokens_consumed": 2599,
+      "output_quality_score": 0.4301,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 16634.73,
+      "tokens_consumed": 2079,
+      "output_quality_score": 0.9834,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_a6a1435e",
+        "skill_37ce6186"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 26072.47,
+      "tokens_consumed": 2623,
+      "output_quality_score": 0.6729,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T27",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 19554.36,
+      "tokens_consumed": 2099,
+      "output_quality_score": 0.8529,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_a6a1435e",
+        "skill_37ce6186"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14230.66,
+      "tokens_consumed": 1105,
+      "output_quality_score": 0.2077,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10672.99,
+      "tokens_consumed": 884,
+      "output_quality_score": 0.2077,
+      "skills_used": [
+        "skill_78a256aa"
+      ],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 12851.27,
+      "tokens_consumed": 1309,
+      "output_quality_score": 0.7293,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 9638.45,
+      "tokens_consumed": 1047,
+      "output_quality_score": 0.9093,
+      "skills_used": [
+        "skill_78a256aa"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9964.78,
+      "tokens_consumed": 1245,
+      "output_quality_score": 0.3882,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7473.59,
+      "tokens_consumed": 996,
+      "output_quality_score": 0.9554,
+      "skills_used": [
+        "skill_78a256aa"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 13307.91,
+      "tokens_consumed": 1284,
+      "output_quality_score": 0.7701,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 9980.93,
+      "tokens_consumed": 1027,
+      "output_quality_score": 0.9501,
+      "skills_used": [
+        "skill_78a256aa"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 14322.45,
+      "tokens_consumed": 1267,
+      "output_quality_score": 0.7194,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T28",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10741.84,
+      "tokens_consumed": 1014,
+      "output_quality_score": 0.8994,
+      "skills_used": [
+        "skill_78a256aa"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 17068.11,
+      "tokens_consumed": 1802,
+      "output_quality_score": 0.7182,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12801.08,
+      "tokens_consumed": 1441,
+      "output_quality_score": 0.8982,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_1febff01",
+        "skill_37ce6186",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20320.78,
+      "tokens_consumed": 1657,
+      "output_quality_score": 0.4882,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15240.59,
+      "tokens_consumed": 1326,
+      "output_quality_score": 0.4882,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_1febff01",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20366.69,
+      "tokens_consumed": 1874,
+      "output_quality_score": 0.3306,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 15275.02,
+      "tokens_consumed": 1499,
+      "output_quality_score": 0.9171,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_1febff01",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 21351.41,
+      "tokens_consumed": 1717,
+      "output_quality_score": 0.4425,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 16013.56,
+      "tokens_consumed": 1373,
+      "output_quality_score": 0.9916,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_1febff01",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 17881.18,
+      "tokens_consumed": 1776,
+      "output_quality_score": 0.4193,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T29",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13410.89,
+      "tokens_consumed": 1421,
+      "output_quality_score": 0.9762,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_1febff01",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 34220.56,
+      "tokens_consumed": 3198,
+      "output_quality_score": 0.6673,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 25665.42,
+      "tokens_consumed": 2558,
+      "output_quality_score": 0.8473,
+      "skills_used": [
+        "skill_b5e39a3c",
+        "skill_5dbc6d5a",
+        "skill_37ce6186",
+        "skill_0c292140"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 26926.36,
+      "tokens_consumed": 2978,
+      "output_quality_score": 0.3831,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 20194.77,
+      "tokens_consumed": 2383,
+      "output_quality_score": 0.3831,
+      "skills_used": [
+        "skill_0c292140",
+        "skill_b5e39a3c",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 24344.4,
+      "tokens_consumed": 3210,
+      "output_quality_score": 0.6864,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 18258.3,
+      "tokens_consumed": 2568,
+      "output_quality_score": 0.8664,
+      "skills_used": [
+        "skill_0c292140",
+        "skill_b5e39a3c",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 33573.99,
+      "tokens_consumed": 2904,
+      "output_quality_score": 0.8261,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 25180.49,
+      "tokens_consumed": 2323,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_0c292140",
+        "skill_b5e39a3c",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 27315.22,
+      "tokens_consumed": 2706,
+      "output_quality_score": 0.4844,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T30",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 20486.42,
+      "tokens_consumed": 2164,
+      "output_quality_score": 0.4844,
+      "skills_used": [
+        "skill_0c292140",
+        "skill_b5e39a3c",
+        "skill_5dbc6d5a"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5440.15,
+      "tokens_consumed": 498,
+      "output_quality_score": 0.8016,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4080.11,
+      "tokens_consumed": 399,
+      "output_quality_score": 0.9016,
+      "skills_used": [
+        "skill_25ddda05"
+      ],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5291.81,
+      "tokens_consumed": 499,
+      "output_quality_score": 0.4379,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3968.85,
+      "tokens_consumed": 399,
+      "output_quality_score": 0.9886,
+      "skills_used": [
+        "skill_25ddda05"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4443.19,
+      "tokens_consumed": 519,
+      "output_quality_score": 0.7112,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3332.39,
+      "tokens_consumed": 415,
+      "output_quality_score": 0.8912,
+      "skills_used": [
+        "skill_25ddda05"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4946.52,
+      "tokens_consumed": 503,
+      "output_quality_score": 0.7351,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3709.89,
+      "tokens_consumed": 402,
+      "output_quality_score": 0.9151,
+      "skills_used": [
+        "skill_25ddda05"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4661.58,
+      "tokens_consumed": 520,
+      "output_quality_score": 0.2813,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T31",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3496.19,
+      "tokens_consumed": 416,
+      "output_quality_score": 0.8842,
+      "skills_used": [
+        "skill_25ddda05"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6786.1,
+      "tokens_consumed": 750,
+      "output_quality_score": 0.6739,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5089.57,
+      "tokens_consumed": 600,
+      "output_quality_score": 0.8539,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8839.01,
+      "tokens_consumed": 749,
+      "output_quality_score": 0.6933,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6629.26,
+      "tokens_consumed": 599,
+      "output_quality_score": 0.8733,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8718.67,
+      "tokens_consumed": 876,
+      "output_quality_score": 0.7549,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6539.0,
+      "tokens_consumed": 701,
+      "output_quality_score": 0.9349,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6721.68,
+      "tokens_consumed": 751,
+      "output_quality_score": 0.6955,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5041.26,
+      "tokens_consumed": 600,
+      "output_quality_score": 0.8755,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6445.27,
+      "tokens_consumed": 805,
+      "output_quality_score": 0.7049,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T32",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4833.96,
+      "tokens_consumed": 644,
+      "output_quality_score": 0.8849,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 15320.15,
+      "tokens_consumed": 1559,
+      "output_quality_score": 0.2379,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 11490.12,
+      "tokens_consumed": 1247,
+      "output_quality_score": 0.2379,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_25ddda05",
+        "skill_bdc4faf9",
+        "skill_7af8a37d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14945.27,
+      "tokens_consumed": 1611,
+      "output_quality_score": 0.3722,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 11208.95,
+      "tokens_consumed": 1289,
+      "output_quality_score": 0.3722,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_25ddda05",
+        "skill_bdc4faf9",
+        "skill_7af8a37d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14642.81,
+      "tokens_consumed": 1405,
+      "output_quality_score": 0.2154,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10982.11,
+      "tokens_consumed": 1124,
+      "output_quality_score": 0.8403,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_25ddda05",
+        "skill_bdc4faf9",
+        "skill_7af8a37d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14866.38,
+      "tokens_consumed": 1596,
+      "output_quality_score": 0.3202,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 11149.78,
+      "tokens_consumed": 1277,
+      "output_quality_score": 0.3202,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_25ddda05",
+        "skill_bdc4faf9",
+        "skill_7af8a37d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 15776.67,
+      "tokens_consumed": 1366,
+      "output_quality_score": 0.6798,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T33",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 11832.51,
+      "tokens_consumed": 1092,
+      "output_quality_score": 0.8598,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_25ddda05",
+        "skill_bdc4faf9",
+        "skill_7af8a37d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5529.21,
+      "tokens_consumed": 659,
+      "output_quality_score": 0.2355,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4146.9,
+      "tokens_consumed": 527,
+      "output_quality_score": 0.8537,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_bdc4faf9",
+        "skill_7af8a37d",
+        "skill_e9eb6ffe"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 6255.16,
+      "tokens_consumed": 634,
+      "output_quality_score": 0.2677,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 4691.37,
+      "tokens_consumed": 507,
+      "output_quality_score": 0.2677,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5881.23,
+      "tokens_consumed": 593,
+      "output_quality_score": 0.822,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4410.93,
+      "tokens_consumed": 474,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5532.91,
+      "tokens_consumed": 614,
+      "output_quality_score": 0.3829,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 4149.68,
+      "tokens_consumed": 491,
+      "output_quality_score": 0.3829,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 7074.22,
+      "tokens_consumed": 564,
+      "output_quality_score": 0.2633,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T34",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5305.66,
+      "tokens_consumed": 451,
+      "output_quality_score": 0.8722,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 3451.29,
+      "tokens_consumed": 373,
+      "output_quality_score": 0.2225,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2588.47,
+      "tokens_consumed": 299,
+      "output_quality_score": 0.845,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9",
+        "skill_565f5534"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3920.81,
+      "tokens_consumed": 407,
+      "output_quality_score": 0.7083,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2940.6,
+      "tokens_consumed": 326,
+      "output_quality_score": 0.8883,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9",
+        "skill_565f5534"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4331.13,
+      "tokens_consumed": 416,
+      "output_quality_score": 0.7408,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3248.35,
+      "tokens_consumed": 332,
+      "output_quality_score": 0.9208,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9",
+        "skill_565f5534"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4678.26,
+      "tokens_consumed": 423,
+      "output_quality_score": 0.3875,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3508.69,
+      "tokens_consumed": 338,
+      "output_quality_score": 0.955,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9",
+        "skill_565f5534"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4693.87,
+      "tokens_consumed": 394,
+      "output_quality_score": 0.3634,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T35",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3520.4,
+      "tokens_consumed": 315,
+      "output_quality_score": 0.9389,
+      "skills_used": [
+        "skill_25ddda05",
+        "skill_e9eb6ffe",
+        "skill_bdc4faf9",
+        "skill_565f5534"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4653.46,
+      "tokens_consumed": 426,
+      "output_quality_score": 0.2214,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3490.09,
+      "tokens_consumed": 340,
+      "output_quality_score": 0.8443,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3692.18,
+      "tokens_consumed": 419,
+      "output_quality_score": 0.7638,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2769.13,
+      "tokens_consumed": 335,
+      "output_quality_score": 0.9438,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3398.97,
+      "tokens_consumed": 415,
+      "output_quality_score": 0.7899,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2549.22,
+      "tokens_consumed": 332,
+      "output_quality_score": 0.9699,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4000.76,
+      "tokens_consumed": 399,
+      "output_quality_score": 0.2241,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 3000.57,
+      "tokens_consumed": 319,
+      "output_quality_score": 0.2241,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 3891.25,
+      "tokens_consumed": 385,
+      "output_quality_score": 0.7001,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T36",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 2918.43,
+      "tokens_consumed": 308,
+      "output_quality_score": 0.8801,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 14217.17,
+      "tokens_consumed": 1280,
+      "output_quality_score": 0.765,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10662.88,
+      "tokens_consumed": 1024,
+      "output_quality_score": 0.945,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_93d2419d",
+        "skill_f095854f"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14397.95,
+      "tokens_consumed": 1241,
+      "output_quality_score": 0.2809,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10798.46,
+      "tokens_consumed": 993,
+      "output_quality_score": 0.2809,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_f095854f",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 13230.09,
+      "tokens_consumed": 1192,
+      "output_quality_score": 0.7803,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 9922.57,
+      "tokens_consumed": 954,
+      "output_quality_score": 0.9603,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_f095854f",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 10471.15,
+      "tokens_consumed": 1220,
+      "output_quality_score": 0.3904,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 7853.36,
+      "tokens_consumed": 976,
+      "output_quality_score": 0.3904,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_f095854f",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10037.96,
+      "tokens_consumed": 1163,
+      "output_quality_score": 0.7167,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T37",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7528.47,
+      "tokens_consumed": 930,
+      "output_quality_score": 0.8967,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_f095854f",
+        "skill_93d2419d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 28577.33,
+      "tokens_consumed": 2414,
+      "output_quality_score": 0.4081,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 21433.0,
+      "tokens_consumed": 1931,
+      "output_quality_score": 0.4081,
+      "skills_used": [
+        "skill_78a256aa",
+        "skill_f095854f",
+        "skill_37ce6186",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 29451.94,
+      "tokens_consumed": 2656,
+      "output_quality_score": 0.76,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 22088.95,
+      "tokens_consumed": 2125,
+      "output_quality_score": 0.94,
+      "skills_used": [
+        "skill_37ce6186",
+        "skill_78a256aa",
+        "skill_93d2419d",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 23145.17,
+      "tokens_consumed": 2411,
+      "output_quality_score": 0.844,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 17358.88,
+      "tokens_consumed": 1929,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_37ce6186",
+        "skill_78a256aa",
+        "skill_93d2419d",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 25145.96,
+      "tokens_consumed": 2744,
+      "output_quality_score": 0.7815,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 18859.47,
+      "tokens_consumed": 2195,
+      "output_quality_score": 0.9615,
+      "skills_used": [
+        "skill_37ce6186",
+        "skill_78a256aa",
+        "skill_93d2419d",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 24132.48,
+      "tokens_consumed": 2343,
+      "output_quality_score": 0.3085,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T38",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 18099.36,
+      "tokens_consumed": 1875,
+      "output_quality_score": 0.9024,
+      "skills_used": [
+        "skill_37ce6186",
+        "skill_78a256aa",
+        "skill_93d2419d",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 8401.31,
+      "tokens_consumed": 841,
+      "output_quality_score": 0.2611,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6300.98,
+      "tokens_consumed": 673,
+      "output_quality_score": 0.8707,
+      "skills_used": [
+        "skill_f095854f",
+        "skill_356b5f4d",
+        "skill_93d2419d",
+        "skill_18b43eca"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9368.55,
+      "tokens_consumed": 790,
+      "output_quality_score": 0.7897,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7026.41,
+      "tokens_consumed": 632,
+      "output_quality_score": 0.9697,
+      "skills_used": [
+        "skill_f095854f",
+        "skill_18b43eca",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9514.07,
+      "tokens_consumed": 817,
+      "output_quality_score": 0.6979,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7135.55,
+      "tokens_consumed": 653,
+      "output_quality_score": 0.8779,
+      "skills_used": [
+        "skill_f095854f",
+        "skill_18b43eca",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8162.68,
+      "tokens_consumed": 808,
+      "output_quality_score": 0.6686,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6122.01,
+      "tokens_consumed": 646,
+      "output_quality_score": 0.8486,
+      "skills_used": [
+        "skill_f095854f",
+        "skill_18b43eca",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9321.38,
+      "tokens_consumed": 793,
+      "output_quality_score": 0.2352,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T39",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 6991.03,
+      "tokens_consumed": 635,
+      "output_quality_score": 0.2352,
+      "skills_used": [
+        "skill_f095854f",
+        "skill_18b43eca",
+        "skill_356b5f4d"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9993.5,
+      "tokens_consumed": 1043,
+      "output_quality_score": 0.3527,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 7495.13,
+      "tokens_consumed": 834,
+      "output_quality_score": 0.3527,
+      "skills_used": [
+        "skill_f095854f",
+        "skill_18b43eca",
+        "skill_356b5f4d",
+        "skill_1211fb90"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 11338.9,
+      "tokens_consumed": 1096,
+      "output_quality_score": 0.6987,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8504.17,
+      "tokens_consumed": 876,
+      "output_quality_score": 0.8787,
+      "skills_used": [
+        "skill_93d2419d",
+        "skill_1211fb90",
+        "skill_f095854f"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9534.34,
+      "tokens_consumed": 1084,
+      "output_quality_score": 0.7516,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7150.76,
+      "tokens_consumed": 867,
+      "output_quality_score": 0.9316,
+      "skills_used": [
+        "skill_93d2419d",
+        "skill_1211fb90",
+        "skill_f095854f"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 11456.11,
+      "tokens_consumed": 955,
+      "output_quality_score": 0.437,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 8592.08,
+      "tokens_consumed": 764,
+      "output_quality_score": 0.437,
+      "skills_used": [
+        "skill_93d2419d",
+        "skill_1211fb90",
+        "skill_f095854f"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 11736.99,
+      "tokens_consumed": 1001,
+      "output_quality_score": 0.8141,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T40",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8802.75,
+      "tokens_consumed": 801,
+      "output_quality_score": 0.9941,
+      "skills_used": [
+        "skill_93d2419d",
+        "skill_1211fb90",
+        "skill_f095854f"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5516.53,
+      "tokens_consumed": 610,
+      "output_quality_score": 0.8498,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4137.4,
+      "tokens_consumed": 488,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5156.63,
+      "tokens_consumed": 604,
+      "output_quality_score": 0.719,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3867.47,
+      "tokens_consumed": 483,
+      "output_quality_score": 0.899,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6104.23,
+      "tokens_consumed": 594,
+      "output_quality_score": 0.7144,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4578.17,
+      "tokens_consumed": 475,
+      "output_quality_score": 0.8944,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6474.0,
+      "tokens_consumed": 608,
+      "output_quality_score": 0.6967,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4855.5,
+      "tokens_consumed": 486,
+      "output_quality_score": 0.8767,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 4904.75,
+      "tokens_consumed": 629,
+      "output_quality_score": 0.4116,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T41",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3678.57,
+      "tokens_consumed": 503,
+      "output_quality_score": 0.971,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 11453.18,
+      "tokens_consumed": 1239,
+      "output_quality_score": 0.4462,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 8589.88,
+      "tokens_consumed": 991,
+      "output_quality_score": 0.4462,
+      "skills_used": [
+        "skill_72963b0e",
+        "skill_b81007ce",
+        "skill_098af2cb"
+      ],
+      "skills_reused": 2,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 11977.58,
+      "tokens_consumed": 1088,
+      "output_quality_score": 0.3507,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 8983.18,
+      "tokens_consumed": 871,
+      "output_quality_score": 0.3507,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_72963b0e",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 13774.56,
+      "tokens_consumed": 1289,
+      "output_quality_score": 0.3321,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10330.92,
+      "tokens_consumed": 1031,
+      "output_quality_score": 0.9181,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_72963b0e",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 11793.25,
+      "tokens_consumed": 1253,
+      "output_quality_score": 0.732,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8844.94,
+      "tokens_consumed": 1002,
+      "output_quality_score": 0.912,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_72963b0e",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 10340.93,
+      "tokens_consumed": 1192,
+      "output_quality_score": 0.4908,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T42",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7755.7,
+      "tokens_consumed": 954,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_72963b0e",
+        "skill_b81007ce"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 21541.64,
+      "tokens_consumed": 2059,
+      "output_quality_score": 0.8204,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 16156.23,
+      "tokens_consumed": 1647,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_b81007ce",
+        "skill_7350aa94"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 22874.74,
+      "tokens_consumed": 1952,
+      "output_quality_score": 0.295,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 17156.05,
+      "tokens_consumed": 1561,
+      "output_quality_score": 0.295,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_b81007ce",
+        "skill_7350aa94"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 22075.21,
+      "tokens_consumed": 2148,
+      "output_quality_score": 0.2108,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 16556.41,
+      "tokens_consumed": 1719,
+      "output_quality_score": 0.2108,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_b81007ce",
+        "skill_7350aa94"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 21049.29,
+      "tokens_consumed": 2168,
+      "output_quality_score": 0.8495,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 15786.97,
+      "tokens_consumed": 1734,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_b81007ce",
+        "skill_7350aa94"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 19471.77,
+      "tokens_consumed": 1839,
+      "output_quality_score": 0.3901,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T43",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 14603.83,
+      "tokens_consumed": 1471,
+      "output_quality_score": 0.3901,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_b81007ce",
+        "skill_7350aa94"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 14662.07,
+      "tokens_consumed": 1558,
+      "output_quality_score": 0.471,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 10996.55,
+      "tokens_consumed": 1246,
+      "output_quality_score": 0.471,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_7350aa94",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 16776.86,
+      "tokens_consumed": 1438,
+      "output_quality_score": 0.725,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 12582.65,
+      "tokens_consumed": 1150,
+      "output_quality_score": 0.905,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_7350aa94",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 15187.0,
+      "tokens_consumed": 1519,
+      "output_quality_score": 0.8085,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 11390.25,
+      "tokens_consumed": 1215,
+      "output_quality_score": 0.9885,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_7350aa94",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 12473.81,
+      "tokens_consumed": 1611,
+      "output_quality_score": 0.7739,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 9355.36,
+      "tokens_consumed": 1289,
+      "output_quality_score": 0.9539,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_7350aa94",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 17476.97,
+      "tokens_consumed": 1392,
+      "output_quality_score": 0.7422,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T44",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13107.73,
+      "tokens_consumed": 1114,
+      "output_quality_score": 0.9222,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_a6a1435e",
+        "skill_7350aa94",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4510.65,
+      "tokens_consumed": 450,
+      "output_quality_score": 0.8109,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3382.99,
+      "tokens_consumed": 360,
+      "output_quality_score": 0.9909,
+      "skills_used": [
+        "skill_098af2cb",
+        "skill_e3c4c14a",
+        "skill_b81007ce",
+        "skill_7114cfe4"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5355.22,
+      "tokens_consumed": 465,
+      "output_quality_score": 0.3325,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 4016.42,
+      "tokens_consumed": 372,
+      "output_quality_score": 0.3325,
+      "skills_used": [
+        "skill_7350aa94",
+        "skill_7114cfe4",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5175.14,
+      "tokens_consumed": 513,
+      "output_quality_score": 0.7349,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3881.36,
+      "tokens_consumed": 411,
+      "output_quality_score": 0.9149,
+      "skills_used": [
+        "skill_7350aa94",
+        "skill_7114cfe4",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 5690.61,
+      "tokens_consumed": 469,
+      "output_quality_score": 0.7269,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4267.96,
+      "tokens_consumed": 375,
+      "output_quality_score": 0.9069,
+      "skills_used": [
+        "skill_7350aa94",
+        "skill_7114cfe4",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 4474.41,
+      "tokens_consumed": 507,
+      "output_quality_score": 0.765,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T45",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 3355.81,
+      "tokens_consumed": 405,
+      "output_quality_score": 0.945,
+      "skills_used": [
+        "skill_7350aa94",
+        "skill_7114cfe4",
+        "skill_e3c4c14a"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 5508.55,
+      "tokens_consumed": 657,
+      "output_quality_score": 0.3975,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 4131.42,
+      "tokens_consumed": 525,
+      "output_quality_score": 0.3975,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_fbaeaec6"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6158.23,
+      "tokens_consumed": 622,
+      "output_quality_score": 0.7989,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4618.67,
+      "tokens_consumed": 497,
+      "output_quality_score": 0.9789,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_fbaeaec6"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6255.38,
+      "tokens_consumed": 599,
+      "output_quality_score": 0.8308,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4691.53,
+      "tokens_consumed": 479,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_fbaeaec6"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6717.26,
+      "tokens_consumed": 612,
+      "output_quality_score": 0.7205,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5037.95,
+      "tokens_consumed": 490,
+      "output_quality_score": 0.9005,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_fbaeaec6"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6290.14,
+      "tokens_consumed": 621,
+      "output_quality_score": 0.7942,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T46",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4717.6,
+      "tokens_consumed": 497,
+      "output_quality_score": 0.9742,
+      "skills_used": [
+        "skill_23ebc4f2",
+        "skill_238e19ee",
+        "skill_a124397d",
+        "skill_fbaeaec6"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 13624.02,
+      "tokens_consumed": 1230,
+      "output_quality_score": 0.471,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10218.01,
+      "tokens_consumed": 984,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 11082.88,
+      "tokens_consumed": 1185,
+      "output_quality_score": 0.3739,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 8312.16,
+      "tokens_consumed": 948,
+      "output_quality_score": 0.9459,
+      "skills_used": [
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 10032.64,
+      "tokens_consumed": 1150,
+      "output_quality_score": 0.4242,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7524.48,
+      "tokens_consumed": 920,
+      "output_quality_score": 0.9795,
+      "skills_used": [
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 10234.37,
+      "tokens_consumed": 1209,
+      "output_quality_score": 0.8443,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7675.78,
+      "tokens_consumed": 967,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 13984.74,
+      "tokens_consumed": 1279,
+      "output_quality_score": 0.7014,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T47",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 10488.55,
+      "tokens_consumed": 1023,
+      "output_quality_score": 0.8814,
+      "skills_used": [
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 2,
+      "error_message": null
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 17869.3,
+      "tokens_consumed": 1910,
+      "output_quality_score": 0.424,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 13401.98,
+      "tokens_consumed": 1528,
+      "output_quality_score": 0.424,
+      "skills_used": [
+        "skill_b3546dc9",
+        "skill_fbaeaec6",
+        "skill_c7f42903",
+        "skill_12b2eede"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 15229.22,
+      "tokens_consumed": 1966,
+      "output_quality_score": 0.6782,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 11421.92,
+      "tokens_consumed": 1573,
+      "output_quality_score": 0.8582,
+      "skills_used": [
+        "skill_b3546dc9",
+        "skill_12b2eede",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20593.01,
+      "tokens_consumed": 1880,
+      "output_quality_score": 0.494,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15444.76,
+      "tokens_consumed": 1504,
+      "output_quality_score": 0.494,
+      "skills_used": [
+        "skill_b3546dc9",
+        "skill_12b2eede",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 20193.03,
+      "tokens_consumed": 1751,
+      "output_quality_score": 0.4372,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 15144.77,
+      "tokens_consumed": 1401,
+      "output_quality_score": 0.4372,
+      "skills_used": [
+        "skill_b3546dc9",
+        "skill_12b2eede",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 18263.32,
+      "tokens_consumed": 1783,
+      "output_quality_score": 0.7846,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T48",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 13697.49,
+      "tokens_consumed": 1426,
+      "output_quality_score": 0.9646,
+      "skills_used": [
+        "skill_b3546dc9",
+        "skill_12b2eede",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 8270.59,
+      "tokens_consumed": 851,
+      "output_quality_score": 0.4821,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 6202.94,
+      "tokens_consumed": 681,
+      "output_quality_score": 0.4821,
+      "skills_used": [
+        "skill_45c006fc"
+      ],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 7148.23,
+      "tokens_consumed": 724,
+      "output_quality_score": 0.8268,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5361.17,
+      "tokens_consumed": 579,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_45c006fc"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9328.82,
+      "tokens_consumed": 755,
+      "output_quality_score": 0.6626,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6996.61,
+      "tokens_consumed": 604,
+      "output_quality_score": 0.8426,
+      "skills_used": [
+        "skill_45c006fc"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 9310.04,
+      "tokens_consumed": 768,
+      "output_quality_score": 0.3225,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "phoenix_evo",
+      "success": false,
+      "execution_time_ms": 6982.53,
+      "tokens_consumed": 614,
+      "output_quality_score": 0.3225,
+      "skills_used": [
+        "skill_45c006fc"
+      ],
+      "skills_reused": 1,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 9428.04,
+      "tokens_consumed": 768,
+      "output_quality_score": 0.7485,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T49",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 7071.03,
+      "tokens_consumed": 614,
+      "output_quality_score": 0.9285,
+      "skills_used": [
+        "skill_45c006fc"
+      ],
+      "skills_reused": 1,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 8084.33,
+      "tokens_consumed": 648,
+      "output_quality_score": 0.7407,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 6063.24,
+      "tokens_consumed": 519,
+      "output_quality_score": 0.9207,
+      "skills_used": [
+        "skill_fbaeaec6",
+        "skill_c7f42903",
+        "skill_12b2eede",
+        "skill_7f008b3c"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 7680.79,
+      "tokens_consumed": 762,
+      "output_quality_score": 0.7338,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5760.59,
+      "tokens_consumed": 609,
+      "output_quality_score": 0.9138,
+      "skills_used": [
+        "skill_7f008b3c",
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "baseline",
+      "success": false,
+      "execution_time_ms": 6032.66,
+      "tokens_consumed": 688,
+      "output_quality_score": 0.2297,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": "Task execution failed"
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 4524.5,
+      "tokens_consumed": 550,
+      "output_quality_score": 0.8498,
+      "skills_used": [
+        "skill_7f008b3c",
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6742.72,
+      "tokens_consumed": 763,
+      "output_quality_score": 0.6565,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5057.04,
+      "tokens_consumed": 610,
+      "output_quality_score": 0.8365,
+      "skills_used": [
+        "skill_7f008b3c",
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "baseline",
+      "success": true,
+      "execution_time_ms": 6841.47,
+      "tokens_consumed": 763,
+      "output_quality_score": 0.8211,
+      "skills_used": [],
+      "skills_reused": 0,
+      "error_message": null
+    },
+    {
+      "task_id": "T50",
+      "agent_type": "phoenix_evo",
+      "success": true,
+      "execution_time_ms": 5131.1,
+      "tokens_consumed": 610,
+      "output_quality_score": 1.0,
+      "skills_used": [
+        "skill_7f008b3c",
+        "skill_fbaeaec6",
+        "skill_c7f42903"
+      ],
+      "skills_reused": 3,
+      "error_message": null
+    }
+  ]
+}

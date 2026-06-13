@@ -1,0 +1,17 @@
+{
+  "task": "Task 2: 函数签名错误修复",
+  "timestamp": "2026-05-10T15:45:45.565290",
+  "task_id": "task2_20260510_154545",
+  "retrieved_skills": [
+    "signature_first_debugging",
+    "demo_repair_workflow",
+    "error_message_as_contract_signal"
+  ],
+  "expected_hits": [
+    "signature_first_debugging",
+    "error_message_as_contract_signal"
+  ],
+  "fix_success": true,
+  "advisory_injected": true,
+  "outcome_written": true
+}
