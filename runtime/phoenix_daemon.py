@@ -17,11 +17,38 @@ Usage:
 from __future__ import annotations
 
 import logging
+import os
 import threading
 import time
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+
+# ── FastAPI application for health checks and API ──────────────────────────
+
+def _create_app() -> "FastAPI":
+    """Create the FastAPI application (lazy to avoid import at module level)."""
+    from fastapi import FastAPI
+
+    app = FastAPI(title="Phoenix-Evo", version="1.1.0")
+
+    @app.get("/health")
+    async def health() -> dict[str, str]:
+        return {"status": "ok"}
+
+    return app
+
+
+app = None
+
+
+def get_app() -> "FastAPI":
+    """Return the singleton FastAPI app instance."""
+    global app
+    if app is None:
+        app = _create_app()
+    return app
 
 
 class PhoenixRuntimeDaemon:
@@ -233,8 +260,11 @@ if __name__ == "__main__":
     )
     daemon.start()
 
-    try:
-        while daemon.is_running():
-            time.sleep(10)
-    except KeyboardInterrupt:
-        daemon.stop()
+    # Start FastAPI server for health checks and API
+    host = os.environ.get("PHOENIX_HOST", "0.0.0.0")
+    port = int(os.environ.get("PHOENIX_PORT", "8000"))
+
+    import uvicorn
+
+    logger.info(f"Starting FastAPI server on {host}:{port}")
+    uvicorn.run(get_app(), host=host, port=port, log_level="info")

@@ -98,9 +98,20 @@ jobs:
       - name: Test container startup
         run: |
           docker run -d --name phoenix-test -p 8000:8000 phoenix-evo:ci
-          sleep 10
-          curl -f http://localhost:8000/health || exit 1
+          sleep 5
+          for i in 1 2 3 4 5; do
+            if curl -sf http://localhost:8000/health; then
+              echo "Health check passed"
+              docker stop phoenix-test
+              exit 0
+            fi
+            echo "Attempt $i: service not ready, waiting..."
+            sleep 3
+          done
+          echo "Health check failed after 5 attempts"
+          docker logs phoenix-test
           docker stop phoenix-test
+          exit 1
 
   # ── Benchmark Job ─────────────────────────────────────────────────────────
   benchmark:
