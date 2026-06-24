@@ -250,7 +250,7 @@ class TestSkillRegistry:
         """Test loading corrupted index file."""
         registry = SkillRegistry(root=tmp_path)
         index_path = tmp_path / "skills" / "skill_index.json"
-        index_path.parent.mkdir(parents=True)
+        index_path.parent.mkdir(parents=True, exist_ok=True)
         index_path.write_text("invalid json{")
 
         index = registry._load_index()

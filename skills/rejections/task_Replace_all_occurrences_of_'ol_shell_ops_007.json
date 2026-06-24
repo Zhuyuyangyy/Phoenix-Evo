@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Replace_all_occurrences_of_'ol_shell_ops_007",
+  "skill_name": "task_Replace_all_occurrences_of_'ol",
+  "rejected_at": "2026-06-24T08:07:15.409501",
+  "trajectory_id": "shell_ops_007",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

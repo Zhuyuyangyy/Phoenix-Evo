@@ -1,0 +1,47 @@
+{
+  "experiment": "E2",
+  "n_tasks": 10,
+  "n_conditions": 5,
+  "conditions": {
+    "phoenix_gsm_full": {
+      "n": 10,
+      "success_rate": 1.0,
+      "success_count": 10,
+      "avg_duration": 9.078100000000001,
+      "avg_tokens": 1458.6,
+      "delta_vs_full": 0.0
+    },
+    "phoenix_gsm_no_curator": {
+      "n": 10,
+      "success_rate": 1.0,
+      "success_count": 10,
+      "avg_duration": 7.856899999999999,
+      "avg_tokens": 1379.0,
+      "delta_vs_full": 0.0
+    },
+    "phoenix_gsm_no_drift": {
+      "n": 10,
+      "success_rate": 1.0,
+      "success_count": 10,
+      "avg_duration": 6.5256,
+      "avg_tokens": 1152.8,
+      "delta_vs_full": 0.0
+    },
+    "phoenix_gsm_no_immune": {
+      "n": 10,
+      "success_rate": 1.0,
+      "success_count": 10,
+      "avg_duration": 8.9495,
+      "avg_tokens": 1596.9,
+      "delta_vs_full": 0.0
+    },
+    "phoenix_gsm_no_replay": {
+      "n": 10,
+      "success_rate": 1.0,
+      "success_count": 10,
+      "avg_duration": 7.0426,
+      "avg_tokens": 1208.9,
+      "delta_vs_full": 0.0
+    }
+  }
+}

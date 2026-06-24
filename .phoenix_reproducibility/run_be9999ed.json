@@ -1,0 +1,18 @@
+{
+  "run_id": "run_be9999ed",
+  "experiment_id": "E1",
+  "timestamp": 1782286842.238809,
+  "parameters": {
+    "x": 1
+  },
+  "results": {
+    "acc": 0.95
+  },
+  "environment": {
+    "python_version": "3.14.4 (main, Apr 17 2026, 10:42:51) [GCC 13.3.0]",
+    "platform": "linux"
+  },
+  "random_seed": null,
+  "code_version": "",
+  "data_hash": "2ef79487a3b28165"
+}

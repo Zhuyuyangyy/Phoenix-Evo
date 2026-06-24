@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Create_a_compressed_tarball_of_shell_ops_005",
+  "skill_name": "task_Create_a_compressed_tarball_of",
+  "rejected_at": "2026-06-24T08:06:57.322694",
+  "trajectory_id": "shell_ops_005",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

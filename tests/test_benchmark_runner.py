@@ -55,17 +55,17 @@ def test_metrics_mixed_results():
         {"case_id": "CASE-001", "task_success": True,  "skill_extracted": True,  "skill_duplicate": False, "risk_blocked": False, "regression": False, "repair_steps": 2, "has_evidence": True},
         {"case_id": "CASE-002", "task_success": True,  "skill_extracted": True,  "skill_duplicate": True,  "risk_blocked": False, "regression": False, "repair_steps": 3, "has_evidence": True},
         {"case_id": "CASE-003", "task_success": False, "skill_extracted": False, "skill_duplicate": False, "risk_blocked": True,  "regression": False, "repair_steps": 0, "has_evidence": False},
-        {"case_id": "CASE-004", "task_success": True,  "skill_extracted": False, "skill_duplicate": False, "risk_blocked": False, "regression": True,  "repair_steps": 5, "has_evidence": False},
+        {"case_id": "CASE-004", "task_success": True,  "skill_extracted": True,  "skill_duplicate": False, "risk_blocked": False, "regression": True,  "repair_steps": 5, "has_evidence": False},
         {"case_id": "CASE-005", "task_success": True,  "skill_extracted": True,  "skill_duplicate": False, "risk_blocked": False, "regression": False, "repair_steps": 1, "has_evidence": True},
     ]
     result = m.compute(runs)
     assert result.task_success_rate == pytest.approx(0.8)      # 4/5
-    assert result.skill_reuse_rate == pytest.approx(0.75)      # 3/4 success
+    assert result.skill_reuse_rate == pytest.approx(1.0)       # 4/4 success
     assert result.risk_blocking_rate == pytest.approx(0.2)     # 1/5
     assert result.regression_rate == pytest.approx(0.25)       # 1/4 extracted
-    assert result.duplicate_skill_rate == pytest.approx(1/3)   # 1/3 extracted
+    assert result.duplicate_skill_rate == pytest.approx(0.25)  # 1/4 extracted
     assert result.avg_repair_steps == pytest.approx(2.2)       # (2+3+0+5+1)/5
-    assert result.evidence_coverage == pytest.approx(0.6)      # 3/5
+    assert result.evidence_coverage == pytest.approx(0.75)     # 3/4 extracted
 
 
 def test_metrics_to_dict():

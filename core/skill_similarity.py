@@ -164,11 +164,11 @@ class SkillVectorizer:
         elif status == "archived":
             path = self.root / "skills" / "archived" / f"{skill_id}.md"
         else:
-            return ""
+            return entry.get("skill_name", "")
         try:
             return path.read_text(encoding="utf-8")
         except (FileNotFoundError, OSError):
-            return ""
+            return entry.get("skill_name", "")
 
     # ------------------------------------------------------------------
     # Pairwise similarity

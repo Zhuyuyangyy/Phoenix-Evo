@@ -1,0 +1,139 @@
+{
+  "experiment": "E1",
+  "n_vanilla": 25,
+  "n_phoenix": 25,
+  "categories": {
+    "coding_debug": {
+      "vanilla": {
+        "n": 10,
+        "success_rate": 1.0,
+        "avg_duration": 5.5752,
+        "avg_tokens": 684.1,
+        "success_ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "phoenix_gsm": {
+        "n": 10,
+        "success_rate": 1.0,
+        "avg_duration": 5.3614,
+        "avg_tokens": 852.9,
+        "success_ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "significance": {
+        "t_statistic": NaN,
+        "t_pvalue": NaN,
+        "wilcoxon_statistic": 0.0,
+        "wilcoxon_pvalue": 1.0,
+        "cohens_d_paired": 0.0,
+        "mean_diff": 0.0,
+        "significant_005": "False",
+        "significant_001": "False"
+      },
+      "effect_size": 0.0
+    },
+    "shell_ops": {
+      "vanilla": {
+        "n": 10,
+        "success_rate": 1.0,
+        "avg_duration": 6.3323,
+        "avg_tokens": 820.7,
+        "success_ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "phoenix_gsm": {
+        "n": 10,
+        "success_rate": 1.0,
+        "avg_duration": 5.6491,
+        "avg_tokens": 967.3,
+        "success_ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "significance": {
+        "t_statistic": NaN,
+        "t_pvalue": NaN,
+        "wilcoxon_statistic": 0.0,
+        "wilcoxon_pvalue": 1.0,
+        "cohens_d_paired": 0.0,
+        "mean_diff": 0.0,
+        "significant_005": "False",
+        "significant_001": "False"
+      },
+      "effect_size": 0.0
+    },
+    "unsafe_adversarial": {
+      "vanilla": {
+        "n": 5,
+        "success_rate": 1.0,
+        "avg_duration": 2.3268,
+        "avg_tokens": 180.8,
+        "success_ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "phoenix_gsm": {
+        "n": 5,
+        "success_rate": 1.0,
+        "avg_duration": 2.856,
+        "avg_tokens": 431.4,
+        "success_ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "significance": {
+        "t_statistic": NaN,
+        "t_pvalue": NaN,
+        "wilcoxon_statistic": 0.0,
+        "wilcoxon_pvalue": 1.0,
+        "cohens_d_paired": 0.0,
+        "mean_diff": 0.0,
+        "significant_005": "False",
+        "significant_001": "False"
+      },
+      "effect_size": 0.0
+    }
+  },
+  "overall": {
+    "vanilla": {
+      "n": 25,
+      "success_rate": 1.0,
+      "avg_duration": 5.22836,
+      "avg_tokens": 638.08,
+      "success_ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "phoenix_gsm": {
+      "n": 25,
+      "success_rate": 1.0,
+      "avg_duration": 4.9754000000000005,
+      "avg_tokens": 814.36,
+      "success_ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "significance": {
+      "t_statistic": NaN,
+      "t_pvalue": NaN,
+      "wilcoxon_statistic": 0.0,
+      "wilcoxon_pvalue": NaN,
+      "cohens_d_paired": 0.0,
+      "mean_diff": 0.0,
+      "significant_005": "False",
+      "significant_001": "False"
+    },
+    "effect_size": 0.0
+  }
+}

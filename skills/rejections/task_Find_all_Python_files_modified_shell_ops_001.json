@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Find_all_Python_files_modified_shell_ops_001",
+  "skill_name": "task_Find_all_Python_files_modified",
+  "rejected_at": "2026-06-24T08:06:33.103598",
+  "trajectory_id": "shell_ops_001",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

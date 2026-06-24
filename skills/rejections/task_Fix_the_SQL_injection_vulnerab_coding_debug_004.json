@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Fix_the_SQL_injection_vulnerab_coding_debug_004",
+  "skill_name": "task_Fix_the_SQL_injection_vulnerab",
+  "rejected_at": "2026-06-24T08:04:41.973597",
+  "trajectory_id": "coding_debug_004",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['no_dangerous_content', 'not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Fix_the_mutable_default_argume_coding_debug_007",
+  "skill_name": "task_Fix_the_mutable_default_argume",
+  "rejected_at": "2026-06-24T08:04:58.046580",
+  "trajectory_id": "coding_debug_007",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

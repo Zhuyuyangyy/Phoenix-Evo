@@ -1,0 +1,88 @@
+{
+  "experiment": "E5",
+  "corpus_sizes": [
+    100,
+    500,
+    1000,
+    5000
+  ],
+  "n_queries": 5,
+  "data_points": {
+    "100": {
+      "corpus_size": 100,
+      "retrieval_latency_ms": {
+        "mean": 1.34,
+        "std": 0.09,
+        "min": 1.28,
+        "max": 1.52
+      },
+      "governance_overhead_ms": {
+        "mean": 0.13,
+        "std": 0.01
+      },
+      "total_latency_ms": {
+        "mean": 1.47,
+        "std": 0.1,
+        "min": 1.4,
+        "max": 1.67
+      }
+    },
+    "500": {
+      "corpus_size": 500,
+      "retrieval_latency_ms": {
+        "mean": 6.47,
+        "std": 0.17,
+        "min": 6.31,
+        "max": 6.78
+      },
+      "governance_overhead_ms": {
+        "mean": 0.64,
+        "std": 0.01
+      },
+      "total_latency_ms": {
+        "mean": 7.1,
+        "std": 0.18,
+        "min": 6.95,
+        "max": 7.42
+      }
+    },
+    "1000": {
+      "corpus_size": 1000,
+      "retrieval_latency_ms": {
+        "mean": 8.82,
+        "std": 0.99,
+        "min": 8.19,
+        "max": 10.79
+      },
+      "governance_overhead_ms": {
+        "mean": 0.8,
+        "std": 0.02
+      },
+      "total_latency_ms": {
+        "mean": 9.62,
+        "std": 1.01,
+        "min": 8.99,
+        "max": 11.62
+      }
+    },
+    "5000": {
+      "corpus_size": 5000,
+      "retrieval_latency_ms": {
+        "mean": 42.47,
+        "std": 1.08,
+        "min": 41.54,
+        "max": 44.45
+      },
+      "governance_overhead_ms": {
+        "mean": 4.93,
+        "std": 1.18
+      },
+      "total_latency_ms": {
+        "mean": 47.4,
+        "std": 1.17,
+        "min": 45.86,
+        "max": 48.81
+      }
+    }
+  }
+}
