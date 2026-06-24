@@ -252,7 +252,7 @@ class TestParaphraseRobustness:
         # (query, expected_skill_text_fragment)
         ("Unicode filename garbled on Windows Subsystem for Linux", "Chinese characters in WSL"),
         ("conflicting changes from two branches", "merge conflicts"),
-        ("token-based login security", "JWT based authentication"),
+        ("token-based login security", "JSON Web Token based authentication"),
         ("database queries faster, timing out", "queries are running slowly"),
         ("Containerize my Python web app", "Docker containers"),
         ("connection times out", "timeout errors"),
