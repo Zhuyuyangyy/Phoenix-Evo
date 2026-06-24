@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Fix_the_type_confusion_in_the__coding_debug_008",
+  "skill_name": "task_Fix_the_type_confusion_in_the_",
+  "rejected_at": "2026-06-24T08:05:00.978638",
+  "trajectory_id": "coding_debug_008",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

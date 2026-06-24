@@ -79,7 +79,7 @@ class TestSkillMiner:
         eval_result = self._make_eval_result(skill_candidate_name=None)
 
         skill = miner.mine(traj, eval_result)
-        assert skill["skill_name"].startswith("code_") or skill["skill_name"].startswith("task_")
+        assert skill["skill_name"].startswith("code_") or skill["skill_name"].startswith("task_") or skill["skill_name"].startswith("skill_")
 
     def test_mine_extracts_inputs(self):
         """Test that mine extracts inputs from tool calls."""

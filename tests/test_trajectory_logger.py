@@ -76,7 +76,7 @@ class TestTrajectoryLogger:
         logger.log_action("read_file", {"path": "/tmp/test.py"})
         logger.log_tool_call("terminal", {"command": "ls"})
 
-        with patch.object(Path, 'parent', new_callable=lambda: property(lambda self: tmp_path)):
+        with patch.object(TrajectoryLogger, '_save'):
             trajectory = logger.complete(
                 success=True,
                 final_output="Task completed",

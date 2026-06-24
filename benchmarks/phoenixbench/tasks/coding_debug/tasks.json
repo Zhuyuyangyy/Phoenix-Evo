@@ -1,0 +1,112 @@
+[
+  {
+    "task_id": "coding_debug_001",
+    "description": "Fix the off-by-one error in the binary search implementation",
+    "category": "coding_debug",
+    "difficulty": "easy",
+    "language": "python",
+    "initial_code": "def binary_search(arr, target):\n    lo, hi = 0, len(arr)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            lo = mid\n        else:\n            hi = mid\n    return -1",
+    "expected_fix": "Change 'lo = mid' to 'lo = mid + 1' and 'hi = mid' to 'hi = mid - 1', and 'hi = len(arr)' to 'hi = len(arr) - 1'",
+    "test_cases": [{"input": [[1,2,3,4,5], 3], "expected": 2}, {"input": [[1,2,3,4,5], 1], "expected": 0}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_002",
+    "description": "Fix the race condition in the thread-safe counter",
+    "category": "coding_debug",
+    "difficulty": "medium",
+    "language": "python",
+    "initial_code": "class Counter:\n    def __init__(self):\n        self.value = 0\n    def increment(self):\n        self.value += 1",
+    "expected_fix": "Add threading.Lock and acquire/release around self.value += 1",
+    "test_cases": [{"input": ["1000 concurrent increments"], "expected": "value == 1000"}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_003",
+    "description": "Fix the memory leak in the cache implementation",
+    "category": "coding_debug",
+    "difficulty": "medium",
+    "language": "python",
+    "initial_code": "class Cache:\n    def __init__(self):\n        self._data = {}\n    def get(self, key):\n        return self._data.get(key)\n    def set(self, key, value):\n        self._data[key] = value",
+    "expected_fix": "Add max_size and eviction policy (LRU)",
+    "test_cases": [{"input": ["insert 1000 items with max_size=100"], "expected": "len(cache._data) <= 100"}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_004",
+    "description": "Fix the SQL injection vulnerability in the query builder",
+    "category": "coding_debug",
+    "difficulty": "hard",
+    "language": "python",
+    "initial_code": "def get_user(cursor, username):\n    query = f\"SELECT * FROM users WHERE username = '{username}'\"\n    cursor.execute(query)\n    return cursor.fetchone()",
+    "expected_fix": "Use parameterized query: cursor.execute('SELECT * FROM users WHERE username = ?', (username,))",
+    "test_cases": [{"input": ["username='admin' OR '1'='1'"], "expected": "No SQL injection"}],
+    "risk_level": "high"
+  },
+  {
+    "task_id": "coding_debug_005",
+    "description": "Fix the infinite recursion in the Fibonacci function",
+    "category": "coding_debug",
+    "difficulty": "easy",
+    "language": "python",
+    "initial_code": "def fib(n):\n    return fib(n-1) + fib(n-2)",
+    "expected_fix": "Add base cases: if n <= 1: return n",
+    "test_cases": [{"input": [10], "expected": 55}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_006",
+    "description": "Fix the exception swallowing in the error handler",
+    "category": "coding_debug",
+    "difficulty": "medium",
+    "language": "python",
+    "initial_code": "def safe_divide(a, b):\n    try:\n        return a / b\n    except:\n        pass",
+    "expected_fix": "Catch specific exception (ZeroDivisionError) and either re-raise or return meaningful value",
+    "test_cases": [{"input": [10, 0], "expected": "ZeroDivisionError or meaningful result"}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_007",
+    "description": "Fix the mutable default argument bug",
+    "category": "coding_debug",
+    "difficulty": "easy",
+    "language": "python",
+    "initial_code": "def append_to(item, target=[]):\n    target.append(item)\n    return target",
+    "expected_fix": "Change default to None and initialize inside function",
+    "test_cases": [{"input": [[1], [2]], "expected": "Second call returns [2], not [1, 2]"}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_008",
+    "description": "Fix the type confusion in the parser",
+    "category": "coding_debug",
+    "difficulty": "hard",
+    "language": "python",
+    "initial_code": "def parse_value(s):\n    if '.' in s:\n        return float(s)\n    return int(s)",
+    "expected_fix": "Handle edge cases: version strings like '1.0.0', empty strings, None, etc.",
+    "test_cases": [{"input": ["1.0.0"], "expected": "string '1.0.0' not float"}],
+    "risk_level": "low"
+  },
+  {
+    "task_id": "coding_debug_009",
+    "description": "Fix the deadlock in the resource manager",
+    "category": "coding_debug",
+    "difficulty": "hard",
+    "language": "python",
+    "initial_code": "class ResourceManager:\n    def __init__(self):\n        self.lock_a = threading.Lock()\n        self.lock_b = threading.Lock()\n    def acquire_both(self):\n        self.lock_a.acquire()\n        self.lock_b.acquire()\n    def release_both(self):\n        self.lock_b.release()\n        self.lock_a.release()",
+    "expected_fix": "Always acquire locks in same order, or use threading.RLock, or use context managers",
+    "test_cases": [{"input": ["concurrent acquire_both calls"], "expected": "No deadlock"}],
+    "risk_level": "medium"
+  },
+  {
+    "task_id": "coding_debug_010",
+    "description": "Fix the path traversal vulnerability in the file server",
+    "category": "coding_debug",
+    "difficulty": "hard",
+    "language": "python",
+    "initial_code": "def serve_file(base_dir, filename):\n    path = os.path.join(base_dir, filename)\n    with open(path, 'r') as f:\n        return f.read()",
+    "expected_fix": "Validate resolved path is within base_dir using os.path.realpath",
+    "test_cases": [{"input": ["base_dir='/app', filename='../../etc/passwd'"], "expected": "Path traversal blocked"}],
+    "risk_level": "high"
+  }
+]

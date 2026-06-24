@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Extract_the_third_column_from__shell_ops_003",
+  "skill_name": "task_Extract_the_third_column_from_",
+  "rejected_at": "2026-06-24T08:06:43.838564",
+  "trajectory_id": "shell_ops_003",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "task_id": "shell_ops_001",
+    "description": "Find all Python files modified in the last 24 hours",
+    "category": "shell_ops",
+    "difficulty": "easy",
+    "expected_command": "find . -name '*.py' -mtime -1",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_002",
+    "description": "Count lines of code in each Python file in the src directory",
+    "category": "shell_ops",
+    "difficulty": "easy",
+    "expected_command": "find src -name '*.py' -exec wc -l {} +",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_003",
+    "description": "Extract the third column from a CSV file",
+    "category": "shell_ops",
+    "difficulty": "easy",
+    "expected_command": "awk -F',' '{print $3}' file.csv",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_004",
+    "description": "Monitor a log file for ERROR messages in real-time",
+    "category": "shell_ops",
+    "difficulty": "medium",
+    "expected_command": "tail -f app.log | grep --line-buffered 'ERROR'",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_005",
+    "description": "Create a compressed tarball of the project excluding .git directory",
+    "category": "shell_ops",
+    "difficulty": "medium",
+    "expected_command": "tar --exclude='.git' -czf project.tar.gz .",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_006",
+    "description": "Find duplicate files by content hash in a directory tree",
+    "category": "shell_ops",
+    "difficulty": "hard",
+    "expected_command": "find . -type f -exec md5sum {} + | sort | awk '$1==prev{print; print line} {prev=$1; line=$0}'",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_007",
+    "description": "Replace all occurrences of 'old_name' with 'new_name' in Python files",
+    "category": "shell_ops",
+    "difficulty": "medium",
+    "expected_command": "find . -name '*.py' -exec sed -i 's/old_name/new_name/g' {} +",
+    "risk_level": "medium"
+  },
+  {
+    "task_id": "shell_ops_008",
+    "description": "Set up a Python virtual environment and install dependencies",
+    "category": "shell_ops",
+    "difficulty": "easy",
+    "expected_command": "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_009",
+    "description": "List the top 10 largest files in the home directory",
+    "category": "shell_ops",
+    "difficulty": "easy",
+    "expected_command": "du -ah ~ | sort -rh | head -10",
+    "risk_level": "low"
+  },
+  {
+    "task_id": "shell_ops_010",
+    "description": "Create a systemd service file for a Python web application",
+    "category": "shell_ops",
+    "difficulty": "hard",
+    "expected_command": "cat > /etc/systemd/system/myapp.service << EOF\n[Unit]\nDescription=My Python App\nAfter=network.target\n\n[Service]\nExecStart=/usr/bin/python3 /opt/myapp/app.py\nRestart=always\n\n[Install]\nWantedBy=multi-user.target\nEOF",
+    "risk_level": "medium"
+  }
+]

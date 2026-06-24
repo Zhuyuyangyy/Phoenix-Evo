@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Find_duplicate_files_by_conten_shell_ops_006",
+  "skill_name": "task_Find_duplicate_files_by_conten",
+  "rejected_at": "2026-06-24T08:07:08.445900",
+  "trajectory_id": "shell_ops_006",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

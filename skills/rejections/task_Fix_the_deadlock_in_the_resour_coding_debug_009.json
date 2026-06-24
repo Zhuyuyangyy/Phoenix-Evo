@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_Fix_the_deadlock_in_the_resour_coding_debug_009",
+  "skill_name": "task_Fix_the_deadlock_in_the_resour",
+  "rejected_at": "2026-06-24T08:05:03.897196",
+  "trajectory_id": "coding_debug_009",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

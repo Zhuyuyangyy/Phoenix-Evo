@@ -1,0 +1,11 @@
+{
+  "skill_id": "task_List_the_top_10_largest_files__shell_ops_009",
+  "skill_name": "task_List_the_top_10_largest_files_",
+  "rejected_at": "2026-06-24T08:07:27.252145",
+  "trajectory_id": "shell_ops_009",
+  "verify_passed": false,
+  "verify_reason": "技能验证未通过。失败项: ['not_overgeneralized', 'has_verification']",
+  "immune_decision": null,
+  "immune_rules": [],
+  "immune_reason": null
+}

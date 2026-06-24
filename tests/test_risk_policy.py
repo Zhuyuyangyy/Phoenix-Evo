@@ -162,7 +162,7 @@ class TestRiskProfile:
         assert profile.immune_decision == "draft"
 
     def test_compute_decision_missing_artifacts_warning(self):
-        """Test that missing artifacts adds warning but doesn't block."""
+        """Test that missing artifacts results in quarantine due to incomplete evidence."""
         profile = RiskProfile(
             has_trajectory_id=True,
             has_artifacts=False,
@@ -170,8 +170,8 @@ class TestRiskProfile:
             has_verification=True,
         )
         profile.compute_decision()
-        assert profile.immune_decision == "draft"
-        assert any("artifacts" in w.lower() for w in profile.warnings)
+        assert profile.immune_decision == "quarantine"
+        assert any("证据" in w or "artifacts" in w.lower() or "不全" in w for w in profile.warnings)
 
 
 class TestRiskPolicy:
