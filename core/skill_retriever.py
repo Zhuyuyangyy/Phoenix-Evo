@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 skill_retriever: 技能检索器
 V0.6 -- Phoenix-Evo Core Skill Retriever
@@ -23,23 +22,22 @@ V1.2 变更（Q2 SCI Review Fix #1）：
 from __future__ import annotations
 
 import json
-import re
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 # Import TF-IDF engine from the runtime module (single source of truth)
 from runtime.skill_retriever import (
+    _compute_idf,
+    _cosine_sim,
+    _tfidf_vector,
     _tokenize,
     _tokenize_to_set,
-    _compute_idf,
-    _tfidf_vector,
-    _cosine_sim,
 )
 
 # V1.2: Import semantic retriever for sentence-embedding-based search
 try:
-    from runtime.semantic_retriever import SemanticRetriever, _EMBEDDING_AVAILABLE
+    from runtime.semantic_retriever import _EMBEDDING_AVAILABLE, SemanticRetriever
 except ImportError:
     _EMBEDDING_AVAILABLE = False
     SemanticRetriever = None
@@ -200,10 +198,7 @@ class SkillRetriever:
         candidates: list[RetrievalMatch] = []
         for idx, (skill_id, entry) in enumerate(filtered):
             # Primary: semantic embedding score; Fallback: TF-IDF
-            if semantic_scores:
-                text_score = semantic_scores.get(idx, 0.0)
-            else:
-                text_score = tfidf_scores.get(idx, 0.0)
+            text_score = semantic_scores.get(idx, 0.0) if semantic_scores else tfidf_scores.get(idx, 0.0)
 
             # Evidence Score（从 skill_card 读取）
             evidence_score = self._get_evidence_score(skill_id)
@@ -304,7 +299,7 @@ class SkillRetriever:
             if card.get("procedure_steps", 0) >= 3:
                 score += 0.2
             return min(score, 1.0)
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return 0.0
 
     def _get_replay_info(self, skill_id: str) -> dict[str, Any]:
@@ -324,7 +319,7 @@ class SkillRetriever:
             regression = report.get("regression_found", False)
             score = pass_rate if not regression else pass_rate * 0.2
             return {"score": round(score, 4), "pass_rate": round(pass_rate, 4), "passed": passed}
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return {"score": 0.0, "pass_rate": 0.0, "passed": None}
 
     def _get_recency_score(self, last_used: str | None) -> float:
@@ -349,7 +344,7 @@ class SkillRetriever:
             return {}
         try:
             return json.loads(self.skill_index_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return {}
 
     def _build_reason(

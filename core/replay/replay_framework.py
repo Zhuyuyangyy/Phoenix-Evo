@@ -6,11 +6,11 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
-from .replay_case_generator import ReplayCase, ReplayCaseGenerator, ReplayCaseType
+from .replay_case_generator import ReplayCase, ReplayCaseGenerator
+from .replay_comparator import ComparisonResult, ReplayComparator
 from .replay_orchestrator import ReplayOrchestrator, ReplaySuiteResult
-from .replay_comparator import ReplayComparator, ComparisonResult
 from .replay_report import ReplayReportGenerator
 
 
@@ -18,12 +18,12 @@ from .replay_report import ReplayReportGenerator
 class ReplaySchedule:
     """Schedule for periodic replay testing."""
     schedule_id: str
-    cases: List[ReplayCase]
+    cases: list[ReplayCase]
     interval_seconds: float = 3600.0  # Default: hourly
-    last_run: Optional[float] = None
+    last_run: float | None = None
     enabled: bool = True
     stop_on_failure: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ReplayFramework:
@@ -31,22 +31,22 @@ class ReplayFramework:
 
     def __init__(
         self,
-        generator: Optional[ReplayCaseGenerator] = None,
-        orchestrator: Optional[ReplayOrchestrator] = None,
-        comparator: Optional[ReplayComparator] = None,
-        reporter: Optional[ReplayReportGenerator] = None,
+        generator: ReplayCaseGenerator | None = None,
+        orchestrator: ReplayOrchestrator | None = None,
+        comparator: ReplayComparator | None = None,
+        reporter: ReplayReportGenerator | None = None,
     ):
         self.generator = generator or ReplayCaseGenerator()
         self.orchestrator = orchestrator or ReplayOrchestrator()
         self.comparator = comparator or ReplayComparator()
         self.reporter = reporter or ReplayReportGenerator()
-        self._schedules: Dict[str, ReplaySchedule] = {}
+        self._schedules: dict[str, ReplaySchedule] = {}
 
     def create_schedule(
         self,
-        cases: List[ReplayCase],
+        cases: list[ReplayCase],
         interval_seconds: float = 3600.0,
-        schedule_id: Optional[str] = None,
+        schedule_id: str | None = None,
     ) -> ReplaySchedule:
         """Create a new replay schedule."""
         import uuid
@@ -60,7 +60,7 @@ class ReplayFramework:
         self._schedules[schedule_id] = schedule
         return schedule
 
-    def run_schedule(self, schedule_id: str) -> Optional[ReplaySuiteResult]:
+    def run_schedule(self, schedule_id: str) -> ReplaySuiteResult | None:
         """Run a specific schedule if it's due."""
         schedule = self._schedules.get(schedule_id)
         if not schedule or not schedule.enabled:
@@ -78,7 +78,7 @@ class ReplayFramework:
         schedule.last_run = now
         return result
 
-    def run_all_schedules(self) -> List[ReplaySuiteResult]:
+    def run_all_schedules(self) -> list[ReplaySuiteResult]:
         """Run all due schedules."""
         results = []
         for schedule_id in list(self._schedules.keys()):
@@ -89,8 +89,8 @@ class ReplayFramework:
 
     def compare_trajectories(
         self,
-        actual: Dict[str, Any],
-        expected: Dict[str, Any],
+        actual: dict[str, Any],
+        expected: dict[str, Any],
         case_id: str = "",
     ) -> ComparisonResult:
         """Compare two trajectories."""
@@ -98,7 +98,7 @@ class ReplayFramework:
 
     def generate_and_run(
         self,
-        trajectories: List[Dict[str, Any]],
+        trajectories: list[dict[str, Any]],
         n_positive: int = 5,
         n_negative: int = 3,
         n_edge: int = 2,
@@ -118,7 +118,7 @@ class ReplayFramework:
 class ReplayScheduler:
     """Scheduler for periodic replay execution."""
 
-    def __init__(self, framework: Optional[ReplayFramework] = None):
+    def __init__(self, framework: ReplayFramework | None = None):
         self.framework = framework or ReplayFramework()
         self._running = False
 
@@ -133,7 +133,7 @@ class ReplayScheduler:
             return True
         return False
 
-    def list_schedules(self) -> List[Dict[str, Any]]:
+    def list_schedules(self) -> list[dict[str, Any]]:
         """List all schedules."""
         schedules = []
         for sid, schedule in self.framework._schedules.items():
@@ -146,7 +146,7 @@ class ReplayScheduler:
             })
         return schedules
 
-    def tick(self) -> List[ReplaySuiteResult]:
+    def tick(self) -> list[ReplaySuiteResult]:
         """Execute all due schedules (call this periodically)."""
         return self.framework.run_all_schedules()
 
@@ -156,7 +156,7 @@ class ReplayCI:
 
     def __init__(
         self,
-        framework: Optional[ReplayFramework] = None,
+        framework: ReplayFramework | None = None,
         fail_on_regression: bool = True,
         output_dir: str = "replay_results",
     ):
@@ -164,7 +164,7 @@ class ReplayCI:
         self.fail_on_regression = fail_on_regression
         self.output_dir = output_dir
 
-    def run(self, trajectories: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def run(self, trajectories: list[dict[str, Any]]) -> dict[str, Any]:
         """Run replay CI check.
 
         Returns a CI result dict with pass/fail status.

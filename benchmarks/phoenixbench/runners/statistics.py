@@ -5,21 +5,23 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy import stats as scipy_stats
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 
 def bootstrap_ci(
-    data: List[float],
+    data: list[float],
     statistic: Callable = np.mean,
     n_bootstrap: int = 10000,
     ci: float = 0.95,
     seed: int = 42,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """Compute bootstrap confidence interval for a statistic.
 
     Args:
@@ -46,9 +48,9 @@ def bootstrap_ci(
 
 
 def paired_significance_test(
-    baseline_scores: List[float],
-    treatment_scores: List[float],
-) -> Dict[str, Any]:
+    baseline_scores: list[float],
+    treatment_scores: list[float],
+) -> dict[str, Any]:
     """Perform a paired significance test between baseline and treatment.
 
     Uses Wilcoxon signed-rank test (non-parametric) and paired t-test.
@@ -89,7 +91,7 @@ def paired_significance_test(
     }
 
 
-def cohens_d(group1: List[float], group2: List[float]) -> float:
+def cohens_d(group1: list[float], group2: list[float]) -> float:
     """Compute Cohen's d effect size between two independent groups.
 
     Args:
@@ -111,9 +113,9 @@ def cohens_d(group1: List[float], group2: List[float]) -> float:
 
 
 def bonferroni_correction(
-    p_values: List[float],
+    p_values: list[float],
     alpha: float = 0.05,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Apply Bonferroni correction for multiple comparisons.
 
     Args:
@@ -141,7 +143,7 @@ def bonferroni_correction(
     }
 
 
-def aggregate_results(jsonl_path: str) -> Dict[str, Any]:
+def aggregate_results(jsonl_path: str) -> dict[str, Any]:
     """Aggregate benchmark results from a JSONL file.
 
     Args:
@@ -151,7 +153,7 @@ def aggregate_results(jsonl_path: str) -> Dict[str, Any]:
         Aggregated statistics dictionary.
     """
     records = []
-    with open(jsonl_path, "r") as f:
+    with open(jsonl_path) as f:
         for line in f:
             line = line.strip()
             if line:
@@ -161,7 +163,7 @@ def aggregate_results(jsonl_path: str) -> Dict[str, Any]:
         return {"total_tasks": 0, "categories": {}}
 
     # Group by category
-    categories: Dict[str, List[Dict]] = {}
+    categories: dict[str, list[dict]] = {}
     for rec in records:
         cat = rec.get("category", "uncategorized")
         categories.setdefault(cat, []).append(rec)
@@ -198,9 +200,9 @@ def aggregate_results(jsonl_path: str) -> Dict[str, Any]:
 
 
 def write_frozen_results(
-    results: Dict[str, Any],
+    results: dict[str, Any],
     output_dir: str,
-    run_id: Optional[str] = None,
+    run_id: str | None = None,
 ) -> str:
     """Write frozen (immutable) benchmark results to disk.
 
@@ -219,7 +221,7 @@ def write_frozen_results(
 
     frozen = {
         "run_id": run_id,
-        "frozen_at": datetime.now(timezone.utc).isoformat(),
+        "frozen_at": datetime.now(UTC).isoformat(),
         "results": results,
     }
 
@@ -230,7 +232,7 @@ def write_frozen_results(
     return output_path
 
 
-def generate_report(aggregated: Dict[str, Any]) -> str:
+def generate_report(aggregated: dict[str, Any]) -> str:
     """Generate a human-readable report from aggregated results.
 
     Args:

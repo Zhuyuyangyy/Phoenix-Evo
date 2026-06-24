@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class AgentRole(Enum):
@@ -25,13 +25,13 @@ class AgentProfile:
     agent_id: str
     role: AgentRole
     name: str = ""
-    capabilities: List[str] = field(default_factory=list)
+    capabilities: list[str] = field(default_factory=list)
     trust_score: float = 1.0
     max_concurrent_tasks: int = 3
-    specializations: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    specializations: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "agent_id": self.agent_id,
             "role": self.role.value,
@@ -44,7 +44,7 @@ class AgentProfile:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentProfile":
+    def from_dict(cls, data: dict[str, Any]) -> AgentProfile:
         data = dict(data)
         data["role"] = AgentRole(data.get("role", "observer"))
         return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})

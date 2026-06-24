@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -19,7 +19,7 @@ class DriftPoint:
     drift_type: str  # "gradual" or "sudden"
     severity: float  # 0.0 to 1.0
     confidence: float  # 0.0 to 1.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class EWMADriftDetector:
@@ -38,13 +38,13 @@ class EWMADriftDetector:
         self.alpha = alpha
         self.threshold_sigma = threshold_sigma
         self.warmup = warmup
-        self._ewma: Optional[float] = None
-        self._ewma_var: Optional[float] = None
-        self._baseline_std: Optional[float] = None
+        self._ewma: float | None = None
+        self._ewma_var: float | None = None
+        self._baseline_std: float | None = None
         self._n: int = 0
-        self._history: List[float] = []
+        self._history: list[float] = []
 
-    def update(self, value: float) -> Optional[DriftPoint]:
+    def update(self, value: float) -> DriftPoint | None:
         """Update the detector with a new value. Returns DriftPoint if drift detected."""
         self._n += 1
         self._history.append(value)
@@ -130,9 +130,9 @@ class CUSUMDriftDetector:
         self._pos_sum: float = 0.0
         self._neg_sum: float = 0.0
         self._n: int = 0
-        self._values: List[float] = []
+        self._values: list[float] = []
 
-    def update(self, value: float) -> Optional[DriftPoint]:
+    def update(self, value: float) -> DriftPoint | None:
         """Update the detector with a new value."""
         self._n += 1
         self._values.append(value)
@@ -212,7 +212,7 @@ class BayesianDriftDetector:
         self._running_mean: float = 0.0
         self._running_var: float = 0.0
 
-    def update(self, value: float) -> Optional[DriftPoint]:
+    def update(self, value: float) -> DriftPoint | None:
         """Update the detector with a new value."""
         self._n += 1
 
@@ -276,9 +276,9 @@ class EnsembleDriftDetector:
 
     def __init__(
         self,
-        detectors: Optional[List[Any]] = None,
+        detectors: list[Any] | None = None,
         voting: str = "majority",
-        weights: Optional[Dict[str, float]] = None,
+        weights: dict[str, float] | None = None,
     ):
         self.detectors = detectors or [
             EWMADriftDetector(),
@@ -292,7 +292,7 @@ class EnsembleDriftDetector:
             "bayesian": 0.3,
         }
 
-    def update(self, value: float) -> Optional[DriftPoint]:
+    def update(self, value: float) -> DriftPoint | None:
         """Update all detectors and aggregate results."""
         detections = []
         for detector in self.detectors:
@@ -307,9 +307,9 @@ class EnsembleDriftDetector:
             if len(detections) >= len(self.detectors) / 2:
                 return self._aggregate_detections(detections)
             return None
-        elif self.voting == "any":
+        if self.voting == "any":
             return self._aggregate_detections(detections)
-        elif self.voting == "weighted":
+        if self.voting == "weighted":
             total_weight = sum(
                 self.weights.get(d.metric_name.split("_")[0], 0.33)
                 for d in detections
@@ -317,10 +317,9 @@ class EnsembleDriftDetector:
             if total_weight >= 0.5:
                 return self._aggregate_detections(detections)
             return None
-        else:
-            return self._aggregate_detections(detections)
+        return self._aggregate_detections(detections)
 
-    def _aggregate_detections(self, detections: List[DriftPoint]) -> DriftPoint:
+    def _aggregate_detections(self, detections: list[DriftPoint]) -> DriftPoint:
         """Aggregate multiple detections into a single DriftPoint."""
         avg_severity = sum(d.severity for d in detections) / len(detections)
         avg_confidence = sum(d.confidence for d in detections) / len(detections)

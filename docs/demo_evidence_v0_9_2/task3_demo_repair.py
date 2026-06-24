@@ -1,7 +1,10 @@
 """
 Phoenix-Evo V0.9.2 - Task 3: Demo fail -> pass Repair
 """
-import sys, os, json, subprocess
+import json
+import os
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -59,6 +62,7 @@ os.environ["PHOENIX_EVO_ENABLED"] = "true"
 os.environ["PHOENIX_EVO_DIR"] = str(PHOENIX_DIR)
 
 from phoenix_runtime_bridge import PhoenixRuntimeBridge
+
 bridge = PhoenixRuntimeBridge(phoenix_base_dir=PHOENIX_DIR, phoenix_enabled=True)
 
 task_desc = (
@@ -76,6 +80,7 @@ advisory_msg = bridge.on_task_start(
 print("\n[Step 1] Advisory: " + str(len(advisory_msg) > len(task_desc)) + ", len=" + str(len(advisory_msg)))
 
 from runtime.skill_retriever import SkillRetriever
+
 retriever = SkillRetriever(base_dir=PHOENIX_DIR)
 retrieved = retriever.retrieve("demo test failing None return", top_k=5)
 retrieved_ids = [s["skill_id"] for s in retrieved]

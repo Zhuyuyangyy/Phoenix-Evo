@@ -6,7 +6,7 @@ import hashlib
 import json
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -19,10 +19,10 @@ class AuditEvent:
     resource_id: str
     action: str
     timestamp: float = field(default_factory=time.time)
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
     prev_hash: str = ""
     hash: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def compute_hash(self) -> str:
         """Compute the SHA-256 hash of this event."""
@@ -39,7 +39,7 @@ class AuditEvent:
         }, sort_keys=True, default=str)
         return hashlib.sha256(payload.encode()).hexdigest()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "event_id": self.event_id,
             "event_type": self.event_type,
@@ -65,7 +65,7 @@ class AuditLog:
     GENESIS_HASH = "0" * 64
 
     def __init__(self):
-        self._events: List[AuditEvent] = []
+        self._events: list[AuditEvent] = []
         self._event_counter = 0
 
     def record(
@@ -75,7 +75,7 @@ class AuditLog:
         resource_type: str,
         resource_id: str,
         action: str,
-        details: Optional[Dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ) -> AuditEvent:
         """Record a new audit event."""
         self._event_counter += 1
@@ -97,7 +97,7 @@ class AuditLog:
         self._events.append(event)
         return event
 
-    def verify_chain(self) -> Dict[str, Any]:
+    def verify_chain(self) -> dict[str, Any]:
         """Verify the integrity of the hash chain.
 
         Returns a dict with 'valid' (bool) and 'first_invalid' (int or None).
@@ -119,14 +119,14 @@ class AuditLog:
 
     def get_events(
         self,
-        event_type: Optional[str] = None,
-        actor_id: Optional[str] = None,
-        resource_type: Optional[str] = None,
-        resource_id: Optional[str] = None,
-        start_time: Optional[float] = None,
-        end_time: Optional[float] = None,
+        event_type: str | None = None,
+        actor_id: str | None = None,
+        resource_type: str | None = None,
+        resource_id: str | None = None,
+        start_time: float | None = None,
+        end_time: float | None = None,
         limit: int = 100,
-    ) -> List[AuditEvent]:
+    ) -> list[AuditEvent]:
         """Query audit events with optional filters."""
         results = []
         for event in reversed(self._events):
@@ -147,14 +147,14 @@ class AuditLog:
                 break
         return list(reversed(results))
 
-    def get_event(self, event_id: str) -> Optional[AuditEvent]:
+    def get_event(self, event_id: str) -> AuditEvent | None:
         """Get a specific event by ID."""
         for event in self._events:
             if event.event_id == event_id:
                 return event
         return None
 
-    def export(self) -> List[Dict[str, Any]]:
+    def export(self) -> list[dict[str, Any]]:
         """Export all events as a list of dicts."""
         return [e.to_dict() for e in self._events]
 

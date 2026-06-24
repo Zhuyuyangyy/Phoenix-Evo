@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 
 class PolicyEffect(Enum):
@@ -21,12 +21,12 @@ class Policy:
     effect: PolicyEffect = PolicyEffect.DENY
     resource_type: str = "*"
     action: str = "*"
-    condition: Optional[Dict[str, Any]] = None
+    condition: dict[str, Any] | None = None
     priority: int = 0  # Higher priority wins
     enabled: bool = True
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def matches(self, resource_type: str, action: str, context: Optional[Dict[str, Any]] = None) -> bool:
+    def matches(self, resource_type: str, action: str, context: dict[str, Any] | None = None) -> bool:
         """Check if this policy matches the given request."""
         if not self.enabled:
             return False
@@ -54,7 +54,7 @@ class PolicyEngine:
 
     def __init__(self, default_effect: PolicyEffect = PolicyEffect.DENY):
         self.default_effect = default_effect
-        self._policies: Dict[str, Policy] = {}
+        self._policies: dict[str, Policy] = {}
 
     def add_policy(self, policy: Policy) -> None:
         """Add a policy to the engine."""
@@ -71,8 +71,8 @@ class PolicyEngine:
         self,
         resource_type: str,
         action: str,
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        context: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Evaluate policies for a given request.
 
         Returns a decision dict with 'allowed', 'matched_policies', and 'reason'.
@@ -100,14 +100,14 @@ class PolicyEngine:
             "reason": f"policy: {top_policy.policy_id} ({top_policy.effect.value})",
         }
 
-    def list_policies(self, enabled_only: bool = False) -> List[Policy]:
+    def list_policies(self, enabled_only: bool = False) -> list[Policy]:
         """List all policies."""
         policies = list(self._policies.values())
         if enabled_only:
             policies = [p for p in policies if p.enabled]
         return sorted(policies, key=lambda p: p.priority, reverse=True)
 
-    def get_policy(self, policy_id: str) -> Optional[Policy]:
+    def get_policy(self, policy_id: str) -> Policy | None:
         """Get a specific policy."""
         return self._policies.get(policy_id)
 

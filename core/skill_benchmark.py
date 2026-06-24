@@ -12,12 +12,10 @@ V0.4 — Phoenix-Evo Evidence & Replay
 from __future__ import annotations
 
 import json
-import re
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # BenchmarkCase
@@ -327,7 +325,7 @@ class SkillBenchmark:
                 # Also load external cases
                 self._load_external_cases()
                 return
-            except (json.JSONDecodeError, IOError, TypeError):
+            except (OSError, json.JSONDecodeError, TypeError):
                 pass
 
         # 无磁盘数据，写入默认 case
@@ -354,7 +352,7 @@ class SkillBenchmark:
                         case.created_at = case.created_at or datetime.now().isoformat()
                         self._cases[case.case_id] = case
                         self._save_case(case)
-            except (json.JSONDecodeError, IOError, TypeError):
+            except (OSError, json.JSONDecodeError, TypeError):
                 continue
         self._save_index()
 

@@ -3,10 +3,15 @@ Phoenix-Evo V0.1 测试套件
 测试自进化闭环：成功轨迹→draft技能、失败轨迹→不激活、危险轨迹→拒绝
 """
 
-import sys, os, tempfile, shutil
+import os
+import shutil
+import sys
+import tempfile
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
+
 from core import PhoenixEvo
 
 
@@ -119,8 +124,8 @@ def test_dangerous_trajectory_rejected_by_verifier():
         "artifacts": [],
     }
 
-    from core.skill_miner import SkillMiner
     from core.post_task_evaluator import PostTaskEvaluator
+    from core.skill_miner import SkillMiner
     from core.skill_verifier import SkillVerifier
 
     miner = SkillMiner()
@@ -140,7 +145,8 @@ def test_dangerous_trajectory_rejected_by_verifier():
 
 
 if __name__ == "__main__":
-    import tempfile, shutil
+    import shutil
+    import tempfile
 
     for name, fn in [
         ("test_success_trajectory_generates_draft_skill", test_success_trajectory_generates_draft_skill),

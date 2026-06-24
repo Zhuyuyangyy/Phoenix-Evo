@@ -1,12 +1,15 @@
-import sys, json, shutil, tempfile, subprocess, os
+import json
+import shutil
+import sys
+import tempfile
 from pathlib import Path
 
 PHOENIX_BASE = Path(__file__).parent.parent
 sys.path.insert(0, str(PHOENIX_BASE))
 
 # Import AFTER sys.path setup to avoid stale modules
-from runtime.skill_injection_policy import SafeInjectionPolicy, InjectionDecision
-from runtime.runtime_skill_bridge import HermesRuntimeBridge, BridgeTaskContext, BridgeTaskState
+from runtime.runtime_skill_bridge import BridgeTaskState, HermesRuntimeBridge
+from runtime.skill_injection_policy import InjectionDecision, SafeInjectionPolicy
 
 P = 0
 F = 0

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Retrieval Comparison Experiment: Keyword vs. Semantic (TF-IDF)
 ===============================================================
@@ -17,14 +16,11 @@ Run:
 """
 
 import json
-import shutil
-import tempfile
 from pathlib import Path
 
 import pytest
 
-from runtime.skill_retriever import SkillRetriever, _tokenize, _cosine_sim, _compute_idf, _tfidf_vector
-
+from runtime.skill_retriever import SkillRetriever, _compute_idf, _cosine_sim, _tfidf_vector, _tokenize
 
 # ---------------------------------------------------------------------------
 # Test corpus: 8 skills covering distinct domains
@@ -339,7 +335,7 @@ class TestRetrievalComparison:
         avg_kw = sum(keyword_recalls) / len(keyword_recalls)
         avg_sem = sum(semantic_recalls) / len(semantic_recalls)
 
-        print(f"\n--- Retrieval Comparison ---")
+        print("\n--- Retrieval Comparison ---")
         print(f"  Keyword avg recall@5:  {avg_kw:.3f}")
         print(f"  Semantic avg recall@5: {avg_sem:.3f}")
         print(f"  Queries tested:        {len(TEST_QUERIES)}")
@@ -373,10 +369,10 @@ class TestRetrievalComparison:
         avg_kw = sum(kw_recalls) / len(kw_recalls)
         avg_sem = sum(sem_recalls) / len(sem_recalls)
 
-        print(f"\n--- Paraphrase Query Recall ---")
+        print("\n--- Paraphrase Query Recall ---")
         print(f"  Keyword avg recall:  {avg_kw:.3f}")
         print(f"  Semantic avg recall: {avg_sem:.3f}")
-        for i, (query, expected, label) in enumerate(paraphrase_cases):
+        for _i, (query, expected, label) in enumerate(paraphrase_cases):
             kw_r = _keyword_retrieve(self.retriever, query)
             sem_r = _semantic_retrieve(self.retriever, query)
             print(f"  [{label}] kw_recall={_recall(kw_r, expected):.2f} "
@@ -406,7 +402,7 @@ class TestRetrievalComparison:
     # -- Per-query detailed checks --
 
     @pytest.mark.parametrize(
-        "query,expected,label",
+        ("query", "expected", "label"),
         TEST_QUERIES,
         ids=[t[2] for t in TEST_QUERIES],
     )
@@ -414,7 +410,7 @@ class TestRetrievalComparison:
         """Semantic retrieval recall@5 for each individual query."""
         results = _semantic_retrieve(self.retriever, query)
         r = _recall(results, expected)
-        p = _precision(results, expected)
+        _precision(results, expected)
 
         # For queries with expected results, recall should be > 0
         # (i.e., at least one relevant skill should be retrieved)
@@ -433,7 +429,7 @@ class TestRetrievalComparison:
             (q, exp, label) for q, exp, label in TEST_QUERIES
             if "no_match" in label
         ]
-        for query, expected, label in no_match_cases:
+        for query, _expected, label in no_match_cases:
             results = _semantic_retrieve(self.retriever, query)
             # Either empty or none of the expected are in results
             # (expected is empty set, so any result is a false positive)

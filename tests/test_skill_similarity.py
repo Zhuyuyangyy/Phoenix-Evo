@@ -3,9 +3,15 @@ Tests for SkillSimilarity module.
 """
 
 import pytest
+
 from core.skill_similarity import (
-    SkillVectorizer, SimilarityResult, SkillVector,
-    _tokenize, _compute_idf, _tfidf_vector, _cosine_sim, _name_similarity,
+    SimilarityResult,
+    SkillVectorizer,
+    _compute_idf,
+    _cosine_sim,
+    _name_similarity,
+    _tfidf_vector,
+    _tokenize,
 )
 
 

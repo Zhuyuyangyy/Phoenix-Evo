@@ -11,7 +11,11 @@ Phoenix-Evo V0.9.2 — Task 1: 损坏 Python 文件修复
   4. Hermes 主流程不受 Phoenix 失败影响
 """
 
-import sys, os, json, shutil, subprocess
+import json
+import os
+import shutil
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -72,6 +76,7 @@ os.environ["PHOENIX_EVO_ENABLED"] = "true"
 os.environ["PHOENIX_EVO_DIR"] = str(PHOENIX_DIR)
 
 from phoenix_runtime_bridge import PhoenixRuntimeBridge
+
 bridge = PhoenixRuntimeBridge(
     phoenix_base_dir=PHOENIX_DIR,
     phoenix_enabled=True,
@@ -96,6 +101,7 @@ print(f"  Advisory length: {len(advisory_msg)} chars")
 
 # Check which skills were retrieved
 from runtime.skill_retriever import SkillRetriever
+
 retriever = SkillRetriever(base_dir=PHOENIX_DIR)
 retrieved = retriever.retrieve("修复损坏的 Python 文件", top_k=5)
 retrieved_ids = [s["skill_id"] for s in retrieved]
@@ -129,7 +135,7 @@ def process_data(data_list):
 """
 
 # Safe file reconstruction: write to /tmp first, validate, then move
-import tempfile, ast
+import ast
 
 # Step 1: backup
 backup_path = Path("/tmp/corrupted_demo_backup.py")

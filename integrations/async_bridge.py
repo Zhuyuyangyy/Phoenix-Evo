@@ -25,17 +25,14 @@ V0.5 约束：
 from __future__ import annotations
 
 import atexit
-import json
 import logging
 import queue
-import sys
 import threading
-import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
 from threading import Thread
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -277,7 +274,7 @@ class AsyncBridge:
         """处理任务结束事件：触发 Phoenix 完整自进化闭环。"""
         data = event.data
         trajectory = data.get("trajectory", {})
-        task_goal = data.get("task_goal", "hermes_task")
+        data.get("task_goal", "hermes_task")
 
         if not trajectory:
             logger.warning("task_end 事件缺少 trajectory 数据")
@@ -298,7 +295,6 @@ class AsyncBridge:
     def _handle_session_end(self, event: PhoenixEvent) -> None:
         """会话结束：清理上下文。"""
         # V0.5 暂不处理，V0.6 实现跨任务上下文累积
-        pass
 
     def _accumulate_context(self, event: PhoenixEvent) -> None:
         """
@@ -307,4 +303,3 @@ class AsyncBridge:
         V0.6：Phoenix 支持增量轨迹更新。
         """
         # V0.5 暂不实现增量累积，Phoenix 目前需要一次性完整 trajectory
-        pass

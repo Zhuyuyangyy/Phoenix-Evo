@@ -1,13 +1,12 @@
 """Tests for multi-agent system."""
 
-import pytest
 
 from core.multi_agent.agent_roles import AgentProfile, AgentRole
 from core.multi_agent.artifacts import Artifact, ArtifactType
-from core.multi_agent.collaboration_protocol import CollaborationProtocol, CollaborationSession, PipelineStage
-from core.multi_agent.consensus import ConsensusMechanism, ConsensusMethod, Vote
-from core.multi_agent.shared_memory import SafetyMemoryEntry, SharedSafetyMemory
+from core.multi_agent.collaboration_protocol import CollaborationProtocol, PipelineStage
+from core.multi_agent.consensus import ConsensusMechanism, Vote
 from core.multi_agent.orchestrator import MultiAgentOrchestrator, OrchestratorResult
+from core.multi_agent.shared_memory import SafetyMemoryEntry, SharedSafetyMemory
 
 
 class TestAgentRole:

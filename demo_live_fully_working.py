@@ -9,23 +9,20 @@ Phoenix-Evo V0.8 — Live Self-Evolution Loop Demo
 """
 
 import json
+import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from dataclasses import asdict
 
-import sys
 sys.path.insert(0, str(Path(__file__).parent / "core"))
 
-from core.phoenix_evo import PhoenixEvo
-from core.skill_registry import SkillRegistry
-from core.skill_miner import SkillMiner
-from core.skill_verifier import SkillVerifier
-from core.immune_guard import ImmuneGuard
 from core.drift_detector import DriftDetector
+from core.immune_guard import ImmuneGuard
+from core.post_task_evaluator import PostTaskEvaluator
+from core.skill_miner import SkillMiner
+from core.skill_registry import SkillRegistry
 from core.skill_replay import SkillReplay
-from core.post_task_evaluator import PostTaskEvaluator, EvaluationResult
-
+from core.skill_verifier import SkillVerifier
 
 # ── Simulated Trajectories ────────────────────────────────────────
 
@@ -168,8 +165,8 @@ def main():
     print("  \u256d\u256e\u256d\u256e\u256d\u256e  PHOENIX-EVO V0.8  \u256f\u256e\u256f\u256e\u256f\u256e")
     print()
     print(f"  {'='*W}")
-    print(f"  Self-Evolution Loop Demo V0.8")
-    print(f"  \u9879\u76ee: D:/ZYY Project/Phoenix-Evo")
+    print("  Self-Evolution Loop Demo V0.8")
+    print("  \u9879\u76ee: D:/ZYY Project/Phoenix-Evo")
     print(f"  {'='*W}")
     print()
 
@@ -180,7 +177,7 @@ def main():
     # STEP 1: 技能库健康扫描
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{''*W}\u2510")
-    print(f"\u2502  STEP 1  \u00b7  \u6280\u80fd\u5e93\u5065\u5eb7\u626b\u63cf  \u00b7  Skill Registry Health Scan")
+    print("\u2502  STEP 1  \u00b7  \u6280\u80fd\u5e93\u5065\u5eb7\u626b\u63cf  \u00b7  Skill Registry Health Scan")
     print(f"\u2514{' '*W}\u2518")
 
     index = registry.get_index()
@@ -201,7 +198,7 @@ def main():
         icon = icons.get(status, "[?]")
         print(f"  {icon} {status:<16} {cnt:>6}  {bar(pct):<20} {pct:>7.1%}")
 
-    print(f"\n  \u6280\u80fd\u5217\u8868:")
+    print("\n  \u6280\u80fd\u5217\u8868:")
     print(f"  {'ID / Name':<50} {'\u72b6\u6001':<12} {'\u6210\u529f\u7387':<10}")
     print(f"  {'\u2500'*76}")
     shown = 0
@@ -222,7 +219,7 @@ def main():
     # STEP 2: 注入轨迹
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 2  \u00b7  \u8f68\u8ff9\u6ce8\u5165  \u00b7  Trajectory Injection")
+    print("\u2502  STEP 2  \u00b7  \u8f68\u8ff9\u6ce8\u5165  \u00b7  Trajectory Injection")
     print(f"\u2514{' '*W}\u2518")
 
     for traj in TRAJECTORIES:
@@ -242,7 +239,7 @@ def main():
     # STEP 3: 任务后自评
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 3  \u00b7  \u4efb\u52a1\u540e\u81ea\u8bc4  \u00b7  PostTaskEvaluator")
+    print("\u2502  STEP 3  \u00b7  \u4efb\u52a1\u540e\u81ea\u8bc4  \u00b7  PostTaskEvaluator")
     print(f"\u2514{' '*W}\u2518")
 
     evaluator = PostTaskEvaluator()
@@ -266,7 +263,7 @@ def main():
     # STEP 4: 技能挖掘 + 免疫审查
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 4  \u00b7  \u6280\u80fd\u6316\u6398  +  \u514d\u763e\u5ba1\u67e5  \u00b7  SkillMiner + ImmuneGuard")
+    print("\u2502  STEP 4  \u00b7  \u6280\u80fd\u6316\u6398  +  \u514d\u763e\u5ba1\u67e5  \u00b7  SkillMiner + ImmuneGuard")
     print(f"\u2514{' '*W}\u2518")
 
     miner = SkillMiner()
@@ -274,7 +271,7 @@ def main():
     immune_guard = ImmuneGuard(root=base_dir)
 
     mined_count = 0
-    for tid, (traj, eval_result) in eval_results.items():
+    for _tid, (traj, eval_result) in eval_results.items():
         if eval_result.should_extract_skill:
             skill = miner.mine(traj, eval_result)
             mined_count += 1
@@ -282,7 +279,7 @@ def main():
             print(f"     \u8d28\u91cf={skill['quality_score']:.2f}  \u6b65\u9aa4={len(skill['procedure'])}  \u8f93\u5165={len(skill['inputs'])}")
 
             # Immune Guard
-            print(f"     [G] \u514d\u763e\u5ba1\u67e5\u4e2d...", end=" ", flush=True)
+            print("     [G] \u514d\u763e\u5ba1\u67e5\u4e2d...", end=" ", flush=True)
             immune_decision = immune_guard.examine(skill, traj, {"passed": True})
 
             d_icon = {"draft": "[D]", "quarantine": "[Q]", "reject": "[X]", "activate": "[A]"}.get(immune_decision.decision, "[?]")
@@ -311,7 +308,7 @@ def main():
     # STEP 5: 漂移检测
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 5  \u00b7  \u6f5c\u79fb\u68c0\u6d4b  \u00b7  DriftDetector")
+    print("\u2502  STEP 5  \u00b7  \u6f5c\u79fb\u68c0\u6d4b  \u00b7  DriftDetector")
     print(f"\u2514{' '*W}\u2518")
 
     index = registry.get_index()
@@ -344,7 +341,7 @@ def main():
     # STEP 6: 技能回放验证
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 6  \u00b7  \u6280\u80fd\u56de\u653e\u9a8c\u8bc1  \u00b7  SkillReplay")
+    print("\u2502  STEP 6  \u00b7  \u6280\u80fd\u56de\u653e\u9a8c\u8bc1  \u00b7  SkillReplay")
     print(f"\u2514{' '*W}\u2518")
 
     replay_engine = SkillReplay(root=base_dir)
@@ -375,9 +372,9 @@ def main():
         elif report.recommendation == "quarantine":
             registry.archive(sid, reason="replay: regression")
             archived.append(sid)
-            print(f"     [Q] \u5f52\u6863\u81f3 quarantine")
+            print("     [Q] \u5f52\u6863\u81f3 quarantine")
         else:
-            print(f"     [--] \u4fdd\u6301 draft \u72b6\u6001")
+            print("     [--] \u4fdd\u6301 draft \u72b6\u6001")
 
         time.sleep(0.3)
 
@@ -387,7 +384,7 @@ def main():
     # STEP 7: 最终状态对比
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 7  \u00b7  \u81ea\u8fdb\u5316\u7ed3\u679c\u5bf9\u6bd4  \u00b7  Evolution Delta")
+    print("\u2502  STEP 7  \u00b7  \u81ea\u8fdb\u5316\u7ed3\u679c\u5bf9\u6bd4  \u00b7  Evolution Delta")
     print(f"\u2514{' '*W}\u2518")
 
     final_index = registry.get_index()
@@ -412,7 +409,7 @@ def main():
     # STEP 8: 系统健康报告
     # ════════════════════════════════════════════════════════════════
     print(f"\n\u250c{' '*W}\u2510")
-    print(f"\u2502  STEP 8  \u00b7  \u7cfb\u7edf\u5065\u5eb7\u62a5\u544a  \u00b7  System Health Report")
+    print("\u2502  STEP 8  \u00b7  \u7cfb\u7edf\u5065\u5eb7\u62a5\u544a  \u00b7  System Health Report")
     print(f"\u2514{' '*W}\u2518")
 
     health = {
@@ -433,20 +430,20 @@ def main():
     }
 
     print(f"\n  \u751f\u6210\u65f6\u95f4: {health['generated_at']}")
-    print(f"  \u6846\u67b6\u72b6\u6001: [OK] healthy")
-    print(f"\n  \u5065\u5eb7\u6307\u6807:")
+    print("  \u6846\u67b6\u72b6\u6001: [OK] healthy")
+    print("\n  \u5065\u5eb7\u6307\u6807:")
     total_s = max(health["total_skills"], 1)
     print(f"     \u6d3b\u8dc3\u6280\u80fd\u6bd4\u4f8b:   {hbar({'active': health['active'], 'total': total_s - health['active']})}")
     print(f"     \u98ce\u9669\u9694\u79bb\u7387:     {hbar({'quarantine': health['quarantine'], 'safe': total_s - health['quarantine']})}")
     print(f"     \u6f5c\u79fb\u6280\u80fd\u6bd4\u4f8b:   {hbar({'drift': health['drift_detected'], 'stable': total_s - health['drift_detected']})}")
 
-    print(f"\n  \u8fdb\u5316\u6307\u6807:")
+    print("\n  \u8fdb\u5316\u6307\u6807:")
     print(f"     [+]\u65b0\u589e\u6280\u80fd:      +{health['newly_mined']}")
     print(f"     [G]\u514d\u763e\u62e6\u622a:      +{health['immue_blocks']} (\u5371\u9669\u8f68\u8ff9)")
     print(f"     [D]\u6f5c\u79fb\u68c0\u6d4b:      {health['drift_detected']}")
     print(f"     [^]\u5347\u7ea7\u4e3aactive:   {health['promoted']}")
     print(f"     [!]\u5f52\u6863:          {health['archived_count']}")
-    print(f"\n  [FRAME] \u6846\u67b6\u72b6\u6001: [OK] \u8fd0\u884c\u6b63\u5e38 \u2014 \u514d\u763e\u7cfb\u7edf\u6d3b\u8dc3 \u2014 \u6280\u80fd\u5e93\u6301\u7eed\u8fdb\u5316\u4e2d")
+    print("\n  [FRAME] \u6846\u67b6\u72b6\u6001: [OK] \u8fd0\u884c\u6b63\u5e38 \u2014 \u514d\u763e\u7cfb\u7edf\u6d3b\u8dc3 \u2014 \u6280\u80fd\u5e93\u6301\u7eed\u8fdb\u5316\u4e2d")
 
     report_path = base_dir / "logs" / f"health_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(report_path, "w", encoding="utf-8") as f:
@@ -458,7 +455,7 @@ def main():
     # Immune Guard 专项演示
     # ════════════════════════════════════════════════════════════════
     print(f"\n{'='*W}")
-    print(f"  [G]  IMMUNE GUARD \u2014 \u5371\u9669\u6280\u80fd\u62e5\u622a\u4e13\u9879\u6f14\u793a")
+    print("  [G]  IMMUNE GUARD \u2014 \u5371\u9669\u6280\u80fd\u62e5\u622a\u4e13\u9879\u6f14\u793a")
     print(f"{'='*W}")
 
     dangerous_tests = [
@@ -485,10 +482,10 @@ def main():
     # DONE
     # ════════════════════════════════════════════════════════════════
     print(f"\n{'='*W}")
-    print(f"  [OK]  PHOENIX-EVO V0.8 \u5168\u95ed\u73af\u6f14\u793a\u5b8c\u6210")
+    print("  [OK]  PHOENIX-EVO V0.8 \u5168\u95ed\u73af\u6f14\u793a\u5b8c\u6210")
     print(f"{'='*W}")
-    print(f"\n  \u81ea\u8fdb\u5316\u95ed\u73af\u5df2\u9a8c\u8bc1:")
-    print(f"  \u8f68\u8ff9\u6ce8\u5165 [\u2192] \u4efb\u52a1\u81ea\u8bc4 [\u2192] \u6280\u80fd\u6316\u6398 [\u2192] \u514d\u763e\u5ba1\u67e5 [\u2192] \u6f5c\u79fb\u68c0\u6d4b [\u2192] \u6280\u80fd\u56de\u653e [\u2192] \u5065\u5eb7\u62a5\u544a")
+    print("\n  \u81ea\u8fdb\u5316\u95ed\u73af\u5df2\u9a8c\u8bc1:")
+    print("  \u8f68\u8ff9\u6ce8\u5165 [\u2192] \u4efb\u52a1\u81ea\u8bc4 [\u2192] \u6280\u80fd\u6316\u6398 [\u2192] \u514d\u763e\u5ba1\u67e5 [\u2192] \u6f5c\u79fb\u68c0\u6d4b [\u2192] \u6280\u80fd\u56de\u653e [\u2192] \u5065\u5eb7\u62a5\u544a")
     print()
 
 

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
-from .experiment_definitions import ALL_EXPERIMENTS, ExperimentDefinition
-from .ablation_runner import AblationResult
+from .experiment_definitions import ALL_EXPERIMENTS
+
+if TYPE_CHECKING:
+    from .ablation_runner import AblationResult
 
 
 class PaperGenerator:
@@ -16,14 +18,14 @@ class PaperGenerator:
     """
 
     def __init__(self):
-        self._experiment_results: Dict[str, Dict[str, Any]] = {}
-        self._ablation_results: List[AblationResult] = []
+        self._experiment_results: dict[str, dict[str, Any]] = {}
+        self._ablation_results: list[AblationResult] = []
 
-    def add_experiment_result(self, experiment_id: str, results: Dict[str, Any]) -> None:
+    def add_experiment_result(self, experiment_id: str, results: dict[str, Any]) -> None:
         """Add results for an experiment."""
         self._experiment_results[experiment_id] = results
 
-    def add_ablation_results(self, results: List[AblationResult]) -> None:
+    def add_ablation_results(self, results: list[AblationResult]) -> None:
         """Add ablation study results."""
         self._ablation_results.extend(results)
 

@@ -13,11 +13,10 @@ V0.5 — Phoenix-Evo Runtime Skill Router
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # FallbackResult
@@ -317,7 +316,7 @@ class FallbackManager:
         try:
             index = json.loads(path.read_text(encoding="utf-8"))
             return index.get(skill_id, {})
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return {}
 
     def _degrade_skill(
@@ -337,7 +336,7 @@ class FallbackManager:
                 index[skill_id]["degraded_at"] = datetime.now().isoformat()
                 index[skill_id]["degrade_reason"] = "fallback_manager: consecutive/total failure threshold"
                 path.write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding="utf-8")
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             pass
 
     def _update_skill_on_success(
@@ -359,7 +358,7 @@ class FallbackManager:
                 entry["success_rate"] = round(entry["success_count"] / total, 4)
                 entry["last_used"] = datetime.now().isoformat()
                 path.write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding="utf-8")
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             pass
 
     def get_failure_stats(self, skill_id: str) -> dict[str, Any]:

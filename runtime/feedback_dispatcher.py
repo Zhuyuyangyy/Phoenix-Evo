@@ -33,11 +33,10 @@ from __future__ import annotations
 import json
 import logging
 import threading
-from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger("feedback_dispatcher")
 
@@ -52,14 +51,14 @@ class Threshold:
 
 # ── 数据结构 ──────────────────────────────────────────────────────────────────
 
-class OutcomeStatus(str, Enum):
+class OutcomeStatus(StrEnum):
     PENDING = "pending"
     PROCESSED = "processed"
     FLAGGED = "flagged"
     QUARANTINED = "quarantined"
 
 
-class SkillHealthStatus(str, Enum):
+class SkillHealthStatus(StrEnum):
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     FAILING = "failing"
@@ -88,7 +87,7 @@ class FeedbackDispatcher:
         self._lock = threading.Lock()
 
         # 延迟导入避免循环依赖
-        self._outcome_tracker: Optional[Any] = None
+        self._outcome_tracker: Any | None = None
 
     # ── Phoenix 懒加载 ──────────────────────────────────────────────────────
 
@@ -110,12 +109,11 @@ class FeedbackDispatcher:
         """
         if execution_result == "success":
             return self.on_success(skill_id=skill_id, **kwargs)
-        elif execution_result == "failure":
+        if execution_result == "failure":
             return self.on_failure(skill_id=skill_id, **kwargs)
-        elif execution_result == "skipped":
+        if execution_result == "skipped":
             return self.on_skipped(skill_id=skill_id, **kwargs)
-        else:
-            return {"error": f"unknown execution_result: {execution_result}"}
+        return {"error": f"unknown execution_result: {execution_result}"}
 
     def report_success(
         self,
@@ -183,10 +181,9 @@ class FeedbackDispatcher:
             return self.outcome_tracker._record_outcome(
                 skill_id=skill_id, success=True, task_id=task_id, session_id=session_id,
             )
-        else:
-            self._enqueue({"skill_id": skill_id, "success": True, "task_id": task_id,
-                            "session_id": session_id, "outcome": "success"})
-            return {"status": "queued", "skill_id": skill_id}
+        self._enqueue({"skill_id": skill_id, "success": True, "task_id": task_id,
+                        "session_id": session_id, "outcome": "success"})
+        return {"status": "queued", "skill_id": skill_id}
 
     def on_failure(
         self,
@@ -219,13 +216,12 @@ class FeedbackDispatcher:
             )
             health = self.outcome_tracker.check_skill_health(skill_id)
             return {"outcome": result, "health": health.value}
-        else:
-            self._enqueue({
-                "skill_id": skill_id, "success": False,
-                "failure_reason": failure_reason, "risk_flag": risk_flag,
-                "task_id": task_id, "session_id": session_id, "outcome": "failure",
-            })
-            return {"status": "queued", "skill_id": skill_id}
+        self._enqueue({
+            "skill_id": skill_id, "success": False,
+            "failure_reason": failure_reason, "risk_flag": risk_flag,
+            "task_id": task_id, "session_id": session_id, "outcome": "failure",
+        })
+        return {"status": "queued", "skill_id": skill_id}
 
     def on_skipped(
         self,
@@ -245,10 +241,9 @@ class FeedbackDispatcher:
 
         if self.mode == "sync":
             return {"status": "skipped", "skill_id": skill_id, "reason": reason}
-        else:
-            self._enqueue({"skill_id": skill_id, "outcome": "skipped",
-                            "reason": reason, "task_id": task_id, "session_id": session_id})
-            return {"status": "queued"}
+        self._enqueue({"skill_id": skill_id, "outcome": "skipped",
+                        "reason": reason, "task_id": task_id, "session_id": session_id})
+        return {"status": "queued"}
 
     def process_pending(self) -> dict[str, Any]:
         """批量消费 async 队列（由 OutcomeTracker 调用）"""

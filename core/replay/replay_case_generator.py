@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import random
-import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 class ReplayCaseType(Enum):
@@ -24,13 +22,13 @@ class ReplayCase:
     case_id: str
     case_type: ReplayCaseType
     task_description: str
-    original_trajectory: Dict[str, Any]
-    expected_outcome: Dict[str, Any]
-    perturbations: List[Dict[str, Any]] = field(default_factory=list)
-    tags: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    original_trajectory: dict[str, Any]
+    expected_outcome: dict[str, Any]
+    perturbations: list[dict[str, Any]] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "case_id": self.case_id,
             "case_type": self.case_type.value,
@@ -43,7 +41,7 @@ class ReplayCase:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ReplayCase":
+    def from_dict(cls, data: dict[str, Any]) -> ReplayCase:
         data["case_type"] = ReplayCaseType(data["case_type"])
         return cls(**data)
 
@@ -65,8 +63,8 @@ class ReplayCaseGenerator:
 
     def generate_positive_case(
         self,
-        trajectory: Dict[str, Any],
-        description: Optional[str] = None,
+        trajectory: dict[str, Any],
+        description: str | None = None,
     ) -> ReplayCase:
         """Generate a positive replay case (should succeed the same way)."""
         case_id = self._next_case_id()
@@ -84,8 +82,8 @@ class ReplayCaseGenerator:
 
     def generate_negative_case(
         self,
-        trajectory: Dict[str, Any],
-        injected_fault: Optional[Dict[str, Any]] = None,
+        trajectory: dict[str, Any],
+        injected_fault: dict[str, Any] | None = None,
     ) -> ReplayCase:
         """Generate a negative replay case (should detect/catch the fault)."""
         case_id = self._next_case_id()
@@ -110,8 +108,8 @@ class ReplayCaseGenerator:
 
     def generate_edge_case(
         self,
-        trajectory: Dict[str, Any],
-        edge_condition: Optional[Dict[str, Any]] = None,
+        trajectory: dict[str, Any],
+        edge_condition: dict[str, Any] | None = None,
     ) -> ReplayCase:
         """Generate an edge case replay (boundary conditions)."""
         case_id = self._next_case_id()
@@ -136,8 +134,8 @@ class ReplayCaseGenerator:
 
     def generate_regression_case(
         self,
-        trajectory: Dict[str, Any],
-        previously_fixed_bug: Optional[Dict[str, Any]] = None,
+        trajectory: dict[str, Any],
+        previously_fixed_bug: dict[str, Any] | None = None,
     ) -> ReplayCase:
         """Generate a regression case (previously fixed bug should stay fixed)."""
         case_id = self._next_case_id()
@@ -161,12 +159,12 @@ class ReplayCaseGenerator:
 
     def generate_suite(
         self,
-        trajectories: List[Dict[str, Any]],
+        trajectories: list[dict[str, Any]],
         n_positive: int = 5,
         n_negative: int = 3,
         n_edge: int = 2,
         n_regression: int = 2,
-    ) -> List[ReplayCase]:
+    ) -> list[ReplayCase]:
         """Generate a full suite of replay cases from trajectories."""
         cases = []
         if not trajectories:
@@ -191,8 +189,8 @@ class ReplayCaseGenerator:
         return cases
 
     def _inject_fault(
-        self, trajectory: Dict[str, Any], fault: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, trajectory: dict[str, Any], fault: dict[str, Any]
+    ) -> dict[str, Any]:
         """Inject a fault into a trajectory for negative testing."""
         modified = json.loads(json.dumps(trajectory))
         events = modified.get("events", [])
@@ -206,8 +204,8 @@ class ReplayCaseGenerator:
         return modified
 
     def _apply_edge_condition(
-        self, trajectory: Dict[str, Any], condition: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, trajectory: dict[str, Any], condition: dict[str, Any]
+    ) -> dict[str, Any]:
         """Apply an edge condition to a trajectory."""
         modified = json.loads(json.dumps(trajectory))
         if condition["type"] == "max_tokens":

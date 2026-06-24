@@ -1,16 +1,17 @@
-# -*- coding: utf-8 -*-
 """runtime_skill_bridge.py — Phoenix-Evo V0.8 Hermes Runtime Bridge"""
 from __future__ import annotations
-import logging, time, uuid
+
+import logging
+import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
-from typing import Any, Optional
 
 logger = logging.getLogger("runtime_skill_bridge")
 
-class BridgeTaskState(str, Enum):
+class BridgeTaskState(StrEnum):
     INITIALIZING = "initializing"
     RETRIEVING = "retrieving"
     FILTERING = "filtering"
@@ -26,25 +27,25 @@ class BridgeTaskContext:
     task_id: str
     session_id: str
     task_description: str
-    task_type: Optional[str] = None
+    task_type: str | None = None
     risk_level: str = "low"
     state: BridgeTaskState = BridgeTaskState.INITIALIZING
     matched_skills: list = field(default_factory=list)
     allowed_skills: list = field(default_factory=list)
     injected_context: str = ""
     candidates_summary: str = ""
-    execution_result: Optional[str] = None
-    failure_reason: Optional[str] = None
+    execution_result: str | None = None
+    failure_reason: str | None = None
     duration_seconds: float = 0.0
     started_at: str = field(default_factory=lambda: datetime.now().isoformat())
-    ended_at: Optional[str] = None
+    ended_at: str | None = None
 
     @property
     def has_safe_skill(self) -> bool:
         return len(self.allowed_skills) > 0
 
     @property
-    def best_skill(self) -> Optional[dict]:
+    def best_skill(self) -> dict | None:
         return self.allowed_skills[0] if self.allowed_skills else None
 
     @property
@@ -52,7 +53,8 @@ class BridgeTaskContext:
         return self.state == BridgeTaskState.READY
 
     def to_hermes_system_context(self) -> str:
-        if not self.injected_context: return ""
+        if not self.injected_context:
+            return ""
         parts = ["## Relevant Phoenix Skills", "", self.injected_context, "",
                  "---",
                  "*Skill context is advisory only. Do not execute destructive operations without validation.*"]
@@ -71,7 +73,7 @@ class BridgeTaskContext:
         }
 
 class HermesRuntimeBridge:
-    def __init__(self, phoenix_base_dir: Optional[str] = None, outcome_store: Optional[dict] = None):
+    def __init__(self, phoenix_base_dir: str | None = None, outcome_store: dict | None = None):
         self.base_dir = Path(phoenix_base_dir or Path(__file__).parent.parent)
         self._outcome_store = outcome_store or {}
         self._retriever = self._policy = self._injector = self._dispatcher = None
@@ -104,9 +106,9 @@ class HermesRuntimeBridge:
             self._dispatcher = FeedbackDispatcher(phoenix_base_dir=self.base_dir, reporter_base_dir=self.base_dir, mode="sync")
         return self._dispatcher
 
-    def on_task_start(self, task_description: str, task_type: Optional[str] = None,
-                      risk_level: str = "low", session_id: Optional[str] = None,
-                      task_id: Optional[str] = None, max_candidates: int = 5) -> BridgeTaskContext:
+    def on_task_start(self, task_description: str, task_type: str | None = None,
+                      risk_level: str = "low", session_id: str | None = None,
+                      task_id: str | None = None, max_candidates: int = 5) -> BridgeTaskContext:
         task_id = task_id or f"bridge_{uuid.uuid4().hex[:8]}"
         session_id = session_id or f"sess_{uuid.uuid4().hex[:8]}"
         ctx = BridgeTaskContext(task_id=task_id, session_id=session_id,
@@ -160,8 +162,10 @@ class HermesRuntimeBridge:
             entry = next((e for e in ctx.matched_skills if e.get("skill_id") == sid), {})
             class _FakeRouteResult:
                 def __init__(self2, e, c, sid, sname):
-                    self2._index_entry = e; self2._skill_card = c
-                    self2.skill_id = sid; self2.skill_name = sname
+                    self2._index_entry = e
+                    self2._skill_card = c
+                    self2.skill_id = sid
+                    self2.skill_name = sname
                     self2.route_score = 0.8
                     self2.evidence_score = entry.get("evidence_score", 0.0)
                     self2.replay_pass_rate = entry.get("replay_pass_rate", 0.0)
@@ -172,9 +176,10 @@ class HermesRuntimeBridge:
         return ctx
 
     def on_task_complete(self, ctx: BridgeTaskContext, execution_result: str = "success",
-                         duration: Optional[float] = None) -> None:
+                         duration: float | None = None) -> None:
         ctx.ended_at = datetime.now().isoformat()
-        if duration is not None: ctx.duration_seconds = duration
+        if duration is not None:
+            ctx.duration_seconds = duration
         ctx.state = BridgeTaskState.SUCCESS if execution_result == "success" else BridgeTaskState.FAILED
         ctx.execution_result = execution_result
         for sid in [s["skill_id"] for s in ctx.allowed_skills]:
@@ -197,10 +202,11 @@ class HermesRuntimeBridge:
         try:
             from core.skill_registry import SkillRegistry
             return SkillRegistry(root=self.base_dir)._load_skill_card(skill_id) or {}
-        except Exception: return {}
+        except Exception:
+            return {}
 
     def get_injected_context_for_hermes(self, task_description: str,
-                                          task_type: Optional[str] = None,
+                                          task_type: str | None = None,
                                           risk_level: str = "low") -> str:
         ctx = self.on_task_start(task_description=task_description, task_type=task_type, risk_level=risk_level)
         return ctx.to_hermes_system_context()

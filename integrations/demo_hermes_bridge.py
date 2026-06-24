@@ -5,18 +5,18 @@ Phoenix-Evo V0.5 Hermes Bridge Demo
 场景：模拟 Hermes 的一次完整任务执行 + Phoenix 自进化闭环。
 """
 
-import tempfile
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 # 把 Phoenix-Evo core 加入 path
 _phoenix_root = Path(__file__).parent.parent
 sys.path.insert(0, str(_phoenix_root))
 
-from integrations.hermes_adapter import HermesAdapter
 from integrations.async_bridge import AsyncBridge
-from integrations.integration_policy import get_checker, PolicyChecker, IntegrationPolicy
+from integrations.hermes_adapter import HermesAdapter
+from integrations.integration_policy import get_checker
 
 
 def print_section(title: str) -> None:
@@ -93,7 +93,7 @@ def demo_direct_adapter():
             artifacts=["/tmp/fix.py", "/mnt/c/Users/测试/file.py"],
         )
 
-        print(f"\n[结果]")
+        print("\n[结果]")
         print(f"  report keys: {list(report.keys())}")
         if 'error' in report:
             print(f"  ERROR: {report['error']}")
@@ -203,8 +203,8 @@ def demo_async_bridge():
             if qsize == 0 and bridge.is_running():
                 break
 
-        status = bridge.get_status() if hasattr(bridge, 'get_status') else {}
-        print(f"\n[Phoenix 状态]")
+        bridge.get_status() if hasattr(bridge, 'get_status') else {}
+        print("\n[Phoenix 状态]")
         print(f"  worker 运行中: {bridge.is_running()}")
         print(f"  队列大小: {bridge.queue_size()}")
 
@@ -215,7 +215,7 @@ def demo_async_bridge():
         # 检查 Phoenix 技能库（手动查看文件）
         draft_dir = Path(tmp) / "skills" / "draft"
         draft_files = list(draft_dir.glob("*.md")) if draft_dir.exists() else []
-        print(f"\n[Phoenix 技能库]")
+        print("\n[Phoenix 技能库]")
         print(f"  draft_count: {len(draft_files)}")
 
     finally:

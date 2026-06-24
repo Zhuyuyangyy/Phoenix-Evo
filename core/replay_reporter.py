@@ -11,12 +11,10 @@ V0.4 — Phoenix-Evo Evidence & Replay
 
 from __future__ import annotations
 
-import json
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # EvidenceSummary — 技能证据健康度报告
@@ -26,7 +24,7 @@ from typing import Any
 class EvidenceSummary:
     """
     技能整体证据健康度评分（0-100 分）。
-    
+
     维度：
       - evidence_completeness：证据链是否完整（有无 card、trajectory_id、来源）
       - replay_validity：回放验证是否通过
@@ -69,7 +67,7 @@ class ReplayReporter:
     # Format replay report
     # ------------------------------------------------------------------
 
-    def format_report(self, report: "ReplayReport") -> dict[str, Any]:
+    def format_report(self, report: ReplayReport) -> dict[str, Any]:
         """
         将 ReplayReport 转为可读 dict（用于 API 返回或 JSON 序列化）。
         """
@@ -103,7 +101,7 @@ class ReplayReporter:
             ],
         }
 
-    def format_markdown(self, report: "ReplayReport") -> str:
+    def format_markdown(self, report: ReplayReport) -> str:
         """
         将 ReplayReport 转为 Markdown 文本（用于文档或报告输出）。
         """
@@ -149,8 +147,8 @@ class ReplayReporter:
 
     def build_evidence_summary(
         self,
-        skill_card: "SkillCard",
-        replay_report: "ReplayReport | None" = None,
+        skill_card: SkillCard,
+        replay_report: ReplayReport | None = None,
     ) -> EvidenceSummary:
         """
         根据技能证据卡和回放报告，生成整体证据健康度评分。
@@ -279,13 +277,13 @@ class ReplayReporter:
             "## Score Breakdown",
             "",
             f"- **Evidence Completeness:** {summary.evidence_completeness:.0%}",
-            f"  - 证据链是否完整（来源轨迹、任务目标、验证器、步骤数）",
+            "  - 证据链是否完整（来源轨迹、任务目标、验证器、步骤数）",
             f"- **Replay Validity:** {summary.replay_validity:.0%}",
-            f"  - 回放验证通过率",
+            "  - 回放验证通过率",
             f"- **Risk Safety:** {summary.risk_safety:.0%}",
-            f"  - 风险等级与回放风险变化",
+            "  - 风险等级与回放风险变化",
             f"- **Longevity:** {summary.longevity:.0%}",
-            f"  - 长期回放成功率",
+            "  - 长期回放成功率",
             "",
             f"**Verdict:** {summary.verdict_note}",
             "",
@@ -304,8 +302,8 @@ class ReplayReporter:
 
     def batch_summary(
         self,
-        reports: list["ReplayReport"],
-        skill_cards: dict[str, "SkillCard"],
+        reports: list[ReplayReport],
+        skill_cards: dict[str, SkillCard],
     ) -> dict[str, Any]:
         """
         批量回放报告汇总（用于展示多个技能的回放结果）。

@@ -14,17 +14,15 @@ V0.5 约束：只生成 draft skill，禁止自动激活/调用/修改 Hermess �
 
 from __future__ import annotations
 
-import json
-import threading
-import time as time_module
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Optional
-from dataclasses import dataclass, field
-
-
 # Phoenix-Evo 核心模块（假设已安装或通过 path 引用）
 import sys
+import threading
+import time as time_module
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
 _phoenix_path = str(Path(__file__).parent.parent)
 if _phoenix_path not in sys.path:
     sys.path.insert(0, _phoenix_path)
@@ -72,13 +70,13 @@ class HermesEvent:
 class HermesAdapter:
     """
     Hermes 事件适配器。
-    
+
     使用方式：
-    
+
     ```python
     from run_agent import AIAgent
     from integrations.hermes_adapter import HermesAdapter
-    
+
     adapter = HermesAdapter(
         phoenix_base_dir=Path("/path/to/Phoenix-Evo"),
         hermes_session_id="session_abc123",
@@ -86,18 +84,18 @@ class HermesAdapter:
         task_type="coding",
         risk_level="low",
     )
-    
+
     agent = AIAgent(
         step_callback=adapter.on_step,
         tool_progress_callback=adapter.on_tool_progress,
         tool_complete_callback=adapter.on_tool_complete,
     )
-    
+
     # 任务结束后
     report = adapter.complete_and_evolve(success=True, final_output="...")
     print(report)
     ```
-    
+
     V0.5 约束：
     - 只生成 draft skill，不自动激活
     - 不修改 Hermes /skills 系统
@@ -182,7 +180,7 @@ class HermesAdapter:
         """
         Hermes step_callback。
         每轮迭代开始时调用，记录上轮工具结果。
-        
+
         Args:
             api_call_count: 当前 API 调用编号
             prev_tools: 上轮工具 [{name, result}, ...]
@@ -215,7 +213,7 @@ class HermesAdapter:
         """
         Hermes tool_progress_callback。
         工具开始/完成时调用。
-        
+
         Events:
             "tool.started"      — 工具开始执行
             "tool.completed"     — 工具完成
@@ -317,8 +315,7 @@ class HermesAdapter:
 
         try:
             phoenix = self._get_phoenix()
-            report = phoenix.evolve_from_trajectory(trajectory)
-            return report
+            return phoenix.evolve_from_trajectory(trajectory)
         except Exception as e:
             # Phoenix 出错不应中断 Hermes 工作流
             return {

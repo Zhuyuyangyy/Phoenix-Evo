@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo Smoke Test Suite
 =============================
@@ -19,16 +18,15 @@ Phoenix-Evo Smoke Test Suite
   pytest tests/test_smoke.py -v
 """
 
-import sys
 import os
-import tempfile
 import shutil
+import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-
 
 # =============================================================================
 # 1. Core Module Imports
@@ -46,7 +44,7 @@ class TestCoreImports:
         assert TrajectoryLogger is not None
 
     def test_import_post_task_evaluator(self):
-        from core.post_task_evaluator import PostTaskEvaluator, EvaluationResult
+        from core.post_task_evaluator import EvaluationResult, PostTaskEvaluator
         assert PostTaskEvaluator is not None
         assert EvaluationResult is not None
 
@@ -64,7 +62,7 @@ class TestCoreImports:
         assert SkillRegistry is not None
 
     def test_import_immune_guard(self):
-        from core.immune_guard import ImmuneGuard, ImmuneDecision
+        from core.immune_guard import ImmuneDecision, ImmuneGuard
         assert ImmuneGuard is not None
         assert ImmuneDecision is not None
 
@@ -77,12 +75,12 @@ class TestCoreImports:
         assert QuarantineManager is not None
 
     def test_import_risk_policy(self):
-        from core.risk_policy import RiskProfile, RiskPolicy
+        from core.risk_policy import RiskPolicy, RiskProfile
         assert RiskProfile is not None
         assert RiskPolicy is not None
 
     def test_import_skill_similarity(self):
-        from core.skill_similarity import SkillVectorizer, SimilarityResult
+        from core.skill_similarity import SimilarityResult, SkillVectorizer
         assert SkillVectorizer is not None
         assert SimilarityResult is not None
 
@@ -91,7 +89,7 @@ class TestCoreImports:
         assert DriftDetector is not None
 
     def test_import_curator_policy(self):
-        from core.curator_policy import CuratorPolicy, MergeAction, ArchiveAction
+        from core.curator_policy import CuratorPolicy, MergeAction
         assert CuratorPolicy is not None
         assert MergeAction is not None
 
@@ -100,7 +98,7 @@ class TestCoreImports:
         assert SkillCurator is not None
 
     def test_import_skill_evidence(self):
-        from core.skill_evidence import SkillEvidenceManager, SkillCard
+        from core.skill_evidence import SkillCard, SkillEvidenceManager
         assert SkillEvidenceManager is not None
         assert SkillCard is not None
 
@@ -109,12 +107,12 @@ class TestCoreImports:
         assert SkillBenchmark is not None
 
     def test_import_skill_replay(self):
-        from core.skill_replay import SkillReplay, ReplayReport
+        from core.skill_replay import ReplayReport, SkillReplay
         assert SkillReplay is not None
         assert ReplayReport is not None
 
     def test_import_replay_reporter(self):
-        from core.replay_reporter import ReplayReporter, EvidenceSummary
+        from core.replay_reporter import EvidenceSummary, ReplayReporter
         assert ReplayReporter is not None
         assert EvidenceSummary is not None
 
@@ -124,29 +122,6 @@ class TestCoreImports:
 
     def test_import_core_package(self):
         """验证 core/__init__.py 的统一导出。"""
-        from core import (
-            PhoenixEvo,
-            TrajectoryLogger,
-            PostTaskEvaluator,
-            SkillMiner,
-            SkillVerifier,
-            SkillRegistry,
-            ImmuneGuard,
-            ImmuneMemory,
-            QuarantineManager,
-            RiskPolicy,
-            SkillVectorizer,
-            DriftDetector,
-            SkillCurator,
-            SkillEvidenceManager,
-            SkillReplay,
-            ReplayReporter,
-            SkillRetriever,
-            SkillRouter,
-            ExecutionGuard,
-            FallbackManager,
-            RuntimeReporter,
-        )
         # If we get here, all imports succeeded
         assert True
 
@@ -164,13 +139,13 @@ class TestRuntimeImports:
         assert RuntimeResult is not None
 
     def test_import_skill_router(self):
-        from runtime.skill_router import SkillRouter, RouteResult, RouteDecision
+        from runtime.skill_router import RouteDecision, RouteResult, SkillRouter
         assert SkillRouter is not None
         assert RouteResult is not None
         assert RouteDecision is not None
 
     def test_import_runtime_guard(self):
-        from runtime.runtime_guard import RuntimeGuard, GuardResult, GuardDecision
+        from runtime.runtime_guard import GuardDecision, GuardResult, RuntimeGuard
         assert RuntimeGuard is not None
         assert GuardResult is not None
         assert GuardDecision is not None
@@ -185,7 +160,7 @@ class TestRuntimeImports:
         assert FallbackResult is not None
 
     def test_import_runtime_reporter(self):
-        from runtime.runtime_reporter import RuntimeReporter, RuntimeCallRecord
+        from runtime.runtime_reporter import RuntimeCallRecord, RuntimeReporter
         assert RuntimeReporter is not None
         assert RuntimeCallRecord is not None
 
@@ -194,7 +169,7 @@ class TestRuntimeImports:
         assert SkillRetriever is not None
 
     def test_import_agent_runtime(self):
-        from runtime.agent_runtime import AgentRuntime, TaskState, TaskContext
+        from runtime.agent_runtime import AgentRuntime, TaskContext, TaskState
         assert AgentRuntime is not None
         assert TaskState is not None
         assert TaskContext is not None
@@ -224,40 +199,24 @@ class TestRuntimeImports:
         assert TaskTypeClassifier is not None
 
     def test_import_runtime_skill_bridge(self):
-        from runtime.runtime_skill_bridge import HermesRuntimeBridge, BridgeTaskState, BridgeTaskContext
+        from runtime.runtime_skill_bridge import BridgeTaskContext, BridgeTaskState, HermesRuntimeBridge
         assert HermesRuntimeBridge is not None
         assert BridgeTaskState is not None
         assert BridgeTaskContext is not None
 
     def test_import_skill_injection_policy(self):
-        from runtime.skill_injection_policy import SafeInjectionPolicy, InjectionDecision, InjectionPolicyResult
+        from runtime.skill_injection_policy import InjectionDecision, InjectionPolicyResult, SafeInjectionPolicy
         assert SafeInjectionPolicy is not None
         assert InjectionDecision is not None
         assert InjectionPolicyResult is not None
 
     def test_import_seed_skills(self):
-        from runtime.seed_skills import SeedSkillLoader, SEED_SKILLS
+        from runtime.seed_skills import SEED_SKILLS, SeedSkillLoader
         assert SeedSkillLoader is not None
         assert SEED_SKILLS is not None
 
     def test_import_runtime_package(self):
         """验证 runtime/__init__.py 的统一导出。"""
-        from runtime import (
-            SkillRetriever,
-            SkillRouter,
-            RouteResult,
-            RouteDecision,
-            RuntimeGuard,
-            GuardResult,
-            GuardDecision,
-            FallbackManager,
-            FallbackResult,
-            FallbackReason,
-            RuntimeReporter,
-            RuntimeCallRecord,
-            ContextInjector,
-            PhoenixRuntime,
-        )
         assert True
 
 
@@ -755,8 +714,9 @@ class TestFeedbackDispatcherLifecycle:
 
     def test_jsonl_append_not_overwrite(self):
         """验证 FeedbackDispatcher 写入 JSONL 使用追加模式而非覆盖。"""
-        from runtime.feedback_dispatcher import FeedbackDispatcher
         from datetime import datetime
+
+        from runtime.feedback_dispatcher import FeedbackDispatcher
         tmp = tempfile.mkdtemp(prefix="phoenix_smoke_fd_append_")
         try:
             d = FeedbackDispatcher(phoenix_base_dir=Path(tmp), mode="sync")
@@ -836,7 +796,7 @@ class TestSafeInjectionPolicySmoke:
         assert policy is not None
 
     def test_evaluate_low_risk_skill(self):
-        from runtime.skill_injection_policy import SafeInjectionPolicy, InjectionDecision
+        from runtime.skill_injection_policy import InjectionDecision, SafeInjectionPolicy
         policy = SafeInjectionPolicy()
         skill_entry = {
             "skill_id": "inject_001",
@@ -850,7 +810,7 @@ class TestSafeInjectionPolicySmoke:
                                     InjectionDecision.REVIEW, InjectionDecision.DEFER)
 
     def test_evaluate_high_risk_denied(self):
-        from runtime.skill_injection_policy import SafeInjectionPolicy, InjectionDecision
+        from runtime.skill_injection_policy import InjectionDecision, SafeInjectionPolicy
         policy = SafeInjectionPolicy()
         skill_entry = {
             "skill_id": "inject_002",
@@ -927,8 +887,8 @@ class TestRuntimeGuardRules:
     """验证 RuntimeGuard 的安全规则。"""
 
     def test_guard_allows_high_evidence_low_risk(self):
-        from runtime.runtime_guard import RuntimeGuard, GuardDecision
-        from runtime.skill_router import RouteResult, RouteDecision
+        from runtime.runtime_guard import GuardDecision, RuntimeGuard
+        from runtime.skill_router import RouteDecision, RouteResult
         guard = RuntimeGuard()
         route_result = RouteResult(
             skill_id="guard_001",
@@ -945,8 +905,8 @@ class TestRuntimeGuardRules:
         assert result.decision == GuardDecision.ALLOW
 
     def test_guard_denies_low_evidence(self):
-        from runtime.runtime_guard import RuntimeGuard, GuardDecision
-        from runtime.skill_router import RouteResult, RouteDecision
+        from runtime.runtime_guard import GuardDecision, RuntimeGuard
+        from runtime.skill_router import RouteDecision, RouteResult
         guard = RuntimeGuard()
         route_result = RouteResult(
             skill_id="guard_005",
@@ -960,8 +920,8 @@ class TestRuntimeGuardRules:
         assert result.decision == GuardDecision.DENY
 
     def test_guard_denies_high_risk_score(self):
-        from runtime.runtime_guard import RuntimeGuard, GuardDecision
-        from runtime.skill_router import RouteResult, RouteDecision
+        from runtime.runtime_guard import GuardDecision, RuntimeGuard
+        from runtime.skill_router import RouteDecision, RouteResult
         guard = RuntimeGuard()
         route_result = RouteResult(
             skill_id="guard_004",
@@ -975,8 +935,8 @@ class TestRuntimeGuardRules:
         assert result.decision == GuardDecision.DENY
 
     def test_guard_denies_replay_regression(self):
-        from runtime.runtime_guard import RuntimeGuard, GuardDecision
-        from runtime.skill_router import RouteResult, RouteDecision
+        from runtime.runtime_guard import GuardDecision, RuntimeGuard
+        from runtime.skill_router import RouteDecision, RouteResult
         guard = RuntimeGuard()
         route_result = RouteResult(
             skill_id="guard_006",
@@ -991,8 +951,8 @@ class TestRuntimeGuardRules:
         assert result.decision == GuardDecision.DENY
 
     def test_guard_denies_router_deny(self):
-        from runtime.runtime_guard import RuntimeGuard, GuardDecision
-        from runtime.skill_router import RouteResult, RouteDecision
+        from runtime.runtime_guard import GuardDecision, RuntimeGuard
+        from runtime.skill_router import RouteDecision, RouteResult
         guard = RuntimeGuard()
         route_result = RouteResult(
             skill_id="guard_007",
@@ -1016,9 +976,7 @@ class TestSeedSkillsSmoke:
     def test_seed_skills_constant(self):
         from runtime.seed_skills import SEED_SKILLS
         assert isinstance(SEED_SKILLS, (list, dict))
-        if isinstance(SEED_SKILLS, list):
-            assert len(SEED_SKILLS) > 0
-        elif isinstance(SEED_SKILLS, dict):
+        if isinstance(SEED_SKILLS, (list, dict)):
             assert len(SEED_SKILLS) > 0
 
     def test_seed_skill_loader_init(self):

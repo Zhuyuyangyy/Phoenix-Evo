@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
+
 import logging
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 
 logger = logging.getLogger("skill_injection_policy")
 
@@ -12,7 +11,7 @@ REPLAY_THRESHOLD = 2
 REVIEW_THRESHOLD = 3
 RISK_HIGH_BAN_THRESHOLD = 1
 
-class InjectionDecision(str, Enum):
+class InjectionDecision(StrEnum):
     ALLOW = "allow"
     DENY = "deny"
     REVIEW = "review"
@@ -45,8 +44,8 @@ class InjectionPolicyResult:
 class SafeInjectionPolicy:
     def __init__(self): pass
 
-    def evaluate(self, skill_entry: dict, skill_card: Optional[dict] = None,
-                 task_type: Optional[str] = None, task_risk: str = "low",
+    def evaluate(self, skill_entry: dict, skill_card: dict | None = None,
+                 task_type: str | None = None, task_risk: str = "low",
                  consecutive_failures: int = 0, risk_events: int = 0,
                  evidence_score: float = 0.0) -> InjectionPolicyResult:
         skill_id = skill_entry.get("skill_id", "?")
@@ -82,7 +81,7 @@ class SafeInjectionPolicy:
 
         if risk_events >= RISK_HIGH_BAN_THRESHOLD and task_risk in ("high", "critical"):
             rules.append(InjectionRule("risk_event_ban", False, f"risk_events={risk_events}+task_risk={task_risk}", "blocker"))
-            return InjectionPolicyResult(skill_id, skill_name, InjectionDecision.DENY, rules, f"risk event + high risk task")
+            return InjectionPolicyResult(skill_id, skill_name, InjectionDecision.DENY, rules, "risk event + high risk task")
 
         if evidence_score > 0 and evidence_score < MIN_INJECT_SCORE:
             rules.append(InjectionRule("evidence_score_ban", False, f"ev={evidence_score:.2f}<{MIN_INJECT_SCORE}", "blocker"))
@@ -108,10 +107,11 @@ class SafeInjectionPolicy:
 
         return InjectionPolicyResult(skill_id, skill_name, decision, rules, final_reason, penalty)
 
-    def filter_batch(self, skill_entries: list, skill_cards: Optional[dict] = None,
-                     task_type: Optional[str] = None, task_risk: str = "low",
-                     outcome_store: Optional[dict] = None) -> list:
-        if outcome_store is None: outcome_store = {}
+    def filter_batch(self, skill_entries: list, skill_cards: dict | None = None,
+                     task_type: str | None = None, task_risk: str = "low",
+                     outcome_store: dict | None = None) -> list:
+        if outcome_store is None:
+            outcome_store = {}
         results = []
         for entry in skill_entries:
             sid = entry.get("skill_id", "?")

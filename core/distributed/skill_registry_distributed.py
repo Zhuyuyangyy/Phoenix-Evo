@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import hashlib
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 
 @dataclass
@@ -18,7 +17,7 @@ class RegistryEntry:
     checksum: str
     registered_at: float = field(default_factory=time.time)
     last_heartbeat: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -27,7 +26,7 @@ class RegistryNode:
     node_id: str
     address: str
     last_seen: float = field(default_factory=time.time)
-    skills: Set[str] = field(default_factory=set)
+    skills: set[str] = field(default_factory=set)
     active: bool = True
 
 
@@ -38,12 +37,12 @@ class DistributedSkillRegistry:
     with heartbeat-based health checking and conflict resolution.
     """
 
-    def __init__(self, node_id: Optional[str] = None, heartbeat_timeout: float = 300.0):
+    def __init__(self, node_id: str | None = None, heartbeat_timeout: float = 300.0):
         self.node_id = node_id or f"node_{uuid.uuid4().hex[:8]}"
         self.heartbeat_timeout = heartbeat_timeout
-        self._entries: Dict[str, RegistryEntry] = {}  # skill_id -> entry
-        self._nodes: Dict[str, RegistryNode] = {}  # node_id -> node
-        self._skill_nodes: Dict[str, Set[str]] = {}  # skill_id -> set of node_ids
+        self._entries: dict[str, RegistryEntry] = {}  # skill_id -> entry
+        self._nodes: dict[str, RegistryNode] = {}  # node_id -> node
+        self._skill_nodes: dict[str, set[str]] = {}  # skill_id -> set of node_ids
 
     def register_skill(self, entry: RegistryEntry) -> None:
         """Register a skill in the distributed registry."""
@@ -63,18 +62,18 @@ class DistributedSkillRegistry:
         self._nodes[entry.node_id].skills.add(entry.skill_id)
         self._nodes[entry.node_id].last_seen = time.time()
 
-    def lookup(self, skill_id: str) -> Optional[RegistryEntry]:
+    def lookup(self, skill_id: str) -> RegistryEntry | None:
         """Look up a skill by ID."""
         return self._entries.get(skill_id)
 
-    def lookup_by_node(self, node_id: str) -> List[RegistryEntry]:
+    def lookup_by_node(self, node_id: str) -> list[RegistryEntry]:
         """Look up all skills on a specific node."""
         node = self._nodes.get(node_id)
         if not node:
             return []
         return [self._entries[sid] for sid in node.skills if sid in self._entries]
 
-    def discover(self, query: str) -> List[RegistryEntry]:
+    def discover(self, query: str) -> list[RegistryEntry]:
         """Discover skills matching a query."""
         results = []
         query_lower = query.lower()
@@ -104,7 +103,7 @@ class DistributedSkillRegistry:
                 pruned += 1
         return pruned
 
-    def get_available_nodes(self, skill_id: str) -> List[str]:
+    def get_available_nodes(self, skill_id: str) -> list[str]:
         """Get list of active nodes that have a specific skill."""
         node_ids = self._skill_nodes.get(skill_id, set())
         return [
@@ -112,7 +111,7 @@ class DistributedSkillRegistry:
             if nid in self._nodes and self._nodes[nid].active
         ]
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get the status of the distributed registry."""
         active_nodes = sum(1 for n in self._nodes.values() if n.active)
         return {

@@ -15,10 +15,9 @@ V0.5 — Phoenix-Evo Runtime Skill Router
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # RouterDecision
@@ -140,7 +139,7 @@ class SkillRouter:
 
     def route(
         self,
-        retrieval_result: "SkillRetrievalResult",   # type: ignore[name-defined]
+        retrieval_result: SkillRetrievalResult,   # type: ignore[name-defined]
         task_risk: str = "low",
     ) -> RouterResult:
         """
@@ -189,7 +188,7 @@ class SkillRouter:
 
     def _decide_single(
         self,
-        match: "RetrievalMatch",   # type: ignore[name-defined]
+        match: RetrievalMatch,   # type: ignore[name-defined]
         task_risk: str,
     ) -> RouterDecision:
         """
@@ -218,7 +217,7 @@ class SkillRouter:
         # ── BLOCKED ──
         if risk == "critical":
             decision = "blocked"
-            concerns.append(f"风险等级 critical")
+            concerns.append("风险等级 critical")
             reason = "风险等级为 critical，直接拦截"
             return RouterDecision(
                 skill_id=skill_id, skill_name=skill_name, action=decision,

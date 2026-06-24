@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from .replay_case_generator import ReplayCase, ReplayCaseType
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 @dataclass
@@ -17,9 +20,9 @@ class ReplaySuiteResult:
     passed: int
     failed: int
     skipped: int
-    results: List[Dict[str, Any]] = field(default_factory=list)
+    results: list[dict[str, Any]] = field(default_factory=list)
     duration_seconds: float = 0.0
-    summary: Dict[str, Any] = field(default_factory=dict)
+    summary: dict[str, Any] = field(default_factory=dict)
 
     @property
     def pass_rate(self) -> float:
@@ -37,12 +40,12 @@ class ReplayOrchestrator:
 
     def __init__(
         self,
-        executor: Optional[Callable[[ReplayCase], Dict[str, Any]]] = None,
+        executor: Callable[[ReplayCase], dict[str, Any]] | None = None,
     ):
         self._executor = executor or self._default_executor
-        self._results: List[Dict[str, Any]] = []
+        self._results: list[dict[str, Any]] = []
 
-    def _default_executor(self, case: ReplayCase) -> Dict[str, Any]:
+    def _default_executor(self, case: ReplayCase) -> dict[str, Any]:
         """Default executor that validates case structure."""
         result = {
             "case_id": case.case_id,
@@ -57,7 +60,7 @@ class ReplayOrchestrator:
             result["details"]["reason"] = "Empty trajectory"
             return result
 
-        events = case.original_trajectory.get("events", [])
+        case.original_trajectory.get("events", [])
         if case.case_type == ReplayCaseType.POSITIVE:
             if case.original_trajectory.get("success") != case.expected_outcome.get("success"):
                 result["status"] = "failed"
@@ -80,14 +83,14 @@ class ReplayOrchestrator:
 
         return result
 
-    def run_case(self, case: ReplayCase) -> Dict[str, Any]:
+    def run_case(self, case: ReplayCase) -> dict[str, Any]:
         """Run a single replay case."""
         return self._executor(case)
 
     def run_suite(
         self,
-        cases: List[ReplayCase],
-        suite_id: Optional[str] = None,
+        cases: list[ReplayCase],
+        suite_id: str | None = None,
         stop_on_failure: bool = False,
     ) -> ReplaySuiteResult:
         """Run a full suite of replay cases."""
@@ -118,7 +121,7 @@ class ReplayOrchestrator:
         duration = time.time() - start_time
 
         # Build summary by case type
-        summary: Dict[str, Any] = {}
+        summary: dict[str, Any] = {}
         for result in results:
             ct = result.get("case_type", "unknown")
             summary.setdefault(ct, {"passed": 0, "failed": 0, "skipped": 0})
@@ -138,7 +141,7 @@ class ReplayOrchestrator:
 
     def run_regression_suite(
         self,
-        cases: List[ReplayCase],
+        cases: list[ReplayCase],
     ) -> ReplaySuiteResult:
         """Run only regression cases from a suite."""
         regression_cases = [

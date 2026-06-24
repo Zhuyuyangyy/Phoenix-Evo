@@ -24,27 +24,19 @@ from __future__ import annotations
 
 import json
 import shutil
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .skill_registry import SkillRegistry
-from .skill_similarity import SkillVectorizer, SimilarityResult
-from .drift_detector import DriftDetector, SkillHealthReport
 from .curator_policy import (
-    CuratorPolicy,
     CuratorDecision,
-    CuratorAction,
-    MergeAction,
-    KeepAction,
-    DowngradeAction,
-    ArchiveAction,
-    QuarantineAction,
-    ReviewAction,
+    CuratorPolicy,
 )
+from .drift_detector import DriftDetector, SkillHealthReport
 from .quarantine_manager import QuarantineManager
-
+from .skill_registry import SkillRegistry
+from .skill_similarity import SimilarityResult, SkillVectorizer
 
 # ----------------------------------------------------------------------
 # Curator log
@@ -95,7 +87,7 @@ class CuratorLogger:
             return []
         try:
             return json.loads(self.log_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return []
 
     def _save(self, logs: list[dict]) -> None:
@@ -317,11 +309,11 @@ class SkillCurator:
         base = self.root / "skills"
         if status == "active":
             return base / "active" / f"{skill_id}.md"
-        elif status == "draft":
+        if status == "draft":
             return base / "draft" / f"{skill_id}.md"
-        elif status == "archived":
+        if status == "archived":
             return base / "archived" / f"{skill_id}.md"
-        elif status == "quarantined":
+        if status == "quarantined":
             return base / "quarantine" / f"{skill_id}.md"
         return base / "draft" / f"{skill_id}.md"
 
@@ -338,7 +330,7 @@ class SkillCurator:
         queue: list[dict[str, Any]] = []
 
         # Curator review 列表
-        for sid, entry in index.items():
+        for _sid, entry in index.items():
             if entry.get("needs_human_review"):
                 queue.append({**entry, "review_type": "curator_review"})
 

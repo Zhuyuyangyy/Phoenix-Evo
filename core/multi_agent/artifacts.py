@@ -6,7 +6,7 @@ import hashlib
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class ArtifactType(Enum):
@@ -28,11 +28,11 @@ class Artifact:
     content: Any
     created_at: float = field(default_factory=time.time)
     version: int = 1
-    parent_ids: List[str] = field(default_factory=list)
-    tags: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    parent_ids: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "artifact_id": self.artifact_id,
             "artifact_type": self.artifact_type.value,
@@ -46,7 +46,7 @@ class Artifact:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Artifact":
+    def from_dict(cls, data: dict[str, Any]) -> Artifact:
         data = dict(data)
         data["artifact_type"] = ArtifactType(data.get("artifact_type", "code"))
         return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})

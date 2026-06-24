@@ -1,6 +1,5 @@
 """Tests for skill trust score."""
 
-import math
 import time
 
 import pytest
@@ -119,7 +118,7 @@ class TestTrustScoreOptimizer:
 
     def test_weights_sum_to_one(self):
         opt = TrustScoreOptimizer()
-        for i in range(15):
+        for _i in range(15):
             score = SkillTrustScore(skill_id="s1")
             opt.add_observation(score, actual_outcome=True)
         weights = opt.optimize_weights()

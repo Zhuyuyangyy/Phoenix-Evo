@@ -6,10 +6,9 @@ Usage:
   python3 reminder_bot.py [--check-only] [--force-remind]
 """
 
-import sys
 import json
-import os
-from datetime import datetime, timedelta
+import sys
+from datetime import datetime
 from pathlib import Path
 
 # Phoenix-Evo 路径
@@ -47,7 +46,7 @@ def load_reminder_history():
                 try:
                     r = json.loads(line)
                     history[r["skill_id"]] = r["reminder_count"]
-                except:
+                except Exception:
                     pass
     return history
 
@@ -83,29 +82,29 @@ def build_reminder_message(pending: list, history: dict) -> str:
     lines.append(f"\n{'='*50}")
     lines.append(f"🦅 [Phoenix Self-Reminder] {datetime.now().strftime('%H:%M')}")
     lines.append(f"{'='*50}")
-    
+
     # 高优先级
     high = [p for p in pending if should_remind(p["skill_id"], p["consecutive"], p["last"])[2] == "high"]
     medium = [p for p in pending if should_remind(p["skill_id"], p["consecutive"], p["last"])[2] == "medium"]
-    
+
     if not pending:
         lines.append("\n✅ 无积压任务，Phoenix运行正常")
         lines.append(f"{'='*50}\n")
         return "\n".join(lines)
-    
+
     if high:
         lines.append(f"\n🚨 高优先级 ({len(high)}项):")
         for p in high:
             _, reason, _ = should_remind(p["skill_id"], p["consecutive"], p["last"])
             lines.append(f"  • [{p['skill_id']}] {reason}")
             lines.append(f"    consecutive_failures={p['consecutive']} last={p['last']}")
-    
+
     if medium:
         lines.append(f"\n⚠️  中优先级 ({len(medium)}项):")
         for p in medium:
             _, reason, _ = should_remind(p["skill_id"], p["consecutive"], p["last"])
             lines.append(f"  • [{p['skill_id']}] {reason}")
-    
+
     total_pending = len(pending)
     total_done = sum(1 for p in pending if p["last"] == "success")
     lines.append(f"\n📊 统计: 待处理={total_pending} 已解决={total_done}")
@@ -117,9 +116,9 @@ def phoenix_status_summary() -> str:
     """Phoenix运行时状态摘要"""
     try:
         from runtime import PhoenixRuntime
-        from runtime.outcome_tracker import OutcomeTracker, OutcomeStatus
+        from runtime.outcome_tracker import OutcomeTracker
         runtime = PhoenixRuntime(base_dir=PHOENIX_BASE)
-        
+
         # 用 PhoenixRuntime.query() 做自路由（体现 Phoenix 自进化闭环）
         result = runtime.query(
             task_description="检测 pending/flagged 任务并生成提醒",
@@ -127,14 +126,12 @@ def phoenix_status_summary() -> str:
             risk_level="low",
             session_id="reminder_internal",
         )
-        
+
         # 自检后写回 outcome_tracker（reminder_bot 自管理）
         tracker = OutcomeTracker(phoenix_base_dir=PHOENIX_BASE)
         report = tracker.process_pending()
-        
-        router = runtime.router
-        retriever = router.retriever
-        
+
+
         summary = []
         summary.append(f"\n🔮 Phoenix-Evo Runtime Status [{datetime.now().strftime('%H:%M')}]:")
         summary.append(f"   Router: SkillRouter (base_dir={PHOENIX_BASE.name})")
@@ -154,20 +151,20 @@ def main():
     args = parser.parse_args()
 
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Phoenix Self-Reminder Check")
-    
+
     pending = load_pending_tasks()
     history = load_reminder_history()
-    
+
     summary = build_reminder_message(pending, history)
     print(summary)
-    
+
     phoenix_status = phoenix_status_summary()
     print(phoenix_status)
-    
+
     if args.check_only:
         print("[check-only mode, no reminder sent]")
         return
-    
+
     # 对于高优先级，强制输出结构化提醒
     high = [p for p in pending if should_remind(p["skill_id"], p["consecutive"], p["last"])[2] == "high"]
     if high or args.force_remind:

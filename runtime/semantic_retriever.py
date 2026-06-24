@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 semantic_retriever: Sentence-embedding-based semantic retrieval
 V1.2 -- Phoenix-Evo Runtime Semantic Retriever
@@ -24,7 +23,6 @@ Usage:
 
 from __future__ import annotations
 
-import math
 import re
 from typing import Any
 
@@ -37,8 +35,8 @@ _embedding_model = None
 _MODEL_NAME = "all-MiniLM-L6-v2"
 
 try:
+    import numpy as np  # noqa: F401
     from sentence_transformers import SentenceTransformer
-    import numpy as np
 
     def _load_model() -> SentenceTransformer:
         global _embedding_model
@@ -57,7 +55,10 @@ except ImportError:
 
 try:
     from .skill_retriever import (
-        _tokenize, _compute_idf, _tfidf_vector, _cosine_sim,
+        _compute_idf,
+        _cosine_sim,
+        _tfidf_vector,
+        _tokenize,
     )
     _TFIDF_AVAILABLE = True
 except ImportError:
@@ -178,7 +179,7 @@ class SemanticRetriever:
             model = _load_model()
             embeddings = model.encode(texts, show_progress_bar=False, normalize_embeddings=True)
             # Cache
-            for text, emb in zip(texts, embeddings):
+            for text, emb in zip(texts, embeddings, strict=False):
                 self._corpus_cache[text] = emb
             return embeddings
         return None
@@ -210,10 +211,9 @@ class SemanticRetriever:
 
         if _EMBEDDING_AVAILABLE:
             return self._retrieve_embedding(query, corpus_texts, corpus_vecs, top_k, score_threshold)
-        elif _TFIDF_AVAILABLE:
+        if _TFIDF_AVAILABLE:
             return self._retrieve_tfidf(query, corpus_texts, top_k, score_threshold)
-        else:
-            return self._retrieve_keyword(query, corpus_texts, top_k)
+        return self._retrieve_keyword(query, corpus_texts, top_k)
 
     def _retrieve_embedding(
         self,
@@ -224,7 +224,6 @@ class SemanticRetriever:
         score_threshold: float,
     ) -> list[dict[str, Any]]:
         """Retrieve using sentence embeddings."""
-        import numpy as np
 
         model = _load_model()
 

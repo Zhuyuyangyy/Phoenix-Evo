@@ -1,21 +1,23 @@
 """Tests for distributed system."""
 
-import os
 import tempfile
 import time
 
-import pytest
-
-from core.distributed.skill_registry_distributed import (
-    DistributedSkillRegistry, RegistryEntry, RegistryNode,
+from core.distributed.conflict_resolution import (
+    ConflictResolver,
+    ConflictType,
+    ResolutionStrategy,
 )
 from core.distributed.federated_sharing import (
-    DifferentialPrivacy, FederatedSkillNetwork, FederatedUpdate,
+    DifferentialPrivacy,
+    FederatedSkillNetwork,
+    FederatedUpdate,
 )
-from core.distributed.skill_cache import CacheEntry, SkillCache
-from core.distributed.offline_access import OfflineSkill, OfflineSkillAccess
-from core.distributed.conflict_resolution import (
-    Conflict, ConflictResolver, ConflictType, Resolution, ResolutionStrategy,
+from core.distributed.offline_access import OfflineSkillAccess
+from core.distributed.skill_cache import SkillCache
+from core.distributed.skill_registry_distributed import (
+    DistributedSkillRegistry,
+    RegistryEntry,
 )
 
 

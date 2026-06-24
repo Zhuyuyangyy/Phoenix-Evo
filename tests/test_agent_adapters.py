@@ -1,20 +1,23 @@
 """Tests for agent adapters."""
 
-import json
 import time
-import pytest
-from unittest.mock import patch, MagicMock
 
 from integrations.agents.base_agent_adapter import (
-    AgentAdapter, AgentRunResult, EventType, TaskSpec, TrajectoryEvent,
+    AgentAdapter,
+    AgentRunResult,
+    EventType,
+    TaskSpec,
+    TrajectoryEvent,
     compute_context_hash,
 )
 from integrations.agents.deepseek_adapter import DeepSeekAdapter
 from integrations.agents.sandbox import (
-    CommandPolicyChecker, DockerSandbox, SandboxConfig, SandboxResult,
+    CommandPolicyChecker,
+    DockerSandbox,
+    SandboxConfig,
+    SandboxResult,
     SecretRedactor,
 )
-
 
 # --- EventType tests ---
 

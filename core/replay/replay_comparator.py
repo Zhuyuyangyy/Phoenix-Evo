@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 @dataclass
@@ -14,9 +14,9 @@ class ComparisonResult:
     case_id: str
     match: bool
     similarity_score: float
-    differences: List[Dict[str, Any]] = field(default_factory=list)
-    critical_differences: List[Dict[str, Any]] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    differences: list[dict[str, Any]] = field(default_factory=list)
+    critical_differences: list[dict[str, Any]] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ReplayComparator:
@@ -39,8 +39,8 @@ class ReplayComparator:
 
     def compare(
         self,
-        actual: Dict[str, Any],
-        expected: Dict[str, Any],
+        actual: dict[str, Any],
+        expected: dict[str, Any],
         case_id: str = "",
     ) -> ComparisonResult:
         """Compare an actual trajectory against expected outcome."""
@@ -90,9 +90,9 @@ class ReplayComparator:
 
     def _compare_events(
         self,
-        actual_events: List[Dict],
-        expected_events: List[Dict],
-    ) -> List[Dict[str, Any]]:
+        actual_events: list[dict],
+        expected_events: list[dict],
+    ) -> list[dict[str, Any]]:
         """Compare event lists between trajectories."""
         differences = []
 
@@ -104,7 +104,7 @@ class ReplayComparator:
             })
 
         # Compare event by event up to the shorter list
-        for i, (a, e) in enumerate(zip(actual_events, expected_events)):
+        for i, (a, e) in enumerate(zip(actual_events, expected_events, strict=False)):
             if a.get("event_type") != e.get("event_type"):
                 differences.append({
                     "field": f"events[{i}].event_type",
@@ -122,8 +122,8 @@ class ReplayComparator:
 
     def compare_safety_critical(
         self,
-        actual: Dict[str, Any],
-        expected: Dict[str, Any],
+        actual: dict[str, Any],
+        expected: dict[str, Any],
         case_id: str = "",
     ) -> ComparisonResult:
         """Compare only safety-critical aspects of trajectories."""
@@ -139,7 +139,7 @@ class ReplayComparator:
         }
         return self.compare(critical_actual, critical_expected, case_id)
 
-    def _count_safety_violations(self, trajectory: Dict[str, Any]) -> int:
+    def _count_safety_violations(self, trajectory: dict[str, Any]) -> int:
         """Count safety violations in a trajectory."""
         count = 0
         for event in trajectory.get("events", []):
@@ -147,7 +147,7 @@ class ReplayComparator:
                 count += 1
         return count
 
-    def _extract_risk_signals(self, trajectory: Dict[str, Any]) -> List[str]:
+    def _extract_risk_signals(self, trajectory: dict[str, Any]) -> list[str]:
         """Extract risk signals from a trajectory."""
         signals = []
         for event in trajectory.get("events", []):
@@ -156,7 +156,7 @@ class ReplayComparator:
         return signals
 
     @staticmethod
-    def trajectory_hash(trajectory: Dict[str, Any]) -> str:
+    def trajectory_hash(trajectory: dict[str, Any]) -> str:
         """Compute a hash of a trajectory for quick comparison."""
         serialized = json.dumps(trajectory, sort_keys=True, default=str)
         return hashlib.sha256(serialized.encode()).hexdigest()[:16]

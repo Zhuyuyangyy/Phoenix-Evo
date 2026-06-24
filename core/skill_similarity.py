@@ -17,7 +17,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-
 # ----------------------------------------------------------------------
 # Data structures
 # ----------------------------------------------------------------------
@@ -47,8 +46,7 @@ class SkillVector:
 def _tokenize(text: str) -> list[str]:
     """Simple Chinese/English混合分词。"""
     text = text.lower()
-    tokens = re.findall(r"[\w\u4e00-\u9fff]{2,}", text)
-    return tokens
+    return re.findall(r"[\w\u4e00-\u9fff]{2,}", text)
 
 
 def _compute_idf(documents: list[list[str]], vocab: set[str]) -> dict[str, float]:
@@ -180,7 +178,7 @@ class SkillVectorizer:
     def compute_pairwise(self) -> list[SimilarityResult]:
         """
         计算所有技能对的相似度。
-        
+
         Returns:
             list[SimilarityResult]，按 score 降序排列。
         """

@@ -2,9 +2,8 @@
 Tests for SkillMiner module.
 """
 
-import pytest
-from core.skill_miner import SkillMiner
 from core.post_task_evaluator import EvaluationResult
+from core.skill_miner import SkillMiner
 
 
 class TestSkillMiner:

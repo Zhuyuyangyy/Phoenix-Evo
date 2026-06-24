@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo V1.0 PhoenixRuntimeDaemon
 ======================================
@@ -21,7 +20,6 @@ import logging
 import threading
 import time
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -46,10 +44,10 @@ class PhoenixRuntimeDaemon:
         self.curator_interval = curator_interval
 
         self._stop_event = threading.Event()
-        self._outcome_thread: Optional[threading.Thread] = None
-        self._curator_thread: Optional[threading.Thread] = None
+        self._outcome_thread: threading.Thread | None = None
+        self._curator_thread: threading.Thread | None = None
         self._started = False
-        self._started_at: Optional[float] = None
+        self._started_at: float | None = None
 
         # Lazy imports — allow phoenix modules to be absent until needed
         self._outcome_tracker = None
@@ -112,7 +110,6 @@ class PhoenixRuntimeDaemon:
     def _outcome_loop(self) -> None:
         """Periodically call OutcomeTracker.process_pending()."""
         import sys
-        from pathlib import Path as _P
 
         # Lazy import — only import when the thread actually starts
         OutcomeTracker = None
@@ -213,7 +210,9 @@ class PhoenixRuntimeDaemon:
 # ─────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    import argparse, logging as _logging, sys
+    import argparse
+    import logging as _logging
+    import sys
 
     _logging.basicConfig(
         level=_logging.INFO,

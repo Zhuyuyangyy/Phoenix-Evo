@@ -1,7 +1,6 @@
 """Tests for drift detector v2."""
 
 import numpy as np
-import pytest
 
 from core.drift_detector_v2 import (
     BayesianDriftDetector,
@@ -57,7 +56,7 @@ class TestEWMADriftDetector:
 
     def test_warmup_period(self):
         det = EWMADriftDetector(warmup=10)
-        for i in range(9):
+        for _i in range(9):
             result = det.update(100.0)  # Very large value
             assert result is None  # Should not detect during warmup
 

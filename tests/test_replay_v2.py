@@ -1,12 +1,13 @@
 """Tests for replay v2 (case generator, orchestrator, comparator, report)."""
 
-import pytest
 
 from core.replay.replay_case_generator import (
-    ReplayCase, ReplayCaseGenerator, ReplayCaseType,
+    ReplayCase,
+    ReplayCaseGenerator,
+    ReplayCaseType,
 )
+from core.replay.replay_comparator import ComparisonResult, ReplayComparator
 from core.replay.replay_orchestrator import ReplayOrchestrator, ReplaySuiteResult
-from core.replay.replay_comparator import ReplayComparator, ComparisonResult
 from core.replay.replay_report import ReplayReportGenerator
 
 

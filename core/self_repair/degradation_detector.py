@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import math
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -19,7 +18,7 @@ class DegradationSignal:
     degradation_ratio: float
     severity: str  # "low", "medium", "high", "critical"
     detected_at: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class DegradationDetector:
@@ -42,15 +41,15 @@ class DegradationDetector:
         self.medium_threshold = medium_threshold
         self.high_threshold = high_threshold
         self.critical_threshold = critical_threshold
-        self._metrics: Dict[str, List[float]] = {}
-        self._baselines: Dict[str, float] = {}
-        self._signals: List[DegradationSignal] = []
+        self._metrics: dict[str, list[float]] = {}
+        self._baselines: dict[str, float] = {}
+        self._signals: list[DegradationSignal] = []
 
     def set_baseline(self, metric_name: str, baseline: float) -> None:
         """Set the baseline value for a metric."""
         self._baselines[metric_name] = baseline
 
-    def update(self, metric_name: str, value: float) -> Optional[DegradationSignal]:
+    def update(self, metric_name: str, value: float) -> DegradationSignal | None:
         """Update a metric with a new value. Returns DegradationSignal if degradation detected."""
         if metric_name not in self._metrics:
             self._metrics[metric_name] = []
@@ -97,21 +96,21 @@ class DegradationDetector:
         """Classify the severity of degradation based on ratio."""
         if ratio < self.critical_threshold:
             return "critical"
-        elif ratio < self.high_threshold:
+        if ratio < self.high_threshold:
             return "high"
-        elif ratio < self.medium_threshold:
+        if ratio < self.medium_threshold:
             return "medium"
-        elif ratio < self.low_threshold:
+        if ratio < self.low_threshold:
             return "low"
         return "none"
 
-    def get_signals(self, severity: Optional[str] = None) -> List[DegradationSignal]:
+    def get_signals(self, severity: str | None = None) -> list[DegradationSignal]:
         """Get degradation signals, optionally filtered by severity."""
         if severity:
             return [s for s in self._signals if s.severity == severity]
         return list(self._signals)
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get the current degradation status for all metrics."""
         status = {}
         for metric_name, values in self._metrics.items():
@@ -126,7 +125,7 @@ class DegradationDetector:
             }
         return status
 
-    def reset(self, metric_name: Optional[str] = None) -> None:
+    def reset(self, metric_name: str | None = None) -> None:
         """Reset metrics and baselines."""
         if metric_name:
             self._metrics.pop(metric_name, None)

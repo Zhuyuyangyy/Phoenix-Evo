@@ -4,7 +4,9 @@ Phoenix-Evo V0.2 Demo — Immune Guard
 展示 immune_guard 如何将技能路由到 draft / quarantine / reject
 """
 
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from core import PhoenixEvo
@@ -19,7 +21,8 @@ def print_section(title: str) -> None:
 
 def main() -> None:
     # 用独立临时目录，不污染主 skills/
-    import tempfile, shutil
+    import shutil
+    import tempfile
     tmp = tempfile.mkdtemp(prefix="phoenix_demo_")
     print(f"[Phoenix-Evo V0.2 Demo | tmp={tmp}]")
 
@@ -153,11 +156,11 @@ def main() -> None:
         print(f"  quarantine_count: {status.get('quarantine_count', 0)}")
         print(f"  quarantine_pending: {status.get('quarantine_pending', 0)}")
 
-        print(f"\n✅ Demo 完成！")
-        print(f"   安全任务 → draft ✅")
-        print(f"   危险任务 → reject ✅")
-        print(f"   失败+无证据 → quarantine ✅")
-        print(f"   skills/active 仍为空（V0.2 禁止自动激活）✅")
+        print("\n✅ Demo 完成！")
+        print("   安全任务 → draft ✅")
+        print("   危险任务 → reject ✅")
+        print("   失败+无证据 → quarantine ✅")
+        print("   skills/active 仍为空（V0.2 禁止自动激活）✅")
 
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

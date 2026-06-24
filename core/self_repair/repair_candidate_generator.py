@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-import hashlib
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
-from .degradation_detector import DegradationSignal
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from .degradation_detector import DegradationSignal
 
 
 @dataclass
@@ -22,9 +24,9 @@ class RepairCandidate:
     risk_level: str  # "low", "medium", "high"
     rollback_possible: bool = True
     created_at: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "candidate_id": self.candidate_id,
             "target_metric": self.target_metric,
@@ -46,16 +48,16 @@ class RepairCandidateGenerator:
     """
 
     def __init__(self):
-        self._strategies: Dict[str, Callable] = {
+        self._strategies: dict[str, Callable] = {
             "rollback": self._generate_rollback,
             "parameter_adjust": self._generate_parameter_adjust,
             "retrain": self._generate_retrain,
             "fallback": self._generate_fallback,
             "restart": self._generate_restart,
         }
-        self._candidates: List[RepairCandidate] = []
+        self._candidates: list[RepairCandidate] = []
 
-    def generate(self, signal: DegradationSignal) -> List[RepairCandidate]:
+    def generate(self, signal: DegradationSignal) -> list[RepairCandidate]:
         """Generate repair candidates for a degradation signal."""
         candidates = []
 
@@ -150,9 +152,9 @@ class RepairCandidateGenerator:
 
     def get_candidates(
         self,
-        strategy: Optional[str] = None,
-        risk_level: Optional[str] = None,
-    ) -> List[RepairCandidate]:
+        strategy: str | None = None,
+        risk_level: str | None = None,
+    ) -> list[RepairCandidate]:
         """Get repair candidates, optionally filtered."""
         candidates = self._candidates
         if strategy:
@@ -161,7 +163,7 @@ class RepairCandidateGenerator:
             candidates = [c for c in candidates if c.risk_level == risk_level]
         return candidates
 
-    def rank_candidates(self, candidates: List[RepairCandidate]) -> List[RepairCandidate]:
+    def rank_candidates(self, candidates: list[RepairCandidate]) -> list[RepairCandidate]:
         """Rank repair candidates by estimated impact (descending) and risk (ascending)."""
         risk_order = {"low": 0, "medium": 1, "high": 2}
         return sorted(

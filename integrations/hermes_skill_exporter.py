@@ -33,12 +33,10 @@ examples:
 
 from __future__ import annotations
 
-import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
-
+from typing import Any
 
 # Hermes skill frontmatter keys (保留字)
 HERMES_SKILL_FRONTKEYS = frozenset([
@@ -206,7 +204,6 @@ class HermesSkillExporter:
     def _load_protected_names(self) -> None:
         """从 Hermes skills 目录加载已有 skill 名（防止覆盖）。"""
         # 这个路径由用户在初始化时提供，或者从 Hermes 配置中读取
-        pass
 
     def _parse_procedure_steps(self, skill_candidate: dict[str, Any]) -> list[str]:
         """从 Phoenix skill candidate 提取 procedure 步骤。"""
@@ -295,7 +292,7 @@ class HermesSkillExporter:
         skill_md = draft_path.read_text(encoding="utf-8")
         candidate = self._parse_skill_md(skill_md)
         fm = candidate["frontmatter"]
-        body = candidate["body"]
+        candidate["body"]
 
         # 提取字段
         skill_name = fm.get("name") or fm.get("skill_name") or skill_id
@@ -312,7 +309,7 @@ class HermesSkillExporter:
                 "success": False,
                 "skill_id": skill_id,
                 "path": str(output_path),
-                "error": f"文件已存在（覆盖需设置 overwrite=True）",
+                "error": "文件已存在（覆盖需设置 overwrite=True）",
             }
 
         # 提取步骤

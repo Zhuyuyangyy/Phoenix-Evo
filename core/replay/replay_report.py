@@ -3,26 +3,26 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
-from .replay_case_generator import ReplayCase, ReplayCaseType
-from .replay_orchestrator import ReplaySuiteResult
-from .replay_comparator import ComparisonResult
+if TYPE_CHECKING:
+    from .replay_comparator import ComparisonResult
+    from .replay_orchestrator import ReplaySuiteResult
 
 
 class ReplayReportGenerator:
     """Generates reports from replay test results."""
 
     def __init__(self):
-        self._reports: List[Dict[str, Any]] = []
+        self._reports: list[dict[str, Any]] = []
 
-    def generate_suite_report(self, suite_result: ReplaySuiteResult) -> Dict[str, Any]:
+    def generate_suite_report(self, suite_result: ReplaySuiteResult) -> dict[str, Any]:
         """Generate a report for a suite run."""
         report = {
             "report_type": "suite",
             "suite_id": suite_result.suite_id,
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "summary": {
                 "total_cases": suite_result.total_cases,
                 "passed": suite_result.passed,
@@ -41,8 +41,8 @@ class ReplayReportGenerator:
 
     def generate_comparison_report(
         self,
-        comparisons: List[ComparisonResult],
-    ) -> Dict[str, Any]:
+        comparisons: list[ComparisonResult],
+    ) -> dict[str, Any]:
         """Generate a report from comparison results."""
         total = len(comparisons)
         matches = sum(1 for c in comparisons if c.match)
@@ -50,7 +50,7 @@ class ReplayReportGenerator:
 
         report = {
             "report_type": "comparison",
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "summary": {
                 "total_comparisons": total,
                 "matches": matches,
@@ -73,7 +73,7 @@ class ReplayReportGenerator:
     def generate_regression_report(
         self,
         suite_result: ReplaySuiteResult,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate a focused regression report."""
         regression_results = [
             r for r in suite_result.results
@@ -86,7 +86,7 @@ class ReplayReportGenerator:
         report = {
             "report_type": "regression",
             "suite_id": suite_result.suite_id,
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "summary": {
                 "regression_cases": len(regression_results),
                 "regression_failures": len(regression_failures),
@@ -97,7 +97,7 @@ class ReplayReportGenerator:
         self._reports.append(report)
         return report
 
-    def format_report(self, report: Dict[str, Any]) -> str:
+    def format_report(self, report: dict[str, Any]) -> str:
         """Format a report as a human-readable string."""
         lines = []
         lines.append("=" * 60)
@@ -128,7 +128,7 @@ class ReplayReportGenerator:
         lines.append("")
         return "\n".join(lines)
 
-    def save_report(self, report: Dict[str, Any], path: str) -> None:
+    def save_report(self, report: dict[str, Any], path: str) -> None:
         """Save a report to a JSON file."""
         with open(path, "w") as f:
             json.dump(report, f, indent=2, default=str)

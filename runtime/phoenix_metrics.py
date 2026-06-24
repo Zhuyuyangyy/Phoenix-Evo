@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo V0.9 / V1.0 Metrics Collector
 ==========================================
@@ -14,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from threading import Lock
-from typing import Any, Optional
+from typing import Any
 
 
 @dataclass
@@ -52,8 +51,8 @@ class PhoenixMetrics:
         self._skill_success_count: dict = defaultdict(int)
         self._skill_total_count: dict = defaultdict(int)
         self._latency_buckets: dict = defaultdict(list)
-        self._last_scan_at: Optional[float] = None
-        self._last_outcome_process_at: Optional[float] = None
+        self._last_scan_at: float | None = None
+        self._last_outcome_process_at: float | None = None
         self._recent_tasks: list = []
         self._recent_curator_runs: list = []
 
@@ -152,15 +151,20 @@ class PhoenixMetrics:
             return health
 
     def _calc_health_score(self, rate: float, samples: int) -> str:
-        if samples < 3: return "insufficient_data"
-        if rate >= 0.95: return "excellent"
-        if rate >= 0.80: return "good"
-        if rate >= 0.60: return "fair"
+        if samples < 3:
+            return "insufficient_data"
+        if rate >= 0.95:
+            return "excellent"
+        if rate >= 0.80:
+            return "good"
+        if rate >= 0.60:
+            return "fair"
         return "poor"
 
     def _overall_sr(self, m: dict) -> float:
         nontrivial = sum(v for k, v in m["tasks_by_state"].items() if k != "unknown")
-        if nontrivial == 0: return 0.0
+        if nontrivial == 0:
+            return 0.0
         return m["tasks_by_state"].get("success", 0) / nontrivial
 
     def _total_nontrivial(self, m: dict) -> int:
@@ -184,7 +188,7 @@ class PhoenixMetrics:
             "phoenix_quarantine_events_total " + str(m["quarantine_events"]),
         ]
         for sid, rate in m["skill_success_rate"].items():
-            parts.append("phoenix_skill_success_rate{skill_id=\"" + sid + "\"} " + ("%.4f" % rate))
+            parts.append("phoenix_skill_success_rate{skill_id=\"" + sid + "\"} " + (f"{rate:.4f}"))
         for sid, latency in m.get("avg_latency_ms", {}).items():
             parts.append("phoenix_avg_latency_ms{skill_id=\"" + sid + "\"} " + str(latency))
         for sid, usage in m["skill_usage"].items():
@@ -209,7 +213,7 @@ class PhoenixMetrics:
                 "<td>" + str(h["success_count"]) + "</td>"
                 "<td style=\"color:" + color + ";font-weight:bold\">" + h["health_score"] + "</td>"
                 "<td>" + ("%.1f%%" % (h["success_rate"] * 100)) + "</td>"
-                "<td>" + ("%.1fms" % h["avg_latency_ms"]) + "</td></tr>"
+                "<td>" + ("{:.1f}ms".format(h["avg_latency_ms"])) + "</td></tr>"
             )
         if not rows:
             rows = "<tr><td colspan=\"6\" style=\"text-align:center;color:#64748b\">No skill data yet</td></tr>"
@@ -236,7 +240,7 @@ class PhoenixMetrics:
         quarantine_events = m["quarantine_events"]
         ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        html = (
+        return (
             '<!DOCTYPE html><html lang="en">'
             '<head><meta charset="utf-8">'
             '<title>Phoenix-Evo Metrics</title>'
@@ -289,7 +293,6 @@ class PhoenixMetrics:
             '});'
             '</script></body></html>'
         )
-        return html
 
     def reset(self) -> None:
         with self._lock:

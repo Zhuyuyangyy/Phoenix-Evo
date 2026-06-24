@@ -6,7 +6,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from .degradation_detector import DegradationDetector, DegradationSignal
 from .repair_candidate_generator import RepairCandidate, RepairCandidateGenerator
@@ -27,18 +27,18 @@ class GovernanceDecision:
     action: GovernanceAction
     target_metric: str
     reason: str
-    repair_candidate: Optional[RepairCandidate] = None
+    repair_candidate: RepairCandidate | None = None
     confidence: float = 0.0
     auto_approved: bool = False
     timestamp: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class GovernancePolicy:
     """Policy for auto-governance decisions."""
     max_auto_repair_severity: str = "medium"  # Max severity for auto-repair
-    require_approval_for: List[str] = field(default_factory=lambda: ["rollback", "shutdown"])
+    require_approval_for: list[str] = field(default_factory=lambda: ["rollback", "shutdown"])
     cooldown_seconds: float = 300.0  # Minimum time between auto-repairs
     max_auto_repairs_per_hour: int = 3
     enable_auto_repair: bool = True
@@ -55,14 +55,14 @@ class AutoGovernanceEngine:
 
     def __init__(
         self,
-        detector: Optional[DegradationDetector] = None,
-        generator: Optional[RepairCandidateGenerator] = None,
-        policy: Optional[GovernancePolicy] = None,
+        detector: DegradationDetector | None = None,
+        generator: RepairCandidateGenerator | None = None,
+        policy: GovernancePolicy | None = None,
     ):
         self.detector = detector or DegradationDetector()
         self.generator = generator or RepairCandidateGenerator()
         self.policy = policy or GovernancePolicy()
-        self._decisions: List[GovernanceDecision] = []
+        self._decisions: list[GovernanceDecision] = []
         self._last_repair_time: float = 0.0
         self._repairs_this_hour: int = 0
         self._hour_start: float = time.time()
@@ -106,12 +106,11 @@ class AutoGovernanceEngine:
         """Determine the governance action based on signal severity."""
         if signal.severity == "critical":
             return GovernanceAction.ROLLBACK
-        elif signal.severity == "high":
+        if signal.severity == "high":
             return GovernanceAction.AUTO_REPAIR
-        elif signal.severity == "medium":
+        if signal.severity == "medium":
             return GovernanceAction.ALERT
-        else:
-            return GovernanceAction.MONITOR
+        return GovernanceAction.MONITOR
 
     def _can_auto_approve(self, action: GovernanceAction, signal: DegradationSignal) -> bool:
         """Check if an action can be auto-approved."""
@@ -137,10 +136,7 @@ class AutoGovernanceEngine:
         if now - self._hour_start > 3600:
             self._repairs_this_hour = 0
             self._hour_start = now
-        if self._repairs_this_hour >= self.policy.max_auto_repairs_per_hour:
-            return False
-
-        return True
+        return not self._repairs_this_hour >= self.policy.max_auto_repairs_per_hour
 
     def _compute_confidence(self, signal: DegradationSignal) -> float:
         """Compute confidence in the governance decision."""
@@ -153,13 +149,13 @@ class AutoGovernanceEngine:
         }
         return severity_confidence.get(signal.severity, 0.5)
 
-    def get_decisions(self, action: Optional[GovernanceAction] = None) -> List[GovernanceDecision]:
+    def get_decisions(self, action: GovernanceAction | None = None) -> list[GovernanceDecision]:
         """Get governance decisions, optionally filtered by action."""
         if action:
             return [d for d in self._decisions if d.action == action]
         return list(self._decisions)
 
-    def get_pending_approvals(self) -> List[GovernanceDecision]:
+    def get_pending_approvals(self) -> list[GovernanceDecision]:
         """Get decisions that require manual approval."""
         return [d for d in self._decisions if not d.auto_approved]
 

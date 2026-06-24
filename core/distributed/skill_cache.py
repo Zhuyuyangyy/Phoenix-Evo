@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 @dataclass
@@ -15,10 +15,10 @@ class CacheEntry:
     value: Any
     created_at: float = field(default_factory=time.time)
     last_accessed: float = field(default_factory=time.time)
-    ttl_seconds: Optional[float] = None
+    ttl_seconds: float | None = None
     access_count: int = 0
     size_bytes: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def is_expired(self) -> bool:
@@ -38,7 +38,7 @@ class SkillCache:
     def __init__(
         self,
         max_size: int = 1000,
-        default_ttl: Optional[float] = 3600.0,
+        default_ttl: float | None = 3600.0,
         max_memory_bytes: int = 100 * 1024 * 1024,  # 100 MB
     ):
         self.max_size = max_size
@@ -50,7 +50,7 @@ class SkillCache:
         self._misses: int = 0
         self._evictions: int = 0
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """Get a value from the cache. Returns None if not found or expired."""
         entry = self._cache.get(key)
 
@@ -74,7 +74,7 @@ class SkillCache:
         self,
         key: str,
         value: Any,
-        ttl: Optional[float] = None,
+        ttl: float | None = None,
         size_bytes: int = 0,
     ) -> None:
         """Put a value into the cache."""
@@ -142,7 +142,7 @@ class SkillCache:
         total = self._hits + self._misses
         return self._hits / total if total > 0 else 0.0
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         return {
             "size": self.size,

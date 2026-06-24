@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 RuntimeGuard: Runtime Security Gate
 V0.6 - Phoenix-Evo Runtime Skill Router
@@ -14,7 +13,7 @@ V0.6 boundary rules:
   8. high risk task + no replay -> review_required
 """
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
@@ -81,8 +80,7 @@ class RuntimeGuard:
         if evidence < self.EVIDENCE_THRESHOLD:
             result.decision = GuardDecision.DENY
             result.blocked_rules.append("evidence_below_threshold")
-            result.reason = "evidence_score {:.0%} < {:.0%}".format(
-                evidence, self.EVIDENCE_THRESHOLD)
+            result.reason = f"evidence_score {evidence:.0%} < {self.EVIDENCE_THRESHOLD:.0%}"
             return result
         result.passed_rules.append("evidence_ok")
 
@@ -90,8 +88,7 @@ class RuntimeGuard:
         if risk_score > self.RISK_SCORE_THRESHOLD:
             result.decision = GuardDecision.DENY
             result.blocked_rules.append("risk_above_threshold")
-            result.reason = "risk_score {:.2f} > {:.2f}".format(
-                risk_score, self.RISK_SCORE_THRESHOLD)
+            result.reason = f"risk_score {risk_score:.2f} > {self.RISK_SCORE_THRESHOLD:.2f}"
             return result
         result.passed_rules.append("risk_ok")
 
@@ -107,7 +104,7 @@ class RuntimeGuard:
         if task_risk == "critical" and risk_level not in ("none", "low"):
             result.decision = GuardDecision.DENY
             result.blocked_rules.append("critical_task_high_skill_risk")
-            result.reason = "critical task + {} skill risk".format(risk_level)
+            result.reason = f"critical task + {risk_level} skill risk"
             return result
         result.passed_rules.append("task_risk_compatible")
 
@@ -130,10 +127,9 @@ class RuntimeGuard:
         review  = [r for r in results if r.decision == GuardDecision.REVIEW]
         denied  = [r for r in results if r.decision == GuardDecision.DENY]
         parts = [
-            "[RuntimeGuard] checked {} skills".format(len(results)),
-            "  ALLOW: {}, REVIEW: {}, DENY: {}".format(
-                len(allowed), len(review), len(denied)),
+            f"[RuntimeGuard] checked {len(results)} skills",
+            f"  ALLOW: {len(allowed)}, REVIEW: {len(review)}, DENY: {len(denied)}",
         ]
         for r in denied:
-            parts.append("  [{}] {}: {}".format(r.skill_id, r.skill_name, r.reason))
+            parts.append(f"  [{r.skill_id}] {r.skill_name}: {r.reason}")
         return chr(10).join(parts)

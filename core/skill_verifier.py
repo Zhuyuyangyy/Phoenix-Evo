@@ -8,12 +8,10 @@ V0.1 — Phoenix-Evo
       验证拒绝 → 记录拒绝原因，不写入
 """
 
-import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-
 
 # ── 危险关键词列表 ───────────────────────────────────────────
 

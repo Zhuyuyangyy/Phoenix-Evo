@@ -19,10 +19,14 @@ import logging
 import sys
 import threading
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from enum import Enum
+from datetime import datetime
+from enum import StrEnum
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from core.quarantine_manager import QuarantineManager
+    from core.skill_registry import SkillRegistry
 
 # Phoenix 核心（延迟导入）
 _PHOENIX_LOADED = False
@@ -32,8 +36,6 @@ try:
     if _phoenix_path not in sys.path:
         sys.path.insert(0, _phoenix_path)
     from core import PhoenixEvo
-    from core.skill_registry import SkillRegistry
-    from core.quarantine_manager import QuarantineManager
     _PHOENIX_LOADED = True
 except Exception as e:
     _PHOENIX_ERR = str(e)
@@ -51,14 +53,14 @@ class Threshold:
 
 # ── 数据结构 ──────────────────────────────────────────────────────────────────
 
-class OutcomeStatus(str, Enum):
+class OutcomeStatus(StrEnum):
     PENDING = "pending"
     PROCESSED = "processed"
     FLAGGED = "flagged"
     QUARANTINED = "quarantined"
 
 
-class SkillHealthStatus(str, Enum):
+class SkillHealthStatus(StrEnum):
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     FAILING = "failing"
@@ -73,13 +75,13 @@ class SkillOutcome:
     failure_count: int = 0
     consecutive_failures: int = 0
     last_outcome: str = "unknown"
-    last_failure_reason: Optional[str] = None
+    last_failure_reason: str | None = None
     risk_flags: int = 0
-    last_used: Optional[str] = None
+    last_used: str | None = None
     needs_replay: bool = False
     needs_review: bool = False
-    flagged_at: Optional[str] = None
-    quarantined_at: Optional[str] = None
+    flagged_at: str | None = None
+    quarantined_at: str | None = None
     # V0.9.3: track which skills were injected when this outcome was recorded
     injected_skill_ids: list[str] = field(default_factory=list)
 
@@ -103,9 +105,9 @@ class OutcomeTracker:
         self._feedback_path = self.base_dir / "logs" / feedback_file
         self._feedback_path.parent.mkdir(parents=True, exist_ok=True)
 
-        self._phoenix: Optional[PhoenixEvo] = None
-        self._registry: Optional[SkillRegistry] = None
-        self._quarantine: Optional[QuarantineManager] = None
+        self._phoenix: PhoenixEvo | None = None
+        self._registry: SkillRegistry | None = None
+        self._quarantine: QuarantineManager | None = None
         self._pending: list[dict[str, Any]] = []
         self._processed_ids: set[str] = set()
         self._lock = threading.Lock()
@@ -216,13 +218,13 @@ class OutcomeTracker:
         self,
         skill_id: str,
         success: bool,
-        failure_reason: Optional[str] = None,
+        failure_reason: str | None = None,
         risk_flag: bool = False,
-        task_id: Optional[str] = None,
-        session_id: Optional[str] = None,
-        outcome_time: Optional[str] = None,
-        injected_skill_ids: Optional[list[str]] = None,
-    ) -> Optional[dict[str, Any]]:
+        task_id: str | None = None,
+        session_id: str | None = None,
+        outcome_time: str | None = None,
+        injected_skill_ids: list[str] | None = None,
+    ) -> dict[str, Any] | None:
         """记录单条 outcome，更新 Phoenix SkillRegistry"""
         if not skill_id:
             return None

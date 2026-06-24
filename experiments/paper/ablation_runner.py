@@ -6,9 +6,12 @@ import itertools
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
-from .experiment_definitions import ExperimentDefinition
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from .experiment_definitions import ExperimentDefinition
 
 
 @dataclass
@@ -16,21 +19,21 @@ class AblationConfig:
     """Configuration for an ablation study."""
     ablation_id: str
     experiment_id: str
-    components: List[str]
-    enabled_combinations: List[List[str]] = field(default_factory=list)
-    baseline: List[str] = field(default_factory=list)  # All components enabled
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    components: list[str]
+    enabled_combinations: list[list[str]] = field(default_factory=list)
+    baseline: list[str] = field(default_factory=list)  # All components enabled
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class AblationResult:
     """Result from a single ablation run."""
     ablation_id: str
-    enabled_components: List[str]
-    disabled_components: List[str]
-    metrics: Dict[str, float]
+    enabled_components: list[str]
+    disabled_components: list[str]
+    metrics: dict[str, float]
     duration_seconds: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class AblationRunner:
@@ -41,12 +44,12 @@ class AblationRunner:
     """
 
     def __init__(self):
-        self._results: List[AblationResult] = []
+        self._results: list[AblationResult] = []
 
     def create_ablation(
         self,
         experiment: ExperimentDefinition,
-        components: Optional[List[str]] = None,
+        components: list[str] | None = None,
     ) -> AblationConfig:
         """Create an ablation configuration for an experiment."""
         if components is None:
@@ -75,8 +78,8 @@ class AblationRunner:
     def run_ablation(
         self,
         config: AblationConfig,
-        evaluator: Optional[Callable[[List[str]], Dict[str, float]]] = None,
-    ) -> List[AblationResult]:
+        evaluator: Callable[[list[str]], dict[str, float]] | None = None,
+    ) -> list[AblationResult]:
         """Run the ablation study."""
         results = []
 
@@ -110,20 +113,20 @@ class AblationRunner:
 
     def get_results(
         self,
-        ablation_id: Optional[str] = None,
-    ) -> List[AblationResult]:
+        ablation_id: str | None = None,
+    ) -> list[AblationResult]:
         """Get ablation results, optionally filtered by ablation ID."""
         if ablation_id:
             return [r for r in self._results if r.ablation_id == ablation_id]
         return list(self._results)
 
-    def analyze_contributions(self, results: List[AblationResult]) -> Dict[str, float]:
+    def analyze_contributions(self, results: list[AblationResult]) -> dict[str, float]:
         """Analyze the contribution of each component.
 
         Computes the average performance drop when each component
         is disabled across all ablation runs.
         """
-        component_impacts: Dict[str, List[float]] = {}
+        component_impacts: dict[str, list[float]] = {}
 
         for result in results:
             for component in result.disabled_components:

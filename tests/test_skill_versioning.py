@@ -1,12 +1,11 @@
 """Tests for skill versioning."""
 
-import pytest
 
 from core.skill_versioning import (
     SkillSigner,
     SkillState,
-    SkillVersion,
     SkillStateMachine,
+    SkillVersion,
     VersionedSkillRegistry,
 )
 

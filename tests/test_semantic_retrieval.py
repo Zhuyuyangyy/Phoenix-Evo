@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 test_semantic_retrieval: Semantic Retrieval Upgrade Tests
 =========================================================
@@ -12,21 +11,16 @@ Run:
     pytest tests/test_semantic_retrieval.py -v
 """
 
-import json
-import shutil
-import tempfile
-from pathlib import Path
 
 import pytest
 
 from runtime.semantic_retriever import (
-    SemanticRetriever,
     _EMBEDDING_AVAILABLE,
-    cosine_similarity,
+    SemanticRetriever,
     batch_cosine_similarity,
+    cosine_similarity,
     semantic_search,
 )
-
 
 # ---------------------------------------------------------------------------
 # Test corpus: 8 skills covering distinct domains
@@ -147,12 +141,14 @@ class TestSemanticRetriever:
         assert scores == sorted(scores, reverse=True)
 
     @pytest.mark.parametrize(
-        "query,expected_id,label",
+        ("query", "expected_id", "label"),
         SEMANTIC_TEST_QUERIES,
         ids=[t[2] + "_" + t[1] for t in SEMANTIC_TEST_QUERIES],
     )
     def test_retrieve_finds_correct_skill(self, query, expected_id, label):
         """Semantic retrieval should find the correct skill in top-3."""
+        if not _EMBEDDING_AVAILABLE:
+            pytest.skip("Sentence-transformers not available")
         retriever = SemanticRetriever()
         corpus = [s["text"] for s in SKILL_CORPUS]
         results = retriever.retrieve(query, corpus, top_k=3)
@@ -260,7 +256,7 @@ class TestParaphraseRobustness:
     ]
 
     @pytest.mark.parametrize(
-        "query,expected_fragment",
+        ("query", "expected_fragment"),
         PARAPHRASE_PAIRS,
         ids=[p[0][:40] for p in PARAPHRASE_PAIRS],
     )
@@ -269,6 +265,8 @@ class TestParaphraseRobustness:
         Semantic retrieval should find the correct skill even when the
         query uses different words than the skill description.
         """
+        if not _EMBEDDING_AVAILABLE:
+            pytest.skip("Sentence-transformers not available")
         retriever = SemanticRetriever()
         corpus = [s["text"] for s in SKILL_CORPUS]
         results = retriever.retrieve(query, corpus, top_k=3)

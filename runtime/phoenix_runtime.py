@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 PhoenixRuntime: Phoenix-Evo 核心运行时编排器
 V0.6.3
@@ -37,16 +36,14 @@ from __future__ import annotations
 
 import time
 import uuid
-from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any
 
-from runtime.skill_router import SkillRouter, RouteResult, RouteDecision
-from runtime.runtime_guard import RuntimeGuard, GuardResult, GuardDecision
 from runtime.context_injector import ContextInjector
-from runtime.fallback_manager import FallbackManager, FallbackReason, FallbackResult
+from runtime.fallback_manager import FallbackManager, FallbackReason
+from runtime.runtime_guard import GuardDecision, GuardResult, RuntimeGuard
 from runtime.runtime_reporter import RuntimeReporter
-
+from runtime.skill_router import RouteResult, SkillRouter
 
 # ─────────────────────────────────────────────────────────────────────────────
 # RuntimeResult — demo_v0.6.py 兼容返回值
@@ -95,7 +92,7 @@ class RuntimeResult:
         task_id: str,
         session_id: str,
         reporter: RuntimeReporter,
-    ) -> tuple["RuntimeResult", list[GuardResult]]:
+    ) -> tuple[RuntimeResult, list[GuardResult]]:
         """
         给定 Router 返回的 candidates + Guard 返回的 guard_results，
         构建 RuntimeResult。

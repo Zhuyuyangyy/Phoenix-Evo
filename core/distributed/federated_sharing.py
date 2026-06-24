@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import hashlib
 import math
 import random
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 @dataclass
@@ -18,10 +17,10 @@ class FederatedUpdate:
     participant_id: str
     skill_id: str
     version: str
-    update_data: Dict[str, Any]
+    update_data: dict[str, Any]
     timestamp: float = field(default_factory=time.time)
     privacy_budget_used: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -30,7 +29,7 @@ class FederatedAggregation:
     aggregation_id: str
     skill_id: str
     n_participants: int
-    aggregated_data: Dict[str, Any]
+    aggregated_data: dict[str, Any]
     privacy_budget_total: float
     noise_added: float
     timestamp: float = field(default_factory=time.time)
@@ -91,7 +90,7 @@ class FederatedSkillNetwork:
 
     def __init__(
         self,
-        network_id: Optional[str] = None,
+        network_id: str | None = None,
         epsilon: float = 1.0,
         delta: float = 1e-5,
         min_participants: int = 3,
@@ -99,11 +98,11 @@ class FederatedSkillNetwork:
         self.network_id = network_id or f"fed_{uuid.uuid4().hex[:8]}"
         self.dp = DifferentialPrivacy(epsilon=epsilon, delta=delta)
         self.min_participants = min_participants
-        self._participants: Dict[str, Dict[str, Any]] = {}
-        self._updates: List[FederatedUpdate] = []
-        self._aggregations: List[FederatedAggregation] = []
+        self._participants: dict[str, dict[str, Any]] = {}
+        self._updates: list[FederatedUpdate] = []
+        self._aggregations: list[FederatedAggregation] = []
 
-    def join(self, participant_id: str, metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def join(self, participant_id: str, metadata: dict[str, Any] | None = None) -> bool:
         """Join the federated network."""
         if participant_id in self._participants:
             return False
@@ -129,7 +128,7 @@ class FederatedSkillNetwork:
         self._updates.append(update)
         return True
 
-    def aggregate(self, skill_id: str) -> Optional[FederatedAggregation]:
+    def aggregate(self, skill_id: str) -> FederatedAggregation | None:
         """Aggregate updates for a skill with differential privacy."""
         # Filter updates for this skill
         skill_updates = [u for u in self._updates if u.skill_id == skill_id]
@@ -138,8 +137,8 @@ class FederatedSkillNetwork:
             return None
 
         # Simple aggregation with DP noise
-        aggregated_data: Dict[str, Any] = {}
-        numeric_fields: Dict[str, List[float]] = {}
+        aggregated_data: dict[str, Any] = {}
+        numeric_fields: dict[str, list[float]] = {}
 
         for update in skill_updates:
             for key, value in update.update_data.items():
@@ -171,7 +170,7 @@ class FederatedSkillNetwork:
         self._aggregations.append(aggregation)
         return aggregation
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get the status of the federated network."""
         return {
             "network_id": self.network_id,

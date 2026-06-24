@@ -13,8 +13,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Optional
-
 
 # ── 规则定义 ─────────────────────────────────────────────────────────────────
 
@@ -194,7 +192,7 @@ class TaskTypeClassifier:
                 fallback=True,
             )
 
-        message_lower = message.lower()
+        message.lower()
 
         # Score each task type by counting keyword matches
         scores: dict[str, float] = {}
@@ -244,7 +242,7 @@ class TaskTypeClassifier:
 
 # ── 单例（全局复用，避免重复编译正则）────────────────────────────────────────
 
-_classifier_instance: Optional[TaskTypeClassifier] = None
+_classifier_instance: TaskTypeClassifier | None = None
 
 
 def get_classifier() -> TaskTypeClassifier:

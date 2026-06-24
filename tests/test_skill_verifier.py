@@ -3,7 +3,8 @@ Tests for SkillVerifier module.
 """
 
 import pytest
-from core.skill_verifier import SkillVerifier, VerificationResult, DANGEROUS_PATTERNS, HIGH_RISK_TYPES
+
+from core.skill_verifier import DANGEROUS_PATTERNS, HIGH_RISK_TYPES, SkillVerifier, VerificationResult
 
 
 class TestSkillVerifier:
@@ -113,7 +114,7 @@ class TestSkillVerifier:
 
         with pytest.MonkeyPatch.context() as m:
             m.setattr('core.skill_verifier.Path', lambda *a: tmp_path / "skills" if a == () else tmp_path)
-            result = verifier.verify(skill, traj)
+            verifier.verify(skill, traj)
             # May or may not pass depending on duplicate detection
 
     def test_scan_dangerous_content_clean(self):
@@ -222,7 +223,7 @@ class TestSkillVerifier:
 
     def test_dangerous_patterns_coverage(self):
         """Test that dangerous patterns cover key categories."""
-        patterns = [p[1] for p in DANGEROUS_PATTERNS]
+        [p[1] for p in DANGEROUS_PATTERNS]
         # Should cover destructive, financial, privacy, security
         assert len(DANGEROUS_PATTERNS) >= 10
 

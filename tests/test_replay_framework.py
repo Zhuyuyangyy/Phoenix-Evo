@@ -1,14 +1,13 @@
 """Tests for replay framework."""
 
-import pytest
 
+from core.replay.replay_case_generator import ReplayCase, ReplayCaseType
 from core.replay.replay_framework import (
     ReplayCI,
     ReplayFramework,
-    ReplayScheduler,
     ReplaySchedule,
+    ReplayScheduler,
 )
-from core.replay.replay_case_generator import ReplayCase, ReplayCaseType
 
 
 class TestReplayFramework:

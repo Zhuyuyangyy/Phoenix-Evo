@@ -15,14 +15,10 @@ V1.1: Upgraded from fixed thresholds to adaptive thresholds computed from
 
 from __future__ import annotations
 
-import json
 import math
-from collections import defaultdict
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timedelta
-from pathlib import Path
+from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # Data structures
@@ -410,7 +406,7 @@ class DriftDetector:
                         f"pop mean={self.thresholds.staleness_mean:.0f}d)"
                     ),
                 )
-            elif days_ago > staleness_warn:
+            if days_ago > staleness_warn:
                 return DriftRecord(
                     skill_id=skill_id,
                     drift_type="usage",

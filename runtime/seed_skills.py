@@ -373,7 +373,7 @@ if __name__ == "__main__":
 
     base_dir = Path(args.phoenix_dir) if args.phoenix_dir else Path(__file__).parent.parent
 
-    print(f"\n=== Phoenix-Evo V0.9.0 Seed Skill Pack ===")
+    print("\n=== Phoenix-Evo V0.9.0 Seed Skill Pack ===")
     print(f"Base dir: {base_dir}\n")
 
     loader = SeedSkillLoader(phoenix_base_dir=base_dir)

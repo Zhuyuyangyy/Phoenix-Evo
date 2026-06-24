@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import hashlib
 import re
-import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 class PoisonType(Enum):
@@ -37,9 +35,9 @@ class PoisoningThreatModel:
     target_component: str
     severity: float  # 0.0 to 1.0
     likelihood: float  # 0.0 to 1.0
-    affected_layers: List[DefenseLayer] = field(default_factory=list)
-    mitigations: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    affected_layers: list[DefenseLayer] = field(default_factory=list)
+    mitigations: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def risk_score(self) -> float:
@@ -57,7 +55,7 @@ class TrajectoryConsistencyChecker:
         self.max_tool_result_divergence = max_tool_result_divergence
         self.max_step_time_variance = max_step_time_variance
 
-    def check_consistency(self, trajectory: Dict[str, Any]) -> Dict[str, Any]:
+    def check_consistency(self, trajectory: dict[str, Any]) -> dict[str, Any]:
         """Check a trajectory for consistency anomalies."""
         events = trajectory.get("events", [])
         issues = []
@@ -134,7 +132,7 @@ class PromptInjectionDetector:
     def __init__(self, sensitivity: float = 0.7):
         self.sensitivity = sensitivity
 
-    def detect(self, text: str) -> Dict[str, Any]:
+    def detect(self, text: str) -> dict[str, Any]:
         """Detect prompt injection in text."""
         detections = []
         for pattern, injection_type in self.INJECTION_PATTERNS:
@@ -163,19 +161,19 @@ class PoisoningDefenseOrchestrator:
 
     def __init__(
         self,
-        consistency_checker: Optional[TrajectoryConsistencyChecker] = None,
-        injection_detector: Optional[PromptInjectionDetector] = None,
+        consistency_checker: TrajectoryConsistencyChecker | None = None,
+        injection_detector: PromptInjectionDetector | None = None,
     ):
         self.consistency_checker = consistency_checker or TrajectoryConsistencyChecker()
         self.injection_detector = injection_detector or PromptInjectionDetector()
-        self._threat_models: Dict[str, PoisoningThreatModel] = {}
-        self._defense_log: List[Dict[str, Any]] = []
+        self._threat_models: dict[str, PoisoningThreatModel] = {}
+        self._defense_log: list[dict[str, Any]] = []
 
     def register_threat_model(self, threat: PoisoningThreatModel) -> None:
         """Register a threat model."""
         self._threat_models[threat.threat_id] = threat
 
-    def analyze_input(self, text: str) -> Dict[str, Any]:
+    def analyze_input(self, text: str) -> dict[str, Any]:
         """Analyze input for poisoning threats."""
         injection_result = self.injection_detector.detect(text)
 
@@ -205,7 +203,7 @@ class PoisoningDefenseOrchestrator:
 
         return result
 
-    def analyze_trajectory(self, trajectory: Dict[str, Any]) -> Dict[str, Any]:
+    def analyze_trajectory(self, trajectory: dict[str, Any]) -> dict[str, Any]:
         """Analyze a trajectory for poisoning/manipulation."""
         consistency_result = self.consistency_checker.check_consistency(trajectory)
 
@@ -231,7 +229,7 @@ class PoisoningDefenseOrchestrator:
 
         return result
 
-    def get_defense_summary(self) -> Dict[str, Any]:
+    def get_defense_summary(self) -> dict[str, Any]:
         """Get a summary of defense actions taken."""
         return {
             "total_threats_registered": len(self._threat_models),

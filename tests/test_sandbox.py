@@ -3,7 +3,10 @@
 import pytest
 
 from integrations.agents.sandbox import (
-    CommandPolicyChecker, DockerSandbox, SandboxConfig, SandboxResult,
+    CommandPolicyChecker,
+    DockerSandbox,
+    SandboxConfig,
+    SandboxResult,
     SecretRedactor,
 )
 
