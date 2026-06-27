@@ -12,12 +12,10 @@ V0.4 — Phoenix-Evo Evidence & Replay
 from __future__ import annotations
 
 import json
-import shutil
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # SkillCard — 技能证据卡
@@ -64,7 +62,7 @@ class SkillCard:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> "SkillCard":
+    def from_dict(cls, d: dict[str, Any]) -> SkillCard:
         # 过滤未知字段
         known = {f.name for f in cls.__dataclass_fields__.values()}
         return cls(**{k: v for k, v in d.items() if k in known})
@@ -134,7 +132,7 @@ class SkillEvidenceManager:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
             return SkillCard.from_dict(data)
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return None
 
     def save_card(self, card: SkillCard) -> None:
@@ -165,7 +163,7 @@ class SkillEvidenceManager:
                 card = SkillCard.from_dict(json.loads(p.read_text(encoding="utf-8")))
                 if status is None or card.status == status:
                     cards.append(card)
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 continue
         return cards
 

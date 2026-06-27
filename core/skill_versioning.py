@@ -7,7 +7,7 @@ import json
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 class SkillState(Enum):
@@ -28,14 +28,14 @@ class SkillVersion:
     code_hash: str
     created_at: float = field(default_factory=time.time)
     author: str = ""
-    parent_version: Optional[str] = None
+    parent_version: str | None = None
     changelog: str = ""
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     state: SkillState = SkillState.DRAFT
-    signature: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    signature: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "skill_id": self.skill_id,
             "version": self.version,
@@ -53,7 +53,7 @@ class SkillVersion:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SkillVersion":
+    def from_dict(cls, data: dict[str, Any]) -> SkillVersion:
         data = dict(data)
         data["state"] = SkillState(data.get("state", "draft"))
         return cls(**data)
@@ -63,7 +63,7 @@ class VersionedSkillRegistry:
     """Registry for versioned skills with lineage tracking."""
 
     def __init__(self):
-        self._skills: Dict[str, Dict[str, SkillVersion]] = {}  # skill_id -> {version -> SkillVersion}
+        self._skills: dict[str, dict[str, SkillVersion]] = {}  # skill_id -> {version -> SkillVersion}
 
     def register(self, skill: SkillVersion) -> None:
         """Register a skill version."""
@@ -71,7 +71,7 @@ class VersionedSkillRegistry:
             self._skills[skill.skill_id] = {}
         self._skills[skill.skill_id][skill.version] = skill
 
-    def get(self, skill_id: str, version: Optional[str] = None) -> Optional[SkillVersion]:
+    def get(self, skill_id: str, version: str | None = None) -> SkillVersion | None:
         """Get a skill by ID and optional version (latest if None)."""
         versions = self._skills.get(skill_id, {})
         if not versions:
@@ -84,7 +84,7 @@ class VersionedSkillRegistry:
             return max(published, key=lambda v: v.created_at)
         return max(versions.values(), key=lambda v: v.created_at)
 
-    def get_lineage(self, skill_id: str) -> List[SkillVersion]:
+    def get_lineage(self, skill_id: str) -> list[SkillVersion]:
         """Get the full lineage of a skill."""
         versions = self._skills.get(skill_id, {})
         if not versions:
@@ -108,7 +108,7 @@ class VersionedSkillRegistry:
         lineage.reverse()
         return lineage
 
-    def list_versions(self, skill_id: str) -> List[str]:
+    def list_versions(self, skill_id: str) -> list[str]:
         """List all versions of a skill."""
         return list(self._skills.get(skill_id, {}).keys())
 
@@ -128,7 +128,7 @@ class VersionedSkillRegistry:
             return True
         return False
 
-    def search(self, query: str) -> List[SkillVersion]:
+    def search(self, query: str) -> list[SkillVersion]:
         """Search skills by name or description."""
         results = []
         query_lower = query.lower()
@@ -197,6 +197,6 @@ class SkillStateMachine:
             return True
         return False
 
-    def get_valid_transitions(self, current: SkillState) -> List[SkillState]:
+    def get_valid_transitions(self, current: SkillState) -> list[SkillState]:
         """Get valid transitions from the current state."""
         return list(self.TRANSITIONS.get(current, set()))

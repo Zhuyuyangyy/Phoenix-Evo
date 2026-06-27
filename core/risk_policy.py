@@ -116,8 +116,6 @@ class RiskProfile:
     @property
     def overgeneralized(self) -> bool:
         # 单次经验写成通用规则
-        vague_phrases = ["一切", "所有", "无论", "always", "never", "guarantee",
-                         "全部情况", "任何场景", "无例外"]
         return self.procedure_step_count < MIN_PROCEDURE_STEPS
 
     def compute_decision(self) -> "RiskProfile":

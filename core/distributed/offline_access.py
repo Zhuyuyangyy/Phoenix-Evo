@@ -7,7 +7,7 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 @dataclass
@@ -18,9 +18,9 @@ class OfflineSkill:
     code: str
     checksum: str
     downloaded_at: float = field(default_factory=time.time)
-    expires_at: Optional[float] = None
+    expires_at: float | None = None
     size_bytes: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def is_expired(self) -> bool:
@@ -43,7 +43,7 @@ class OfflineSkillAccess:
 
     def __init__(self, storage_dir: str = ".phoenix_offline"):
         self.storage_dir = storage_dir
-        self._skills: Dict[str, OfflineSkill] = {}
+        self._skills: dict[str, OfflineSkill] = {}
         self._load_from_disk()
 
     def _load_from_disk(self) -> None:
@@ -55,7 +55,7 @@ class OfflineSkillAccess:
             if filename.endswith(".offline.json"):
                 filepath = os.path.join(self.storage_dir, filename)
                 try:
-                    with open(filepath, "r") as f:
+                    with open(filepath) as f:
                         data = json.load(f)
                     skill = OfflineSkill(
                         skill_id=data["skill_id"],
@@ -72,7 +72,7 @@ class OfflineSkillAccess:
                     continue
 
     def download(self, skill_id: str, code: str, version: str = "1.0.0",
-                 ttl_seconds: Optional[float] = None) -> OfflineSkill:
+                 ttl_seconds: float | None = None) -> OfflineSkill:
         """Download a skill for offline use."""
         checksum = hashlib.sha256(code.encode()).hexdigest()[:16]
         expires_at = time.time() + ttl_seconds if ttl_seconds else None
@@ -104,14 +104,14 @@ class OfflineSkillAccess:
 
         return skill
 
-    def get(self, skill_id: str) -> Optional[OfflineSkill]:
+    def get(self, skill_id: str) -> OfflineSkill | None:
         """Get an offline skill by ID."""
         skill = self._skills.get(skill_id)
         if skill and not skill.is_expired:
             return skill
         return None
 
-    def list_available(self) -> List[OfflineSkill]:
+    def list_available(self) -> list[OfflineSkill]:
         """List all available offline skills (non-expired)."""
         return [s for s in self._skills.values() if not s.is_expired]
 
@@ -132,14 +132,14 @@ class OfflineSkillAccess:
             self.remove(sid)
         return len(expired)
 
-    def verify_all(self) -> Dict[str, bool]:
+    def verify_all(self) -> dict[str, bool]:
         """Verify checksums of all offline skills."""
         return {
             sid: skill.verify_checksum()
             for sid, skill in self._skills.items()
         }
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get offline access status."""
         available = self.list_available()
         total_size = sum(s.size_bytes for s in available)

@@ -4,11 +4,10 @@ Task Definitions for Phoenix-Evo Agent Experiment
 """
 
 from dataclasses import dataclass
-from enum import Enum
-from typing import List, Optional
+from enum import StrEnum
 
 
-class TaskCategory(str, Enum):
+class TaskCategory(StrEnum):
     """任务类别"""
     CODING = "coding"
     DEBUGGING = "debugging"
@@ -23,7 +22,7 @@ class TaskCategory(str, Enum):
     DEPLOYMENT = "deployment"
 
 
-class DifficultyLevel(str, Enum):
+class DifficultyLevel(StrEnum):
     """难度级别"""
     EASY = "easy"
     MEDIUM = "medium"
@@ -39,7 +38,7 @@ class AgentTask:
     description: str
     input_context: str
     expected_output_type: str
-    skill_keywords: List[str]  # 相关技能关键词
+    skill_keywords: list[str]  # 相关技能关键词
     estimated_tokens: int  # 预估token消耗
     time_limit_seconds: int  # 时间限制
 
@@ -58,7 +57,7 @@ class AgentTask:
 
 
 # 定义20个agent任务
-TASK_DEFINITIONS: List[AgentTask] = [
+TASK_DEFINITIONS: list[AgentTask] = [
     # ========== CODING TASKS ==========
     AgentTask(
         task_id="T01",
@@ -633,7 +632,7 @@ TASK_DEFINITIONS: List[AgentTask] = [
 ]
 
 
-def get_task_by_id(task_id: str) -> Optional[AgentTask]:
+def get_task_by_id(task_id: str) -> AgentTask | None:
     """根据ID获取任务"""
     for task in TASK_DEFINITIONS:
         if task.task_id == task_id:
@@ -641,12 +640,12 @@ def get_task_by_id(task_id: str) -> Optional[AgentTask]:
     return None
 
 
-def get_tasks_by_category(category: TaskCategory) -> List[AgentTask]:
+def get_tasks_by_category(category: TaskCategory) -> list[AgentTask]:
     """根据类别获取任务"""
     return [t for t in TASK_DEFINITIONS if t.category == category]
 
 
-def get_tasks_by_difficulty(difficulty: DifficultyLevel) -> List[AgentTask]:
+def get_tasks_by_difficulty(difficulty: DifficultyLevel) -> list[AgentTask]:
     """根据难度获取任务"""
     return [t for t in TASK_DEFINITIONS if t.difficulty == difficulty]
 

@@ -2,8 +2,7 @@
 Tests for PostTaskEvaluator module.
 """
 
-import pytest
-from core.post_task_evaluator import PostTaskEvaluator, EvaluationResult, FailureType, WEIGHTS
+from core.post_task_evaluator import WEIGHTS, FailureType, PostTaskEvaluator
 
 
 class TestPostTaskEvaluator:

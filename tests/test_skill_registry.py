@@ -3,9 +3,6 @@ Tests for SkillRegistry module.
 """
 
 import json
-import pytest
-from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 from core.skill_registry import SkillRegistry
 from core.skill_verifier import VerificationResult
@@ -43,7 +40,7 @@ class TestSkillRegistry:
 
     def test_init_creates_directories(self, tmp_path):
         """Test that initialization creates required directories."""
-        registry = SkillRegistry(root=tmp_path)
+        SkillRegistry(root=tmp_path)
         assert (tmp_path / "skills" / "draft").exists()
         assert (tmp_path / "skills" / "active").exists()
         assert (tmp_path / "skills" / "archived").exists()

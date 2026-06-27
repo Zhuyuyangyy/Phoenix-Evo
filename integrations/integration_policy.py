@@ -17,7 +17,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional
 
 
 class IntegrationPermission(Enum):
@@ -71,7 +70,7 @@ class IntegrationPolicy:
     ]))
 
     @classmethod
-    def strict(cls) -> "IntegrationPolicy":
+    def strict(cls) -> IntegrationPolicy:
         """最严格策略（V0.5 默认）。"""
         return cls(
             allow_auto_activation=False,
@@ -85,7 +84,7 @@ class IntegrationPolicy:
         )
 
     @classmethod
-    def permissive(cls) -> "IntegrationPolicy":
+    def permissive(cls) -> IntegrationPolicy:
         """宽松策略（仅供测试）。"""
         return cls(
             allow_auto_activation=False,
@@ -147,9 +146,8 @@ class PolicyChecker:
 
         # draft 状态
         if skill_status == "draft":
-            if self.policy.require_manual_review_before_export:
-                if evidence_score < 0.7:
-                    return False, f"draft skill 证据分 {evidence_score:.2f} < 0.7，需人工复核"
+            if self.policy.require_manual_review_before_export and evidence_score < 0.7:
+                return False, f"draft skill 证据分 {evidence_score:.2f} < 0.7，需人工复核"
             return True, "ok"
 
         return False, f"未知 skill 状态: {skill_status}"
@@ -202,9 +200,8 @@ class PolicyChecker:
             return True, f"Hermes 指定 risk_level={risk_level}"
 
         # 检查任务类型白名单
-        if self.policy.allowed_task_types:
-            if task_type and task_type not in self.policy.allowed_task_types:
-                return True, f"任务类型 {task_type} 不在白名单"
+        if self.policy.allowed_task_types and task_type and task_type not in self.policy.allowed_task_types:
+            return True, f"任务类型 {task_type} 不在白名单"
 
         # 检查危险关键词（简单正则）
         dangerous_keywords = [
@@ -235,32 +232,32 @@ class PolicyChecker:
         if permission == IntegrationPermission.WRITE_DRAFT:
             return True, "draft 写入始终允许"
 
-        elif permission == IntegrationPermission.READ_SKILLS:
+        if permission == IntegrationPermission.READ_SKILLS:
             return True, "读取 Hermes skills 允许"
 
-        elif permission == IntegrationPermission.READ_TRAJECTORY:
+        if permission == IntegrationPermission.READ_TRAJECTORY:
             return True, "读取轨迹历史允许"
 
-        elif permission == IntegrationPermission.EXPORT_DRAFT:
+        if permission == IntegrationPermission.EXPORT_DRAFT:
             return self.can_export_skill(skill_status="draft")
 
-        elif permission == IntegrationPermission.REQUEST_ACTIVATE:
+        if permission == IntegrationPermission.REQUEST_ACTIVATE:
             if not self.policy.allow_auto_activation:
                 return False, "V0.5 禁止自动激活 skill"
             return True, "ok"
 
-        elif permission == IntegrationPermission.AUTO_CALL_SKILL:
+        if permission == IntegrationPermission.AUTO_CALL_SKILL:
             if not self.policy.allow_auto_call_skill:
                 return False, "V0.5 禁止自动调用 skill"
             return True, "ok"
 
-        elif permission == IntegrationPermission.DELETE_SKILL:
+        if permission == IntegrationPermission.DELETE_SKILL:
             return False, "V0.5 禁止删除 skill"
 
-        elif permission == IntegrationPermission.MODIFY_HERMES_SYSTEM:
+        if permission == IntegrationPermission.MODIFY_HERMES_SYSTEM:
             return False, "V0.5 禁止修改 Hermes 系统文件"
 
-        elif permission == IntegrationPermission.OVERRIDE_SKILL:
+        if permission == IntegrationPermission.OVERRIDE_SKILL:
             return self.can_override_hermes_skill(
                 hermes_skill_exists=True,
                 overwrite_requested=False,

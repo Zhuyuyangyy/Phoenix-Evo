@@ -1,17 +1,21 @@
 """Tests for enterprise features."""
 
-import pytest
 
-from core.enterprise.rbac import (
-    Permission, RBACManager, Role, User, ROLE_PERMISSIONS,
-)
-from core.enterprise.tenant import Organization, TenantManager, Workspace, Project
-from core.enterprise.audit import AuditEvent, AuditLog
-from core.enterprise.policy_engine import Policy, PolicyEffect, PolicyEngine
+from core.enterprise.audit import AuditLog
 from core.enterprise.compliance import (
-    ComplianceManager, ComplianceViolation, PIIDetection, detect_pii, redact_pii,
+    ComplianceManager,
+    detect_pii,
+    redact_pii,
 )
 from core.enterprise.dashboard import DashboardProvider
+from core.enterprise.policy_engine import Policy, PolicyEffect, PolicyEngine
+from core.enterprise.rbac import (
+    Permission,
+    RBACManager,
+    Role,
+    User,
+)
+from core.enterprise.tenant import TenantManager
 
 
 class TestRole:

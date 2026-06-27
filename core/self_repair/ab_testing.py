@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import time
-import uuid
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -17,12 +15,12 @@ class ABTestConfig:
     name: str
     description: str = ""
     metric_name: str = ""
-    control_config: Dict[str, Any] = field(default_factory=dict)
-    treatment_config: Dict[str, Any] = field(default_factory=dict)
+    control_config: dict[str, Any] = field(default_factory=dict)
+    treatment_config: dict[str, Any] = field(default_factory=dict)
     min_samples: int = 30
     significance_level: float = 0.05
     max_duration_seconds: float = 86400.0  # 24 hours
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -38,9 +36,9 @@ class ABTestResult:
     p_value: float
     effect_size: float
     significant: bool
-    winner: Optional[str]  # "control", "treatment", or None
+    winner: str | None  # "control", "treatment", or None
     confidence: float
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ABTestFramework:
@@ -51,9 +49,9 @@ class ABTestFramework:
     """
 
     def __init__(self):
-        self._tests: Dict[str, ABTestConfig] = {}
-        self._control_data: Dict[str, List[float]] = {}
-        self._treatment_data: Dict[str, List[float]] = {}
+        self._tests: dict[str, ABTestConfig] = {}
+        self._control_data: dict[str, list[float]] = {}
+        self._treatment_data: dict[str, list[float]] = {}
 
     def create_test(self, config: ABTestConfig) -> str:
         """Create a new A/B test. Returns the test ID."""
@@ -72,7 +70,7 @@ class ABTestFramework:
         if test_id in self._treatment_data:
             self._treatment_data[test_id].append(value)
 
-    def analyze(self, test_id: str) -> Optional[ABTestResult]:
+    def analyze(self, test_id: str) -> ABTestResult | None:
         """Analyze the results of an A/B test."""
         if test_id not in self._tests:
             return None
@@ -131,7 +129,7 @@ class ABTestFramework:
         treatment_n = len(self._treatment_data.get(test_id, []))
         return control_n >= config.min_samples and treatment_n >= config.min_samples
 
-    def list_tests(self) -> List[Dict[str, Any]]:
+    def list_tests(self) -> list[dict[str, Any]]:
         """List all A/B tests."""
         results = []
         for test_id, config in self._tests.items():

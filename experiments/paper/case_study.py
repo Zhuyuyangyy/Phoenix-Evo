@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -14,24 +13,24 @@ class CaseStudy:
     case_id: str
     title: str
     description: str
-    scenario: Dict[str, Any]
+    scenario: dict[str, Any]
     expected_behavior: str
     actual_behavior: str = ""
-    analysis: Dict[str, Any] = field(default_factory=dict)
-    lessons_learned: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    analysis: dict[str, Any] = field(default_factory=dict)
+    lessons_learned: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class CaseStudyResult:
     """Result from analyzing a case study."""
     case_id: str
-    findings: List[str]
-    safety_implications: List[str]
-    recommendations: List[str]
+    findings: list[str]
+    safety_implications: list[str]
+    recommendations: list[str]
     severity: str  # "low", "medium", "high", "critical"
     confidence: float
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class CaseStudyAnalyzer:
@@ -42,14 +41,14 @@ class CaseStudyAnalyzer:
     """
 
     def __init__(self):
-        self._cases: Dict[str, CaseStudy] = {}
-        self._results: Dict[str, CaseStudyResult] = {}
+        self._cases: dict[str, CaseStudy] = {}
+        self._results: dict[str, CaseStudyResult] = {}
 
     def create_case(
         self,
         title: str,
         description: str,
-        scenario: Dict[str, Any],
+        scenario: dict[str, Any],
         expected_behavior: str,
     ) -> CaseStudy:
         """Create a new case study."""
@@ -107,15 +106,15 @@ class CaseStudyAnalyzer:
         self._results[case.case_id] = result
         return result
 
-    def get_case(self, case_id: str) -> Optional[CaseStudy]:
+    def get_case(self, case_id: str) -> CaseStudy | None:
         """Get a case study by ID."""
         return self._cases.get(case_id)
 
-    def get_result(self, case_id: str) -> Optional[CaseStudyResult]:
+    def get_result(self, case_id: str) -> CaseStudyResult | None:
         """Get the analysis result for a case."""
         return self._results.get(case_id)
 
-    def list_cases(self) -> List[Dict[str, Any]]:
+    def list_cases(self) -> list[dict[str, Any]]:
         """List all case studies."""
         return [
             {
@@ -127,7 +126,7 @@ class CaseStudyAnalyzer:
             for c in self._cases.values()
         ]
 
-    def generate_summary(self) -> Dict[str, Any]:
+    def generate_summary(self) -> dict[str, Any]:
         """Generate a summary of all case studies."""
         severity_counts = {}
         for result in self._results.values():

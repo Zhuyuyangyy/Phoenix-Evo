@@ -21,16 +21,16 @@ V0.2 约束：
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
-from .trajectory_logger import TrajectoryLogger
-from .post_task_evaluator import PostTaskEvaluator, EvaluationResult
-from .skill_miner import SkillMiner
-from .skill_verifier import SkillVerifier
-from .skill_registry import SkillRegistry
 from .immune_guard import ImmuneGuard
+from .post_task_evaluator import EvaluationResult, PostTaskEvaluator
+from .skill_miner import SkillMiner
+from .skill_registry import SkillRegistry
+from .skill_verifier import SkillVerifier
+from .trajectory_logger import TrajectoryLogger
 
 
 class PhoenixEvo:
@@ -233,7 +233,7 @@ class PhoenixEvo:
             report["evolution_happened"] = False
 
         elif immune_decision and immune_decision.decision == "quarantine":
-            entry = self.immune_guard.quarantine_mgr.quarantine_skill(
+            self.immune_guard.quarantine_mgr.quarantine_skill(
                 skill_md_path=skill_md_path,
                 reason=immune_decision.reason,
                 quarantine_rules=immune_decision.immune_rules_triggered,

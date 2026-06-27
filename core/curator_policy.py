@@ -13,14 +13,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # ----------------------------------------------------------------------
 # Decision types
 # ----------------------------------------------------------------------
 
 class CuratorAction:
     """Curator 可执行的操作基类。"""
-    pass
 
 
 class MergeAction(CuratorAction):
@@ -173,7 +171,7 @@ class CuratorPolicy:
         for group in similarity_groups:
             if len(group) < 2:
                 continue
-            group_drift = [drift_map.get(sid) for sid in group if sid in drift_map]
+            [drift_map.get(sid) for sid in group if sid in drift_map]
             # 检查组内是否有风险技能
             risky = any(
                 e.get("risk_level") not in ("none", "low")

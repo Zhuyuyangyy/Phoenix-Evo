@@ -9,8 +9,7 @@ import tarfile
 import tempfile
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
-
+from typing import Any
 
 BUNDLE_FORMAT_VERSION = "1.0"
 BUNDLE_EXTENSION = ".phxskill"
@@ -31,12 +30,12 @@ class BundleManifest:
     author: str = ""
     created_at: float = field(default_factory=time.time)
     code_hash: str = ""
-    dependencies: List[str] = field(default_factory=list)
-    trust_score: Optional[float] = None
+    dependencies: list[str] = field(default_factory=list)
+    trust_score: float | None = None
     phoenix_version: str = "2.0"
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "format_version": self.format_version,
             "skill_id": self.skill_id,
@@ -53,14 +52,14 @@ class BundleManifest:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "BundleManifest":
+    def from_dict(cls, data: dict[str, Any]) -> BundleManifest:
         return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
 
 
 class SkillBundleExporter:
     """Exports skills as .phxskill bundles."""
 
-    def __init__(self, signing_key: Optional[str] = None):
+    def __init__(self, signing_key: str | None = None):
         self.signing_key = signing_key
 
     def export(
@@ -71,11 +70,11 @@ class SkillBundleExporter:
         code: str,
         description: str = "",
         author: str = "",
-        dependencies: Optional[List[str]] = None,
-        trust_score: Optional[float] = None,
-        config: Optional[Dict[str, Any]] = None,
-        output_path: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        dependencies: list[str] | None = None,
+        trust_score: float | None = None,
+        config: dict[str, Any] | None = None,
+        output_path: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> str:
         """Export a skill as a .phxskill bundle.
 
@@ -128,7 +127,7 @@ class SkillBundleExporter:
 
         return output_path
 
-    def _sign_manifest(self, manifest: BundleManifest) -> Dict[str, Any]:
+    def _sign_manifest(self, manifest: BundleManifest) -> dict[str, Any]:
         """Sign a manifest with the signing key."""
         payload = json.dumps(manifest.to_dict(), sort_keys=True)
         message = f"{payload}:{self.signing_key}"
@@ -143,11 +142,11 @@ class SkillBundleExporter:
 class SkillBundleImporter:
     """Imports skills from .phxskill bundles."""
 
-    def __init__(self, verify_signature: bool = True, signing_key: Optional[str] = None):
+    def __init__(self, verify_signature: bool = True, signing_key: str | None = None):
         self.verify_signature = verify_signature
         self.signing_key = signing_key
 
-    def import_bundle(self, bundle_path: str) -> Dict[str, Any]:
+    def import_bundle(self, bundle_path: str) -> dict[str, Any]:
         """Import a skill from a .phxskill bundle.
 
         Returns a dictionary with manifest, code, config, and validation results.
@@ -155,7 +154,7 @@ class SkillBundleImporter:
         if not os.path.exists(bundle_path):
             raise FileNotFoundError(f"Bundle not found: {bundle_path}")
 
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "valid": True,
             "errors": [],
             "warnings": [],
@@ -172,7 +171,7 @@ class SkillBundleImporter:
                 result["errors"].append("Missing manifest.json")
                 return result
 
-            with open(manifest_path, "r") as f:
+            with open(manifest_path) as f:
                 manifest_data = json.load(f)
             manifest = BundleManifest.from_dict(manifest_data)
             result["manifest"] = manifest
@@ -180,7 +179,7 @@ class SkillBundleImporter:
             # Read code
             code_path = os.path.join(tmpdir, BUNDLE_CODE)
             if os.path.exists(code_path):
-                with open(code_path, "r") as f:
+                with open(code_path) as f:
                     result["code"] = f.read()
 
                 # Verify code hash
@@ -194,13 +193,13 @@ class SkillBundleImporter:
             # Read config
             config_path = os.path.join(tmpdir, BUNDLE_CONFIG)
             if os.path.exists(config_path):
-                with open(config_path, "r") as f:
+                with open(config_path) as f:
                     result["config"] = json.load(f)
 
             # Verify signature
             sig_path = os.path.join(tmpdir, BUNDLE_SIGNATURE)
             if os.path.exists(sig_path):
-                with open(sig_path, "r") as f:
+                with open(sig_path) as f:
                     result["signature"] = json.load(f)
             elif self.verify_signature:
                 result["warnings"].append("No signature in bundle")
@@ -214,7 +213,7 @@ class CompatibilityChecker:
     def __init__(self, current_phoenix_version: str = "2.0"):
         self.current_version = current_phoenix_version
 
-    def check(self, manifest: BundleManifest) -> Dict[str, Any]:
+    def check(self, manifest: BundleManifest) -> dict[str, Any]:
         """Check if a bundle is compatible with the current system."""
         result = {
             "compatible": True,

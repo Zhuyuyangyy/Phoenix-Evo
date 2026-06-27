@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 class ConsensusMethod(Enum):
@@ -27,11 +27,11 @@ class ConsensusResult:
     """Result of a consensus process."""
     proposal_id: str
     method: ConsensusMethod
-    votes: List[Vote]
+    votes: list[Vote]
     outcome: Any
     agreement_ratio: float
     passed: bool
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ConsensusMechanism:
@@ -52,13 +52,13 @@ class ConsensusMechanism:
         self.vote_threshold = vote_threshold
         self.supermajority_threshold = supermajority_threshold
         self.review_required_approvals = review_required_approvals
-        self._results: List[ConsensusResult] = []
+        self._results: list[ConsensusResult] = []
 
     def vote(
         self,
         proposal_id: str,
-        votes: List[Vote],
-        threshold: Optional[float] = None,
+        votes: list[Vote],
+        threshold: float | None = None,
     ) -> ConsensusResult:
         """Conduct a vote on a proposal."""
         if not votes:
@@ -74,7 +74,7 @@ class ConsensusMechanism:
         threshold = threshold or self.vote_threshold
 
         # Count votes by choice
-        choice_counts: Dict[Any, int] = {}
+        choice_counts: dict[Any, int] = {}
         for v in votes:
             choice_counts[v.choice] = choice_counts.get(v.choice, 0) + 1
 
@@ -100,8 +100,8 @@ class ConsensusMechanism:
     def review(
         self,
         proposal_id: str,
-        reviews: List[Vote],
-        required_approvals: Optional[int] = None,
+        reviews: list[Vote],
+        required_approvals: int | None = None,
     ) -> ConsensusResult:
         """Conduct a sequential review of a proposal."""
         required = required_approvals or self.review_required_approvals
@@ -128,7 +128,7 @@ class ConsensusMechanism:
         self,
         proposal_id: str,
         proposer: Vote,
-        challengers: List[Vote],
+        challengers: list[Vote],
     ) -> ConsensusResult:
         """Conduct an adversarial challenge on a proposal.
 
@@ -157,6 +157,6 @@ class ConsensusMechanism:
         self._results.append(result)
         return result
 
-    def get_history(self) -> List[ConsensusResult]:
+    def get_history(self) -> list[ConsensusResult]:
         """Get the history of consensus results."""
         return list(self._results)

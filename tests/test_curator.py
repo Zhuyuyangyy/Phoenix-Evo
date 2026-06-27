@@ -16,21 +16,19 @@ V0.3 关键设计：
 
 import json
 import shutil
-import tempfile
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import pytest
 
-# ------------------------------------------------------------------ 
+# ------------------------------------------------------------------
 # Fixtures
-# ------------------------------------------------------------------ 
+# ------------------------------------------------------------------
 
 @pytest.fixture
 def curator_root(tmp_path):
     """
     构建完整的 Phoenix-Evo 目录结构。
-    
+
     创建 5 个模拟技能（3 个高度相似，2 个独立）：
       - skill_similar_1, skill_similar_2, skill_similar_3 → 高度相似（WSL 路径修复）
       - skill_independent_1 → 独立技能
@@ -263,7 +261,7 @@ class TestDriftDetector:
 
     def test_unused_skill_stale_created_long_ago(self, curator_root):
         """创建很久但从未使用的技能应被标记。"""
-        from core.drift_detector import DriftDetector, STALENESS_DAYS
+        from core.drift_detector import DriftDetector
 
         root, index = curator_root
         detector = DriftDetector(index)
@@ -300,9 +298,9 @@ class TestCuratorPolicy:
 
     def test_merge_group_produces_merge_action(self, curator_root):
         """高度相似技能组应产生 MergeAction。"""
-        from core.skill_similarity import SkillVectorizer
-        from core.drift_detector import DriftDetector
         from core.curator_policy import CuratorPolicy
+        from core.drift_detector import DriftDetector
+        from core.skill_similarity import SkillVectorizer
 
         root, index = curator_root
         active_draft = [v for v in index.values() if v.get("status") in ("active", "draft")]
@@ -327,12 +325,12 @@ class TestCuratorPolicy:
 
     def test_critical_skill_archived(self, curator_root):
         """critical 漂移技能应被归档。"""
-        from core.skill_similarity import SkillVectorizer
-        from core.drift_detector import DriftDetector
         from core.curator_policy import CuratorPolicy
+        from core.drift_detector import DriftDetector
+        from core.skill_similarity import SkillVectorizer
 
         root, index = curator_root
-        vectorizer = SkillVectorizer([v for v in index.values()], root=root)
+        vectorizer = SkillVectorizer(list(index.values()), root=root)
         sim_results = vectorizer.compute_pairwise()
         sim_groups = vectorizer.get_groups()
 
@@ -346,12 +344,12 @@ class TestCuratorPolicy:
 
     def test_stable_skill_kept(self, curator_root):
         """stable 技能应被保留。"""
-        from core.skill_similarity import SkillVectorizer
-        from core.drift_detector import DriftDetector
         from core.curator_policy import CuratorPolicy
+        from core.drift_detector import DriftDetector
+        from core.skill_similarity import SkillVectorizer
 
         root, index = curator_root
-        vectorizer = SkillVectorizer([v for v in index.values()], root=root)
+        vectorizer = SkillVectorizer(list(index.values()), root=root)
         sim_results = vectorizer.compute_pairwise()
         sim_groups = vectorizer.get_groups()
 
@@ -365,12 +363,12 @@ class TestCuratorPolicy:
 
     def test_decision_has_summary_note(self, curator_root):
         """decision.curator_note 不应为空。"""
-        from core.skill_similarity import SkillVectorizer
-        from core.drift_detector import DriftDetector
         from core.curator_policy import CuratorPolicy
+        from core.drift_detector import DriftDetector
+        from core.skill_similarity import SkillVectorizer
 
         root, index = curator_root
-        vectorizer = SkillVectorizer([v for v in index.values()], root=root)
+        vectorizer = SkillVectorizer(list(index.values()), root=root)
         decision = CuratorPolicy(index).decide(
             vectorizer.compute_pairwise(),
             DriftDetector(index).analyze_all(),
@@ -465,7 +463,7 @@ class TestSkillCurator:
 
         root, index = curator_root
         curator = SkillCurator(root=root)
-        report = curator.scan()
+        curator.scan()
 
         log_path = root / "skills" / ".curator_log.json"
         assert log_path.exists()
@@ -479,7 +477,7 @@ class TestSkillCurator:
 
         root, index = curator_root
         curator = SkillCurator(root=root)
-        report = curator.scan()
+        curator.scan()
 
         # 合并后，archived 目录应有被合并的技能文件
         archived_files = list((root / "skills" / "archived").glob("*.md"))

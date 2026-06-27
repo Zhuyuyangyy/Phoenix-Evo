@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 
 @dataclass
@@ -15,8 +15,8 @@ class Organization:
     display_name: str = ""
     plan: str = "free"  # free, pro, enterprise
     active: bool = True
-    settings: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    settings: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -27,8 +27,8 @@ class Workspace:
     name: str
     description: str = ""
     active: bool = True
-    settings: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    settings: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -39,17 +39,17 @@ class Project:
     name: str
     description: str = ""
     active: bool = True
-    settings: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    settings: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class TenantManager:
     """Manages multi-tenant organizations, workspaces, and projects."""
 
     def __init__(self):
-        self._organizations: Dict[str, Organization] = {}
-        self._workspaces: Dict[str, Workspace] = {}
-        self._projects: Dict[str, Project] = {}
+        self._organizations: dict[str, Organization] = {}
+        self._workspaces: dict[str, Workspace] = {}
+        self._projects: dict[str, Project] = {}
 
     # Organization management
     def create_organization(
@@ -69,11 +69,11 @@ class TenantManager:
         self._organizations[org_id] = org
         return org
 
-    def get_organization(self, org_id: str) -> Optional[Organization]:
+    def get_organization(self, org_id: str) -> Organization | None:
         """Get an organization by ID."""
         return self._organizations.get(org_id)
 
-    def list_organizations(self) -> List[Organization]:
+    def list_organizations(self) -> list[Organization]:
         """List all organizations."""
         return list(self._organizations.values())
 
@@ -108,7 +108,7 @@ class TenantManager:
         org_id: str,
         name: str,
         description: str = "",
-    ) -> Optional[Workspace]:
+    ) -> Workspace | None:
         """Create a new workspace in an organization."""
         if org_id not in self._organizations:
             return None
@@ -122,11 +122,11 @@ class TenantManager:
         self._workspaces[ws_id] = ws
         return ws
 
-    def get_workspace(self, workspace_id: str) -> Optional[Workspace]:
+    def get_workspace(self, workspace_id: str) -> Workspace | None:
         """Get a workspace by ID."""
         return self._workspaces.get(workspace_id)
 
-    def list_workspaces(self, org_id: str) -> List[Workspace]:
+    def list_workspaces(self, org_id: str) -> list[Workspace]:
         """List workspaces in an organization."""
         return [ws for ws in self._workspaces.values() if ws.org_id == org_id]
 
@@ -150,7 +150,7 @@ class TenantManager:
         workspace_id: str,
         name: str,
         description: str = "",
-    ) -> Optional[Project]:
+    ) -> Project | None:
         """Create a new project in a workspace."""
         if workspace_id not in self._workspaces:
             return None
@@ -164,11 +164,11 @@ class TenantManager:
         self._projects[proj_id] = proj
         return proj
 
-    def get_project(self, project_id: str) -> Optional[Project]:
+    def get_project(self, project_id: str) -> Project | None:
         """Get a project by ID."""
         return self._projects.get(project_id)
 
-    def list_projects(self, workspace_id: str) -> List[Project]:
+    def list_projects(self, workspace_id: str) -> list[Project]:
         """List projects in a workspace."""
         return [p for p in self._projects.values() if p.workspace_id == workspace_id]
 
@@ -179,7 +179,7 @@ class TenantManager:
             return True
         return False
 
-    def get_tenant_hierarchy(self, org_id: str) -> Dict[str, Any]:
+    def get_tenant_hierarchy(self, org_id: str) -> dict[str, Any]:
         """Get the full tenant hierarchy for an organization."""
         org = self._organizations.get(org_id)
         if not org:

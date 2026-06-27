@@ -16,7 +16,7 @@ V0.6 - Phoenix-Evo Runtime Skill Router
 只注入必要信息，不塞整个 SkillCard。
 """
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from runtime.skill_router import RouteResult
@@ -58,7 +58,7 @@ class ContextInjector:
         """批量注入多个 skill（用于多候选建议场景）"""
         lines = ["[Relevant Skills]", ""]
         for i, rr in enumerate(route_results, 1):
-            lines.append("--- Skill {} ---".format(i))
+            lines.append(f"--- Skill {i} ---")
             lines.append(self.inject(skill=rr))
             lines.append("")
         return chr(10).join(lines)
@@ -82,7 +82,7 @@ class ContextInjector:
                 line = line.strip()
                 if line and (line[0].isdigit() or line.startswith("- ")):
                     steps.append(line)
-            procedure_text = chr(10).join("  {}".format(s) for s in steps) if steps else procedure
+            procedure_text = chr(10).join(f"  {s}" for s in steps) if steps else procedure
         else:
             procedure_text = "(no steps)"
 
@@ -103,44 +103,43 @@ class ContextInjector:
         rr_rate = getattr(rr, "replay_pass_rate", None)
         rs = getattr(rr, "runtime_success_rate", None)
 
-        evidence_str = "{:.2f}".format(ev) if ev else "N/A"
-        replay_str   = "{:.2f}".format(rr_rate) if rr_rate else "N/A"
-        runtime_str  = "{:.2f}".format(rs) if rs else "N/A"
+        evidence_str = f"{ev:.2f}" if ev else "N/A"
+        replay_str   = f"{rr_rate:.2f}" if rr_rate else "N/A"
+        f"{rs:.2f}" if rs else "N/A"
 
         # ---- Usage stats ----
         usage_count   = entry.get("usage_count", 0)
         success_count = entry.get("success_count", 0)
         success_rate  = entry.get("success_rate")
         if success_rate is not None:
-            success_str = "{:.2f}".format(float(success_rate))
+            success_str = f"{float(success_rate):.2f}"
         else:
-            success_str = "{}/{}".format(success_count, usage_count) if usage_count else "0/0"
+            success_str = f"{success_count}/{usage_count}" if usage_count else "0/0"
 
         # ---- Risk level ----
         risk_level = entry.get("risk_level", "unknown")
 
         # ---- Route score ----
         route_score = getattr(rr, "route_score", None)
-        score_str = "{:.3f}".format(route_score) if route_score else "N/A"
+        score_str = f"{route_score:.3f}" if route_score else "N/A"
 
         # ---- Build output ----
         lines = [
-            "## Relevant Skill: {}".format(rr.skill_name),
+            f"## Relevant Skill: {rr.skill_name}",
             "",
-            "**When to use**: {}".format(when_to_use),
+            f"**When to use**: {when_to_use}",
             "",
             "**Steps**:",
             procedure_text,
             "",
-            "**Constraints**: {}".format(constraints),
+            f"**Constraints**: {constraints}",
             "",
-            "**Evidence score**: {} | **Replay pass**: {} | **Success rate**: {}".format(
-                evidence_str, replay_str, success_str),
-            "**Risk level**: {}".format(risk_level),
+            f"**Evidence score**: {evidence_str} | **Replay pass**: {replay_str} | **Success rate**: {success_str}",
+            f"**Risk level**: {risk_level}",
             "",
-            "**Risk notes**: {}".format(risk_notes),
+            f"**Risk notes**: {risk_notes}",
             "",
-            "*Skill ID: {} | Route score: {}*".format(rr.skill_id, score_str),
+            f"*Skill ID: {rr.skill_id} | Route score: {score_str}*",
         ]
         return chr(10).join(lines)
 

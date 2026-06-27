@@ -7,9 +7,9 @@ V0.2 — Phoenix-Evo Immune Guard
 """
 
 import json
-from pathlib import Path
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from dataclasses import dataclass, field, asdict
+from pathlib import Path
 
 
 @dataclass
@@ -67,18 +67,18 @@ class QuarantineManager:
     ) -> QuarantineEntry:
         """
         将技能文件移动到 quarantine 目录，并记录索引。
-        
+
         Args:
             skill_md_path: 原技能文件路径（通常在 skills/draft/）
             reason: 隔离原因描述
             quarantine_rules: 触发的免疫规则名称列表
             risk_profile: RiskProfile 的 dict 快照
-        
+
         Returns:
             QuarantineEntry 条目
         """
         skill_id = skill_md_path.stem  # 文件名（不含扩展名）
-        
+
         entry = QuarantineEntry(
             skill_id=skill_id,
             skill_name=skill_md_path.read_text(encoding="utf-8").split("\n")[0].lstrip("# ").strip(),
@@ -87,7 +87,7 @@ class QuarantineManager:
             risk_profile=risk_profile,
             quarantined_at=datetime.now().isoformat(),
         )
-        
+
         # 移动到 quarantine 目录
         dest = self.quarantine_dir / f"{skill_id}.md"
         if skill_md_path.exists():
@@ -97,10 +97,10 @@ class QuarantineManager:
                 f"# Skill: {skill_id}\n\n*In Quarantine*\n\nReason: {reason}",
                 encoding="utf-8",
             )
-        
+
         self._index[skill_id] = entry
         self._save_index()
-        
+
         return entry
 
     def resolve_skill(
@@ -112,22 +112,22 @@ class QuarantineManager:
     ) -> bool:
         """
         人工或 Curator 复核后处理隔离技能。
-        
+
         resolution="activated" → 移至 skills/active/
         resolution="archived"   → 移至 skills/archived/
         resolution="rejected"   → 保留在 quarantine（标记为 rejected）
         """
         if skill_id not in self._index:
             return False
-        
+
         entry = self._index[skill_id]
         entry.manual_reviewed = True
         entry.reviewed_by = reviewed_by
         entry.manual_review_note = note
         entry.resolution = resolution
-        
+
         src = self.quarantine_dir / f"{skill_id}.md"
-        
+
         if resolution == "activated":
             dest = self.root / "skills" / "active" / f"{skill_id}.md"
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -139,7 +139,7 @@ class QuarantineManager:
             if src.exists():
                 src.rename(dest)
         # rejected → 留在原地，仅更新索引
-        
+
         self._save_index()
         return True
 

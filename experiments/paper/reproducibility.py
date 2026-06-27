@@ -7,7 +7,7 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -16,13 +16,13 @@ class ExperimentRun:
     run_id: str
     experiment_id: str
     timestamp: float = field(default_factory=time.time)
-    parameters: Dict[str, Any] = field(default_factory=dict)
-    results: Dict[str, Any] = field(default_factory=dict)
-    environment: Dict[str, Any] = field(default_factory=dict)
-    random_seed: Optional[int] = None
+    parameters: dict[str, Any] = field(default_factory=dict)
+    results: dict[str, Any] = field(default_factory=dict)
+    environment: dict[str, Any] = field(default_factory=dict)
+    random_seed: int | None = None
     code_version: str = ""
     data_hash: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def compute_hash(self) -> str:
         """Compute a hash of the run for verification."""
@@ -45,16 +45,16 @@ class ReproducibilityManager:
 
     def __init__(self, storage_dir: str = ".phoenix_reproducibility"):
         self.storage_dir = storage_dir
-        self._runs: Dict[str, ExperimentRun] = {}
+        self._runs: dict[str, ExperimentRun] = {}
 
     def record_run(
         self,
         experiment_id: str,
-        parameters: Dict[str, Any],
-        results: Dict[str, Any],
-        random_seed: Optional[int] = None,
+        parameters: dict[str, Any],
+        results: dict[str, Any],
+        random_seed: int | None = None,
         code_version: str = "",
-        environment: Optional[Dict[str, Any]] = None,
+        environment: dict[str, Any] | None = None,
     ) -> ExperimentRun:
         """Record an experiment run."""
         import uuid
@@ -77,7 +77,7 @@ class ReproducibilityManager:
 
         return run
 
-    def verify_run(self, run_id: str) -> Dict[str, Any]:
+    def verify_run(self, run_id: str) -> dict[str, Any]:
         """Verify that a recorded run's hash is still valid."""
         run = self._runs.get(run_id)
         if not run:
@@ -92,8 +92,8 @@ class ReproducibilityManager:
     def reproduce(
         self,
         run_id: str,
-        executor: Optional[Any] = None,
-    ) -> Optional[ExperimentRun]:
+        executor: Any | None = None,
+    ) -> ExperimentRun | None:
         """Attempt to reproduce a previous run."""
         original = self._runs.get(run_id)
         if not original:
@@ -118,7 +118,7 @@ class ReproducibilityManager:
 
         return new_run
 
-    def compare_runs(self, run_id_1: str, run_id_2: str) -> Dict[str, Any]:
+    def compare_runs(self, run_id_1: str, run_id_2: str) -> dict[str, Any]:
         """Compare two experiment runs."""
         run1 = self._runs.get(run_id_1)
         run2 = self._runs.get(run_id_2)
@@ -145,11 +145,11 @@ class ReproducibilityManager:
             "results_diff": results_diff,
         }
 
-    def get_run(self, run_id: str) -> Optional[ExperimentRun]:
+    def get_run(self, run_id: str) -> ExperimentRun | None:
         """Get a recorded run."""
         return self._runs.get(run_id)
 
-    def list_runs(self, experiment_id: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_runs(self, experiment_id: str | None = None) -> list[dict[str, Any]]:
         """List recorded runs, optionally filtered by experiment."""
         runs = list(self._runs.values())
         if experiment_id:
@@ -182,7 +182,7 @@ class ReproducibilityManager:
             }, f, indent=2, default=str)
 
     @staticmethod
-    def _get_environment() -> Dict[str, Any]:
+    def _get_environment() -> dict[str, Any]:
         """Get the current environment info."""
         import sys
         return {

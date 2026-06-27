@@ -8,12 +8,12 @@ import numpy as np
 import pytest
 
 from benchmarks.phoenixbench.runners.statistics import (
-    bootstrap_ci,
+    aggregate_results,
     bonferroni_correction,
+    bootstrap_ci,
     cohens_d,
     generate_report,
     paired_significance_test,
-    aggregate_results,
     write_frozen_results,
 )
 

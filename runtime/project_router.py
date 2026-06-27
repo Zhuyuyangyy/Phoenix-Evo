@@ -12,8 +12,6 @@ ProjectRouter — Phoenix-Evo V1.0 P0-3
 from __future__ import annotations
 
 import re
-from typing import Optional
-
 
 # ── 已知项目 namespace ───────────────────────────────────────────────────────
 
@@ -179,7 +177,7 @@ class ProjectRouter:
                     pattern = p
                 self._rules.append((namespace, display, pattern))
 
-    def classify_project(self, message: str) -> Optional[ProjectMatch]:
+    def classify_project(self, message: str) -> ProjectMatch | None:
         """
         从消息中识别项目 namespace。
 
@@ -225,7 +223,7 @@ class ProjectRouter:
 
 # ── 单例 ─────────────────────────────────────────────────────────────────────
 
-_router_instance: Optional[ProjectRouter] = None
+_router_instance: ProjectRouter | None = None
 
 
 def get_project_router() -> ProjectRouter:
@@ -235,6 +233,6 @@ def get_project_router() -> ProjectRouter:
     return _router_instance
 
 
-def classify_project(message: str) -> Optional[ProjectMatch]:
+def classify_project(message: str) -> ProjectMatch | None:
     """便捷函数。"""
     return get_project_router().classify_project(message)

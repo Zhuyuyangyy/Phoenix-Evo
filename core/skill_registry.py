@@ -87,7 +87,7 @@ class SkillRegistry:
         if skill_id not in index:
             return False
         entry = index[skill_id]
-        for folder, dir_path in [("active", self.active_dir), ("draft", self.draft_dir)]:
+        for _folder, dir_path in [("active", self.active_dir), ("draft", self.draft_dir)]:
             p = dir_path / f"{skill_id}.md"
             if p.exists():
                 archived_path = self.archived_dir / f"{skill_id}.md"
@@ -139,7 +139,7 @@ class SkillRegistry:
             return {}
         try:
             return json.loads(self._index_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return {}
 
     def _save_index(self, index: dict) -> None:

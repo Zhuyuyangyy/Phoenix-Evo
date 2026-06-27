@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -17,17 +17,17 @@ class HealthCheck:
     latency_ms: float = 0.0
     message: str = ""
     timestamp: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class SystemHealth:
     """Overall system health status."""
     status: str  # "healthy", "degraded", "unhealthy"
-    components: Dict[str, HealthCheck]
+    components: dict[str, HealthCheck]
     overall_score: float  # 0.0 to 1.0
     timestamp: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class SystemHealthMonitor:
@@ -46,9 +46,9 @@ class SystemHealthMonitor:
         self.check_interval = check_interval
         self.unhealthy_threshold = unhealthy_threshold
         self.degraded_threshold = degraded_threshold
-        self._checks: Dict[str, HealthCheck] = {}
-        self._check_fns: Dict[str, callable] = {}
-        self._history: List[SystemHealth] = []
+        self._checks: dict[str, HealthCheck] = {}
+        self._check_fns: dict[str, callable] = {}
+        self._history: list[SystemHealth] = []
 
     def register_check(self, component: str, check_fn: callable) -> None:
         """Register a health check function for a component."""
@@ -63,7 +63,7 @@ class SystemHealthMonitor:
                 if isinstance(result, HealthCheck):
                     self._checks[component] = result
                     return result
-                elif isinstance(result, bool):
+                if isinstance(result, bool):
                     check = HealthCheck(component=component, healthy=result)
                     self._checks[component] = check
                     return check
@@ -120,11 +120,11 @@ class SystemHealthMonitor:
             return self._history[-1]
         return SystemHealth(status="unknown", components={}, overall_score=0.0)
 
-    def get_history(self, limit: int = 100) -> List[SystemHealth]:
+    def get_history(self, limit: int = 100) -> list[SystemHealth]:
         """Get health history."""
         return self._history[-limit:]
 
-    def get_unhealthy_components(self) -> List[str]:
+    def get_unhealthy_components(self) -> list[str]:
         """Get list of unhealthy components."""
         return [
             comp for comp, check in self._checks.items()

@@ -12,11 +12,10 @@ V0.5 — Phoenix-Evo Runtime Skill Router
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # RuntimeReport — 单次运行时报告
@@ -122,7 +121,7 @@ class RuntimeReporter:
         task_goal: str,
         task_id: str,
         retrieval_count: int,
-        routing_result: "RouterResult",   # type: ignore[name-defined]
+        routing_result: RouterResult,   # type: ignore[name-defined]
         invocations: list[SkillInvocation],
         execution_time_ms: float,
         task_success: bool,
@@ -259,7 +258,7 @@ class RuntimeReporter:
         for p in sorted(self.logs_dir.glob("runtime_*.report.json"), reverse=True)[:limit]:
             try:
                 reports.append(json.loads(p.read_text(encoding="utf-8")))
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 continue
         return reports
 

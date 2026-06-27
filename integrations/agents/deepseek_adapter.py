@@ -2,19 +2,17 @@
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import time
-import json
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .base_agent_adapter import (
     AgentAdapter,
     AgentRunResult,
     EventType,
     TaskSpec,
-    TrajectoryEvent,
-    compute_context_hash,
 )
 
 
@@ -29,7 +27,7 @@ class DeepSeekAdapter(AgentAdapter):
         self,
         agent_id: str = "deepseek",
         model_name: str = "deepseek-chat",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         base_url: str = "https://api.deepseek.com/v1",
         max_retries: int = 3,
         retry_base_delay: float = 1.0,
@@ -75,21 +73,20 @@ class DeepSeekAdapter(AgentAdapter):
             text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
         return text
 
-    def _call_with_retry(self, messages: List[Dict], tools: Optional[List[Dict]] = None) -> Any:
+    def _call_with_retry(self, messages: list[dict], tools: list[dict] | None = None) -> Any:
         """Call the DeepSeek API with exponential backoff retry."""
         client = self._get_client()
         last_error = None
         for attempt in range(self.max_retries):
             try:
-                kwargs: Dict[str, Any] = {
+                kwargs: dict[str, Any] = {
                     "model": self.model_name,
                     "messages": messages,
                 }
                 if tools:
                     kwargs["tools"] = tools
                     kwargs["tool_choice"] = "auto"
-                response = client.chat.completions.create(**kwargs)
-                return response
+                return client.chat.completions.create(**kwargs)
             except Exception as e:
                 last_error = e
                 if attempt < self.max_retries - 1:
@@ -138,7 +135,7 @@ class DeepSeekAdapter(AgentAdapter):
         success = False
 
         try:
-            for step in range(task.max_steps):
+            for _step in range(task.max_steps):
                 total_steps += 1
 
                 self._record_event(

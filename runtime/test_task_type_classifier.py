@@ -5,10 +5,12 @@ Run from Phoenix-Evo root:
     python runtime/test_task_type_classifier.py
 """
 
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(__file__))
 
-from task_type_classifier import TaskTypeClassifier, classify_task
+from task_type_classifier import TaskTypeClassifier
 
 TEST_CASES = [
     # (input, expected_type, description)

@@ -5,13 +5,17 @@ from __future__ import annotations
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
-from .agent_roles import AgentProfile, AgentRole
-from .artifacts import Artifact, ArtifactType
+from .artifacts import Artifact
 from .collaboration_protocol import CollaborationProtocol, CollaborationSession
 from .consensus import ConsensusMechanism, ConsensusMethod, Vote
 from .shared_memory import SafetyMemoryEntry, SharedSafetyMemory
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from .agent_roles import AgentProfile, AgentRole
 
 
 @dataclass
@@ -19,12 +23,12 @@ class OrchestratorResult:
     """Result from the multi-agent orchestrator."""
     task_id: str
     success: bool
-    session: Optional[CollaborationSession] = None
-    artifacts: List[Artifact] = field(default_factory=list)
-    safety_events: List[SafetyMemoryEntry] = field(default_factory=list)
+    session: CollaborationSession | None = None
+    artifacts: list[Artifact] = field(default_factory=list)
+    safety_events: list[SafetyMemoryEntry] = field(default_factory=list)
     duration_seconds: float = 0.0
-    error: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    error: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class MultiAgentOrchestrator:
@@ -36,15 +40,15 @@ class MultiAgentOrchestrator:
 
     def __init__(
         self,
-        protocol: Optional[CollaborationProtocol] = None,
-        consensus: Optional[ConsensusMechanism] = None,
-        safety_memory: Optional[SharedSafetyMemory] = None,
+        protocol: CollaborationProtocol | None = None,
+        consensus: ConsensusMechanism | None = None,
+        safety_memory: SharedSafetyMemory | None = None,
     ):
         self.protocol = protocol or CollaborationProtocol()
         self.consensus = consensus or ConsensusMechanism()
         self.safety_memory = safety_memory or SharedSafetyMemory()
-        self._agents: Dict[str, AgentProfile] = {}
-        self._results: List[OrchestratorResult] = []
+        self._agents: dict[str, AgentProfile] = {}
+        self._results: list[OrchestratorResult] = []
 
     def register_agent(self, profile: AgentProfile) -> None:
         """Register an agent with the orchestrator."""
@@ -54,11 +58,11 @@ class MultiAgentOrchestrator:
         """Unregister an agent."""
         self._agents.pop(agent_id, None)
 
-    def get_agent(self, agent_id: str) -> Optional[AgentProfile]:
+    def get_agent(self, agent_id: str) -> AgentProfile | None:
         """Get an agent profile."""
         return self._agents.get(agent_id)
 
-    def list_agents(self, role: Optional[AgentRole] = None) -> List[AgentProfile]:
+    def list_agents(self, role: AgentRole | None = None) -> list[AgentProfile]:
         """List registered agents, optionally filtered by role."""
         agents = list(self._agents.values())
         if role:
@@ -68,8 +72,8 @@ class MultiAgentOrchestrator:
     def execute_task(
         self,
         task_description: str,
-        required_roles: Optional[List[AgentRole]] = None,
-        executor: Optional[Callable] = None,
+        required_roles: list[AgentRole] | None = None,
+        executor: Callable | None = None,
     ) -> OrchestratorResult:
         """Execute a task using multi-agent collaboration."""
         start_time = time.time()
@@ -117,7 +121,7 @@ class MultiAgentOrchestrator:
             step.completed_at = time.time()
 
             # Advance to next stage
-            next_stage = self.protocol.advance_stage(
+            self.protocol.advance_stage(
                 session.session_id,
                 artifact=artifacts[-1] if artifacts else None,
             )
@@ -154,12 +158,13 @@ class MultiAgentOrchestrator:
 
         if method == ConsensusMethod.VOTE:
             return self.consensus.vote(proposal_id, votes)
-        elif method == ConsensusMethod.REVIEW:
+        if method == ConsensusMethod.REVIEW:
             return self.consensus.review(proposal_id, votes)
-        elif method == ConsensusMethod.CHALLENGE:
+        if method == ConsensusMethod.CHALLENGE:
             if votes:
                 return self.consensus.challenge(proposal_id, votes[0], votes[1:])
             return None
+        return None
 
     def report_safety_event(
         self,
@@ -167,7 +172,7 @@ class MultiAgentOrchestrator:
         description: str,
         reporter_id: str,
         severity: float = 0.5,
-        tags: Optional[List[str]] = None,
+        tags: list[str] | None = None,
     ) -> SafetyMemoryEntry:
         """Report a safety event to shared memory."""
         entry = SafetyMemoryEntry(
@@ -181,6 +186,6 @@ class MultiAgentOrchestrator:
         self.safety_memory.store(entry)
         return entry
 
-    def get_results(self) -> List[OrchestratorResult]:
+    def get_results(self) -> list[OrchestratorResult]:
         """Get all orchestrator results."""
         return list(self._results)

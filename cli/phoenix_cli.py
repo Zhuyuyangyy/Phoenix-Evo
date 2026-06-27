@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo V1.0 PhoenixCLI
 ============================
@@ -28,7 +27,6 @@ import json
 import sys
 import time
 from pathlib import Path
-from typing import Optional
 
 # ANSI color codes (no external deps)
 C = type("C", (), {
@@ -269,7 +267,7 @@ def cmd_curator_run(args) -> int:
     try:
         curator = SkillCurator(phoenix_base_dir=args.base_dir)
         report = curator.scan()
-        print(color(f"[OK] Scan complete", C.green))
+        print(color("[OK] Scan complete", C.green))
         kv("Skills scanned", str(report.skills_scanned))
         kv("Skills updated", str(report.skills_updated))
         kv("Skills quarantined", str(report.skills_quarantined))
@@ -297,7 +295,7 @@ def cmd_daemon(args) -> int:
             curator_interval=args.curator_interval,
         )
         daemon.start()
-        print(color(f"[OK] PhoenixRuntimeDaemon started", C.green))
+        print(color("[OK] PhoenixRuntimeDaemon started", C.green))
         print(f"  OutcomeTracker interval: {args.check_interval}s")
         print(f"  SkillCurator interval: {args.curator_interval}s")
         try:
@@ -307,13 +305,13 @@ def cmd_daemon(args) -> int:
             daemon.stop()
         return 0
 
-    elif sub == "stop":
+    if sub == "stop":
         daemon = PhoenixDaemon(phoenix_base_dir=args.base_dir)
         daemon.stop()
         print(color("[OK] PhoenixRuntimeDaemon stopped", C.green))
         return 0
 
-    elif sub == "status":
+    if sub == "status":
         daemon = PhoenixDaemon(phoenix_base_dir=args.base_dir)
         running = daemon.is_running()
         if running:
@@ -322,9 +320,8 @@ def cmd_daemon(args) -> int:
             print(color("[STOPPED]", C.yellow))
         return 0
 
-    else:
-        print(color(f"[ERROR] Unknown daemon subcommand: {sub}", C.red))
-        return 1
+    print(color(f"[ERROR] Unknown daemon subcommand: {sub}", C.red))
+    return 1
 
 
 # ─────────────────────────────────────────────────────────────
@@ -448,15 +445,15 @@ def main() -> int:
 
     if args.command == "status":
         return cmd_status(args)
-    elif args.command == "skills":
+    if args.command == "skills":
         if args.skills_cmd == "list":
             return cmd_skills_list(args)
-        elif args.skills_cmd == "activate":
+        if args.skills_cmd == "activate":
             return cmd_skills_activate(args)
     elif args.command == "quarantine":
         if args.q_cmd == "review":
             return cmd_quarantine_review(args)
-        elif args.q_cmd == "resolve":
+        if args.q_cmd == "resolve":
             return cmd_quarantine_resolve(args)
     elif args.command == "curator":
         return cmd_curator_run(args)

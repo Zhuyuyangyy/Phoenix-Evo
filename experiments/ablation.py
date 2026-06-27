@@ -3,17 +3,16 @@ Phoenix-Evo Ablation Study
 消融实验：对比不同记忆配置的效果
 """
 
-import json
-import time
-import random
 import hashlib
+import json
 import math
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Any, Tuple
+import random
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
-from task_definitions import AgentTask, TASK_DEFINITIONS, TaskCategory, DifficultyLevel
+from task_definitions import TASK_DEFINITIONS, AgentTask, DifficultyLevel, TaskCategory
 
 
 @dataclass
@@ -93,12 +92,12 @@ class AblationSkillMemory:
     def __init__(self, config: MemoryConfig, seed: int = 42):
         self.config = config
         self.rng = random.Random(seed)
-        self.skill_cache: Dict[str, List[str]] = {}
-        self.keyword_index: Dict[str, List[str]] = {}
-        self.tfidf_index: Dict[str, Dict[str, float]] = {}
-        self.access_counts: Dict[str, int] = {}
+        self.skill_cache: dict[str, list[str]] = {}
+        self.keyword_index: dict[str, list[str]] = {}
+        self.tfidf_index: dict[str, dict[str, float]] = {}
+        self.access_counts: dict[str, int] = {}
 
-    def _keyword_match(self, query_keywords: List[str]) -> List[str]:
+    def _keyword_match(self, query_keywords: list[str]) -> list[str]:
         """关键词匹配"""
         if not self.config.use_keyword:
             return []
@@ -109,7 +108,7 @@ class AblationSkillMemory:
                 found.extend(self.keyword_index[kw])
         return list(set(found))
 
-    def _tfidf_match(self, query_keywords: List[str]) -> List[Tuple[str, float]]:
+    def _tfidf_match(self, query_keywords: list[str]) -> list[tuple[str, float]]:
         """TF-IDF匹配"""
         if not self.config.use_tfidf:
             return []
@@ -143,7 +142,7 @@ class AblationSkillMemory:
         # 频繁使用的技能获得更高权重
         return min(access_count * 0.02, 0.10)
 
-    def lookup_skills(self, keywords: List[str]) -> List[str]:
+    def lookup_skills(self, keywords: list[str]) -> list[str]:
         """查找相关技能"""
         # 关键词匹配
         keyword_results = self._keyword_match(keywords)
@@ -160,7 +159,7 @@ class AblationSkillMemory:
 
         return all_skills[:3]
 
-    def learn_skill(self, task_id: str, keywords: List[str]) -> str:
+    def learn_skill(self, task_id: str, keywords: list[str]) -> str:
         """学习新技能"""
         skill_id = f"skill_{hashlib.md5(task_id.encode()).hexdigest()[:8]}"
 
@@ -188,7 +187,7 @@ class AblationAgentSimulator:
         self.config = config
         self.rng = random.Random(seed)
         self.memory = AblationSkillMemory(config, seed)
-        self.executed_tasks: List[str] = []
+        self.executed_tasks: list[str] = []
 
         # 基础参数
         self.success_rate_base = 0.82 if config.name != "no_memory" else 0.65
@@ -281,7 +280,7 @@ class AblationAgentSimulator:
         )
 
 
-def run_ablation_study(tasks: List[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> List[AblationResult]:
+def run_ablation_study(tasks: list[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> list[AblationResult]:
     """运行消融实验"""
     if tasks is None:
         tasks = TASK_DEFINITIONS
@@ -326,7 +325,7 @@ def run_ablation_study(tasks: List[AgentTask] = None, num_runs: int = 5, seed: i
     return all_results
 
 
-def analyze_ablation_results(results: List[AblationResult]) -> Dict[str, Dict[str, float]]:
+def analyze_ablation_results(results: list[AblationResult]) -> dict[str, dict[str, float]]:
     """分析消融实验结果"""
     # 按配置分组
     config_data = {}
@@ -366,7 +365,7 @@ def analyze_ablation_results(results: List[AblationResult]) -> Dict[str, Dict[st
     return analysis
 
 
-def _std(values: List[float]) -> float:
+def _std(values: list[float]) -> float:
     """计算标准差"""
     if len(values) < 2:
         return 0.0
@@ -375,7 +374,7 @@ def _std(values: List[float]) -> float:
     return math.sqrt(variance)
 
 
-def save_ablation_results(results: List[AblationResult], analysis: Dict, output_dir: str):
+def save_ablation_results(results: list[AblationResult], analysis: dict, output_dir: str):
     """保存消融实验结果"""
     output_path = Path(output_dir)
     output_path.mkdir(exist_ok=True)
@@ -400,7 +399,7 @@ def save_ablation_results(results: List[AblationResult], analysis: Dict, output_
     return str(output_path / "ablation_results.json")
 
 
-def generate_ablation_report(analysis: Dict[str, Dict[str, float]], output_path: str):
+def generate_ablation_report(analysis: dict[str, dict[str, float]], output_path: str):
     """生成消融实验报告"""
     report = """# Phoenix-Evo Ablation Study Report
 
@@ -522,14 +521,14 @@ class MemoryTypeSimulator:
         self.memory_type = memory_type
         self.rng = random.Random(seed)
         # 短期记忆：仅保留最近N个技能
-        self.short_term_buffer: List[Tuple[str, List[str]]] = []
+        self.short_term_buffer: list[tuple[str, list[str]]] = []
         self.short_term_capacity = 5
         # 长期记忆：永久保留，但有衰减
-        self.long_term_store: Dict[str, Tuple[List[str], float]] = {}  # skill_id -> (keywords, strength)
-        self.access_history: Dict[str, List[float]] = {}  # skill_id -> [timestamps]
+        self.long_term_store: dict[str, tuple[list[str], float]] = {}  # skill_id -> (keywords, strength)
+        self.access_history: dict[str, list[float]] = {}  # skill_id -> [timestamps]
         self.current_step = 0
 
-    def _compute_memory_bonus(self, keywords: List[str]) -> Tuple[float, int, float]:
+    def _compute_memory_bonus(self, keywords: list[str]) -> tuple[float, int, float]:
         """计算记忆加成，返回 (bonus, retrieved_count, hit_rate)"""
         self.current_step += 1
         retrieved = 0
@@ -539,7 +538,7 @@ class MemoryTypeSimulator:
         if self.memory_type == "none":
             return 0.0, 0, 0.0
 
-        elif self.memory_type == "short_term":
+        if self.memory_type == "short_term":
             # 短期记忆：仅在buffer中查找
             for kw in keywords:
                 for _, stored_kws in self.short_term_buffer:
@@ -551,14 +550,14 @@ class MemoryTypeSimulator:
             bonus = hit_rate * 0.08  # 短期记忆加成较小
             return bonus, retrieved, hit_rate
 
-        elif self.memory_type == "long_term":
+        if self.memory_type == "long_term":
             # 长期记忆：在所有存储中查找，但有衰减
             for kw in keywords:
-                for skill_id, (stored_kws, strength) in self.long_term_store.items():
+                for skill_id, (stored_kws, _strength) in self.long_term_store.items():
                     if kw in stored_kws:
                         # 衰减：越老的记忆加成越低
                         age = self.current_step - self.access_history.get(skill_id, [0])[-1] if skill_id in self.access_history else self.current_step
-                        decay = max(0.3, 1.0 - age * 0.02)
+                        max(0.3, 1.0 - age * 0.02)
                         hits += 1
                         break
             hit_rate = hits / max(total_queries, 1)
@@ -566,35 +565,35 @@ class MemoryTypeSimulator:
             bonus = hit_rate * 0.12 * max(0.3, 1.0 - len(self.long_term_store) * 0.005)  # 长期记忆加成高但有噪声
             return bonus, retrieved, hit_rate
 
-        else:  # hybrid
-            # 混合记忆：短期优先，长期补充
-            short_bonus, short_ret, short_hit = 0.0, 0, 0.0
-            long_bonus, long_ret, long_hit = 0.0, 0, 0.0
+        # hybrid
+        # 混合记忆：短期优先，长期补充
+        short_bonus, _short_ret, short_hit = 0.0, 0, 0.0
+        long_bonus, _long_ret, long_hit = 0.0, 0, 0.0
 
-            # 先查短期
-            for kw in keywords:
-                for _, stored_kws in self.short_term_buffer:
-                    if kw in stored_kws:
-                        short_hit += 1
-                        break
-            short_hit_rate = short_hit / max(total_queries, 1)
-            short_bonus = short_hit_rate * 0.08
+        # 先查短期
+        for kw in keywords:
+            for _, stored_kws in self.short_term_buffer:
+                if kw in stored_kws:
+                    short_hit += 1
+                    break
+        short_hit_rate = short_hit / max(total_queries, 1)
+        short_bonus = short_hit_rate * 0.08
 
-            # 再查长期（补充）
-            for kw in keywords:
-                for skill_id, (stored_kws, strength) in self.long_term_store.items():
-                    if kw in stored_kws:
-                        long_hit += 1
-                        break
-            long_hit_rate = long_hit / max(total_queries, 1)
-            long_bonus = long_hit_rate * 0.06
+        # 再查长期（补充）
+        for kw in keywords:
+            for skill_id, (stored_kws, _strength) in self.long_term_store.items():
+                if kw in stored_kws:
+                    long_hit += 1
+                    break
+        long_hit_rate = long_hit / max(total_queries, 1)
+        long_bonus = long_hit_rate * 0.06
 
-            total_bonus = min(short_bonus + long_bonus, 0.18)
-            total_ret = len(self.short_term_buffer) + len(self.long_term_store)
-            total_hit = max(short_hit_rate, long_hit_rate)
-            return total_bonus, total_ret, total_hit
+        total_bonus = min(short_bonus + long_bonus, 0.18)
+        total_ret = len(self.short_term_buffer) + len(self.long_term_store)
+        total_hit = max(short_hit_rate, long_hit_rate)
+        return total_bonus, total_ret, total_hit
 
-    def learn_skill(self, task_id: str, keywords: List[str]) -> str:
+    def learn_skill(self, task_id: str, keywords: list[str]) -> str:
         """学习新技能"""
         skill_id = f"skill_{hashlib.md5(task_id.encode()).hexdigest()[:8]}"
 
@@ -619,7 +618,7 @@ class MemoryTypeAgentSimulator:
         self.memory_type = memory_type
         self.rng = random.Random(seed)
         self.memory = MemoryTypeSimulator(memory_type, seed)
-        self.executed_tasks: List[str] = []
+        self.executed_tasks: list[str] = []
 
         # 参数
         params = {
@@ -686,7 +685,7 @@ class MemoryTypeAgentSimulator:
         )
 
 
-def run_memory_type_study(tasks: List[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> List[MemoryTypeResult]:
+def run_memory_type_study(tasks: list[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> list[MemoryTypeResult]:
     """运行短期记忆 vs 长期记忆对比实验"""
     if tasks is None:
         tasks = TASK_DEFINITIONS
@@ -759,14 +758,14 @@ class ThresholdSensitivitySimulator:
     def __init__(self, threshold: float, seed: int = 42):
         self.threshold = threshold
         self.rng = random.Random(seed)
-        self.skill_scores: Dict[str, float] = {}  # skill_id -> true quality
-        self.executed_tasks: List[str] = []
+        self.skill_scores: dict[str, float] = {}  # skill_id -> true quality
+        self.executed_tasks: list[str] = []
 
     def _generate_skill_quality(self, task_id: str) -> float:
         """生成技能真实质量分数"""
         return self.rng.uniform(0.2, 0.95)
 
-    def _should_accept_skill(self, true_quality: float) -> Tuple[bool, bool, bool]:
+    def _should_accept_skill(self, true_quality: float) -> tuple[bool, bool, bool]:
         """判断是否接受技能，返回 (accepted, false_positive, false_negative)"""
         # 添加噪声模拟评估不完美
         observed_score = true_quality + self.rng.uniform(-0.15, 0.15)
@@ -855,7 +854,7 @@ class ThresholdSensitivitySimulator:
         )
 
 
-def run_threshold_sensitivity_study(tasks: List[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> Tuple[List[ThresholdSensitivityResult], Dict]:
+def run_threshold_sensitivity_study(tasks: list[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> tuple[list[ThresholdSensitivityResult], dict]:
     """运行信任分数阈值敏感性分析"""
     if tasks is None:
         tasks = TASK_DEFINITIONS
@@ -931,7 +930,7 @@ class SkillCountSimulator:
     def __init__(self, pool_size: int, seed: int = 42):
         self.pool_size = pool_size
         self.rng = random.Random(seed)
-        self.skill_pool: Dict[str, List[str]] = {}  # skill_id -> keywords
+        self.skill_pool: dict[str, list[str]] = {}  # skill_id -> keywords
         self._init_skill_pool()
 
     def _init_skill_pool(self):
@@ -955,7 +954,7 @@ class SkillCountSimulator:
             keywords = self.rng.sample(all_keywords, min(num_kw, len(all_keywords)))
             self.skill_pool[skill_id] = keywords
 
-    def lookup_and_score(self, query_keywords: List[str]) -> Tuple[float, float, float]:
+    def lookup_and_score(self, query_keywords: list[str]) -> tuple[float, float, float]:
         """查找技能并返回 (precision, recall, latency_ms)"""
         t0 = time.monotonic()
 
@@ -980,14 +979,8 @@ class SkillCountSimulator:
         retrieval_latency = elapsed + self.pool_size * 0.01 + self.rng.uniform(0.1, 2.0)
 
         # 精确率和召回率
-        if retrieved_skills:
-            precision = len(relevant_skills & retrieved_skills) / len(retrieved_skills)
-        else:
-            precision = 0.0
-        if relevant_skills:
-            recall = len(relevant_skills & retrieved_skills) / len(relevant_skills)
-        else:
-            recall = 1.0
+        precision = len(relevant_skills & retrieved_skills) / len(retrieved_skills) if retrieved_skills else 0.0
+        recall = len(relevant_skills & retrieved_skills) / len(relevant_skills) if relevant_skills else 1.0
 
         return precision, recall, retrieval_latency
 
@@ -1037,7 +1030,7 @@ class SkillCountSimulator:
         )
 
 
-def run_skill_count_study(tasks: List[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> Tuple[List[SkillCountResult], Dict]:
+def run_skill_count_study(tasks: list[AgentTask] = None, num_runs: int = 5, seed: int = 42) -> tuple[list[SkillCountResult], dict]:
     """运行技能数量影响分析"""
     if tasks is None:
         tasks = TASK_DEFINITIONS
@@ -1091,9 +1084,9 @@ def run_skill_count_study(tasks: List[AgentTask] = None, num_runs: int = 5, seed
 # ============================================================================
 
 def generate_extended_ablation_report(
-    memory_summary: Dict,
-    threshold_summary: Dict,
-    skill_count_summary: Dict,
+    memory_summary: dict,
+    threshold_summary: dict,
+    skill_count_summary: dict,
     output_path: str,
 ):
     """生成扩展消融实验报告"""

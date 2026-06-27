@@ -11,27 +11,23 @@ Phoenix-Evo Live Demo: 完整自进化闭环演示
 """
 
 import json
-import random
-import time
-from datetime import datetime
-from pathlib import Path
-from dataclasses import asdict
 
 # ── Phoenix-Evo Core 导入 ──────────────────────────────────────────
 import sys
+import time
+from datetime import datetime
+from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent / "core"))
 
-from core.phoenix_evo import PhoenixEvo
-from core.trajectory_logger import TrajectoryLogger
-from core.post_task_evaluator import PostTaskEvaluator, EvaluationResult
-from core.skill_miner import SkillMiner
-from core.skill_verifier import SkillVerifier
-from core.skill_registry import SkillRegistry
-from core.immune_guard import ImmuneGuard
 from core.drift_detector import DriftDetector
-from core.skill_replay import SkillReplay, ReplayReport
-from core.risk_policy import RiskPolicy
-
+from core.immune_guard import ImmuneGuard
+from core.phoenix_evo import PhoenixEvo
+from core.post_task_evaluator import PostTaskEvaluator
+from core.skill_miner import SkillMiner
+from core.skill_registry import SkillRegistry
+from core.skill_replay import SkillReplay
+from core.skill_verifier import SkillVerifier
 
 # ── 模拟轨迹数据 ──────────────────────────────────────────────────
 
@@ -185,7 +181,7 @@ def demo_full_loop():
 
     base_dir = Path(__file__).parent
     registry = SkillRegistry(root=base_dir)
-    phoenix = PhoenixEvo(base_dir=base_dir)
+    PhoenixEvo(base_dir=base_dir)
 
     # ── Step 1: 技能库当前状态 ────────────────────────────────────
     print_step(1, "技能库健康扫描 (Skill Registry Health Scan)")
@@ -246,7 +242,7 @@ def demo_full_loop():
 
     evaluator = PostTaskEvaluator()
     miner = SkillMiner()
-    verifier = SkillVerifier()
+    SkillVerifier()
 
     eval_results = []
     for traj in SIMULATED_TRAJECTORIES:
@@ -277,7 +273,7 @@ def demo_full_loop():
             print(f"     验证步骤: {len(skill_candidate['validation'])}")
 
             # ── Step 5: 免疫审查 (Immune Guard) ─────────────────
-            print(f"     🛡️  免疫审查中...")
+            print("     🛡️  免疫审查中...")
             immune_guard = ImmuneGuard(root=base_dir)
             decision = immune_guard.examine(
                 skill_candidate=skill_candidate,
@@ -290,13 +286,13 @@ def demo_full_loop():
             print(f"        触发规则: {', '.join(decision.immune_rules_triggered) if decision.immune_rules_triggered else '无'}")
 
             if decision.decision == "draft":
-                print(f"     💾 写入 skills/draft/")
+                print("     💾 写入 skills/draft/")
                 registry.add_draft(skill_candidate)
             elif decision.decision == "quarantine":
-                print(f"     🔒 隔离至 skills/quarantine/")
+                print("     🔒 隔离至 skills/quarantine/")
                 registry.add_quarantine(skill_candidate, reason=decision.reason)
             elif decision.decision == "reject":
-                print(f"     🚫 拒绝写入")
+                print("     🚫 拒绝写入")
                 registry.add_rejection(skill_candidate, reason=decision.reason)
             print()
         else:
@@ -361,10 +357,10 @@ def demo_full_loop():
             print(f"        成功率变化: {report.success_delta:+.1%} | 回归检测: {'是' if report.regression_found else '否'}")
 
             if report.recommendation == "promote":
-                print(f"     🚀 升级为 active!")
+                print("     🚀 升级为 active!")
                 registry.promote_skill(sid)
             elif report.recommendation == "quarantine":
-                print(f"     🔒 降级至 quarantine")
+                print("     🔒 降级至 quarantine")
                 registry.quarantine_skill(sid, reason="replay: regression detected")
             print()
 
@@ -394,8 +390,8 @@ def demo_full_loop():
     print("  📊 进化指标:")
     print(f"     新增技能: +{sum(1 for sid in final_index if 'traj_00' in sid)}")
     print(f"     漂移修复: {drift_count}")
-    print(f"     免疫拦截: 1 (安全攻击轨迹 traj_004)")
-    print(f"     回归检测: 0")
+    print("     免疫拦截: 1 (安全攻击轨迹 traj_004)")
+    print("     回归检测: 0")
     print()
     print("  🔮 框架状态: 运行正常 — 免疫系统活跃 — 技能库持续进化中")
     print()
@@ -440,7 +436,7 @@ def demo_immune_guard_detail():
     print()
 
     base_dir = Path(__file__).parent
-    guard = ImmuneGuard(root=base_dir)
+    ImmuneGuard(root=base_dir)
     verifier = SkillVerifier()
 
     dangerous_skills = [
@@ -483,7 +479,7 @@ def demo_immune_guard_detail():
             print(f"        风险级别: {result.risk_level}")
             print(f"        警告: {', '.join(result.warnings)}")
         else:
-            print(f"     ✅ 通过验证")
+            print("     ✅ 通过验证")
         print()
 
 

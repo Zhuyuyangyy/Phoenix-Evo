@@ -12,11 +12,10 @@ V0.4 — Phoenix-Evo Evidence & Replay
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 
 # ----------------------------------------------------------------------
 # ReplayReport — 回放报告
@@ -127,7 +126,6 @@ class EvidencePolicy:
             (decision, reason)
             decision: "promote" | "quarantine" | "keep_draft" | "reject"
         """
-        reasons: list[str] = []
 
         # 规则 1：无 regression
         if replay_report.regression_found:
@@ -251,14 +249,14 @@ class SkillReplay:
         ).lower()
 
         skill_steps = len(skill.get("procedure", [])) if isinstance(skill.get("procedure"), list) else 0
-        skill_risk = skill.get("risk_level", "low")
+        skill.get("risk_level", "low")
 
         for case_d in cases:
             case_id = case_d.get("case_id", "")
-            case_task = case_d.get("task", "").lower()
+            case_d.get("task", "").lower()
             case_keywords = case_d.get("task_keywords", [])
             case_risk_tags = case_d.get("risk_tags", [])
-            expected = case_d.get("expected_behavior", "")
+            case_d.get("expected_behavior", "")
 
             # --- 关键词匹配评估 ---
             matched = sum(1 for kw in case_keywords if kw.lower() in skill_text)
@@ -323,7 +321,7 @@ class SkillReplay:
         avg_step_delta = sum(r.step_delta for r in results) / total if total else 0.0
         has_regression = any(r.regression_found for r in results)
 
-        report = ReplayReport(
+        return ReplayReport(
             report_id=f"replay_{skill.get('skill_id', 'unknown')}_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             skill_id=skill.get("skill_id", ""),
             replayed_at=datetime.now().isoformat(),
@@ -339,7 +337,6 @@ class SkillReplay:
             recommendation="promote" if (passed_count >= total * 0.5 and not has_regression) else "keep_draft",
         )
 
-        return report
 
     def save_report(self, report: ReplayReport) -> Path:
         """保存回放报告到 evidence/replay_reports/。"""
@@ -362,5 +359,5 @@ class SkillReplay:
             data = json.loads(path.read_text(encoding="utf-8"))
             data["results"] = [ReplayResult(**r) for r in data.get("results", [])]
             return ReplayReport(**data)
-        except (json.JSONDecodeError, IOError, TypeError):
+        except (OSError, json.JSONDecodeError, TypeError):
             return None

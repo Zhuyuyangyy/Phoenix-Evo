@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class DashboardProvider:
     """Provides data for enterprise dashboards."""
 
     def __init__(self):
-        self._metrics: Dict[str, List[Dict[str, Any]]] = {}
-        self._widgets: Dict[str, Dict[str, Any]] = {}
+        self._metrics: dict[str, list[dict[str, Any]]] = {}
+        self._widgets: dict[str, dict[str, Any]] = {}
 
-    def register_widget(self, widget_id: str, widget_type: str, config: Dict[str, Any]) -> None:
+    def register_widget(self, widget_id: str, widget_type: str, config: dict[str, Any]) -> None:
         """Register a dashboard widget."""
         self._widgets[widget_id] = {
             "widget_id": widget_id,
@@ -20,7 +20,7 @@ class DashboardProvider:
             "config": config,
         }
 
-    def push_metric(self, metric_name: str, value: Any, tags: Optional[Dict[str, str]] = None) -> None:
+    def push_metric(self, metric_name: str, value: Any, tags: dict[str, str] | None = None) -> None:
         """Push a metric data point."""
         import time
         if metric_name not in self._metrics:
@@ -31,12 +31,12 @@ class DashboardProvider:
             "tags": tags or {},
         })
 
-    def get_metric(self, metric_name: str, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_metric(self, metric_name: str, limit: int = 100) -> list[dict[str, Any]]:
         """Get recent metric data points."""
         data = self._metrics.get(metric_name, [])
         return data[-limit:]
 
-    def get_metric_summary(self, metric_name: str) -> Dict[str, Any]:
+    def get_metric_summary(self, metric_name: str) -> dict[str, Any]:
         """Get a summary of a metric."""
         data = self._metrics.get(metric_name, [])
         if not data:
@@ -54,7 +54,7 @@ class DashboardProvider:
             "mean": sum(values) / len(values),
         }
 
-    def get_dashboard_data(self) -> Dict[str, Any]:
+    def get_dashboard_data(self) -> dict[str, Any]:
         """Get all dashboard data."""
         return {
             "widgets": self._widgets,
@@ -64,7 +64,7 @@ class DashboardProvider:
             },
         }
 
-    def get_widget_data(self, widget_id: str) -> Optional[Dict[str, Any]]:
+    def get_widget_data(self, widget_id: str) -> dict[str, Any] | None:
         """Get data for a specific widget."""
         widget = self._widgets.get(widget_id)
         if not widget:
@@ -78,6 +78,6 @@ class DashboardProvider:
             }
         return {"widget": widget, "data": []}
 
-    def list_widgets(self) -> List[Dict[str, Any]]:
+    def list_widgets(self) -> list[dict[str, Any]]:
         """List all registered widgets."""
         return list(self._widgets.values())

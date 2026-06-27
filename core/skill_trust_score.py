@@ -14,7 +14,7 @@ import math
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 class TrustDimension(Enum):
@@ -33,14 +33,14 @@ class SkillTrustScore:
     t_recency: float = 1.0     # T_rt: based on time since last use
     t_impact: float = 1.0      # T_im: based on impact of failures
     last_updated: float = field(default_factory=time.time)
-    history: List[Dict[str, Any]] = field(default_factory=list)
+    history: list[dict[str, Any]] = field(default_factory=list)
 
     @property
     def total_trust(self) -> float:
         """Compute the composite trust score T(S) = T_ev × T_re × T_rt × T_im."""
         return self.t_evidence * self.t_reliability * self.t_recency * self.t_impact
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "skill_id": self.skill_id,
             "t_evidence": self.t_evidence,
@@ -82,21 +82,20 @@ class TrustThreshold:
         """Classify a trust score into a decision category."""
         if trust_score >= self.auto_approve:
             return "auto_approve"
-        elif trust_score >= self.warn_trust:
+        if trust_score >= self.warn_trust:
             return "approved_with_warning"
-        elif trust_score >= self.min_trust:
+        if trust_score >= self.min_trust:
             return "requires_review"
-        elif trust_score >= self.auto_revoke:
+        if trust_score >= self.auto_revoke:
             return "requires_manual_review"
-        else:
-            return "auto_revoke"
+        return "auto_revoke"
 
 
 class TrustScoreOptimizer:
     """Optimizes trust score parameters based on calibration data."""
 
     def __init__(self):
-        self._calibration_data: List[Dict[str, Any]] = []
+        self._calibration_data: list[dict[str, Any]] = []
 
     def add_observation(
         self,
@@ -113,7 +112,7 @@ class TrustScoreOptimizer:
             "actual_outcome": actual_outcome,
         })
 
-    def optimize_weights(self) -> Dict[str, float]:
+    def optimize_weights(self) -> dict[str, float]:
         """Optimize dimension weights based on calibration data."""
         if len(self._calibration_data) < 10:
             return {
@@ -139,8 +138,8 @@ class TrustScoreOptimizer:
             if n < 2:
                 weights[dim_name] = 0.25
                 continue
-            mean_success = sum(v for v, o in zip(dim_values, outcomes) if o) / max(sum(outcomes), 1)
-            mean_failure = sum(v for v, o in zip(dim_values, outcomes) if not o) / max(n - sum(outcomes), 1)
+            mean_success = sum(v for v, o in zip(dim_values, outcomes, strict=False) if o) / max(sum(outcomes), 1)
+            mean_failure = sum(v for v, o in zip(dim_values, outcomes, strict=False) if not o) / max(n - sum(outcomes), 1)
             weights[dim_name] = abs(mean_success - mean_failure) + 0.1  # Add smoothing
 
         # Normalize
@@ -156,13 +155,13 @@ class TrustScoreCalibrator:
 
     def __init__(self, half_life_seconds: float = 86400.0):
         self.half_life_seconds = half_life_seconds
-        self._observations: Dict[str, List[Dict[str, Any]]] = {}
+        self._observations: dict[str, list[dict[str, Any]]] = {}
 
     def record_outcome(
         self,
         skill_id: str,
         success: bool,
-        timestamp: Optional[float] = None,
+        timestamp: float | None = None,
     ) -> None:
         """Record a skill execution outcome."""
         if skill_id not in self._observations:
@@ -208,6 +207,6 @@ class TrustScoreCalibrator:
             t_impact=t_impact,
         )
 
-    def get_all_scores(self) -> Dict[str, SkillTrustScore]:
+    def get_all_scores(self) -> dict[str, SkillTrustScore]:
         """Get calibrated scores for all observed skills."""
         return {skill_id: self.calibrate(skill_id) for skill_id in self._observations}

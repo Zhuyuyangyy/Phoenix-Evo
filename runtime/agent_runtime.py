@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 agent_runtime.py — Phoenix-Evo V0.8 Agent Runtime
 =====================================================
@@ -32,13 +31,15 @@ Hook 生命周期：
 from __future__ import annotations
 
 import logging
-import time
 import uuid
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 logger = logging.getLogger("agent_runtime")
 
@@ -47,7 +48,7 @@ logger = logging.getLogger("agent_runtime")
 # TaskState — 任务生命周期状态机
 # ─────────────────────────────────────────────────────────────────────────────
 
-class TaskState(str, Enum):
+class TaskState(StrEnum):
     """任务可能处于的状态"""
     CREATED     = "created"      # 刚创建，进入队列
     ROUTING     = "routing"      # 正在路由
@@ -76,32 +77,32 @@ class TaskContext:
 
     # 输入
     task_description: str
-    task_type: Optional[str] = None
+    task_type: str | None = None
     risk_level: str = "low"
 
     # PhoenixRuntime 查询结果（route + guard）
     skill_found: bool = False
-    selected_skill_id: Optional[str] = None
-    selected_skill_name: Optional[str] = None
+    selected_skill_id: str | None = None
+    selected_skill_name: str | None = None
     route_score: float = 0.0
-    guard_decision: Optional[str] = None
-    fallback_reason: Optional[str] = None
+    guard_decision: str | None = None
+    fallback_reason: str | None = None
     injected_context: str = ""
     context_summary: str = ""
 
     # 执行结果
     state: TaskState = TaskState.CREATED
-    execution_result: Optional[str] = None  # "success" | "failure" | "skipped" | None
-    error_message: Optional[str] = None
-    failure_reason: Optional[str] = None
+    execution_result: str | None = None  # "success" | "failure" | "skipped" | None
+    error_message: str | None = None
+    failure_reason: str | None = None
     duration_seconds: float = 0.0
 
     # 生命周期时间戳
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
-    routing_at: Optional[str] = None
-    injecting_at: Optional[str] = None
-    running_at: Optional[str] = None
-    done_at: Optional[str] = None
+    routing_at: str | None = None
+    injecting_at: str | None = None
+    running_at: str | None = None
+    done_at: str | None = None
 
     # Cancellation
     cancelled: bool = False

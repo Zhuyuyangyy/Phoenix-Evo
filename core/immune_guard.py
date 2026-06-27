@@ -1,16 +1,18 @@
 """ImmuneGuard: Phoenix-Evo V0.2 免疫防御层"""
 
 import re
-from pathlib import Path
 from dataclasses import dataclass
-from typing import Any
+from pathlib import Path
 
-from .risk_policy import (
-    RiskProfile, RiskPolicy, DANGEROUS_PATTERNS,
-    HIGH_RISK_TAGS, MEDIUM_RISK_TAGS, IMMUNE_DECISION,
-)
 from .immune_memory import ImmuneMemory
 from .quarantine_manager import QuarantineManager
+from .risk_policy import (
+    DANGEROUS_PATTERNS,
+    IMMUNE_DECISION,
+    MEDIUM_RISK_TAGS,
+    RiskPolicy,
+    RiskProfile,
+)
 
 
 @dataclass
@@ -53,7 +55,7 @@ class ImmuneGuard:
         skill_md = skill_candidate.get('skill_md', '')
         found_patterns = []
         found_tags = []
-        for category, desc, keywords in DANGEROUS_PATTERNS:
+        for category, _desc, keywords in DANGEROUS_PATTERNS:
             if any(kw in skill_md for kw in keywords):
                 found_patterns.append(category)
                 found_tags.append(category)
@@ -103,23 +105,31 @@ class ImmuneGuard:
 
     def _rules_triggered(self, profile):
         rules = []
-        if profile.has_high_risk_tag: rules.append('HIGH_RISK_TAG')
-        if profile.dangerous_patterns_found: rules.append('DANGEROUS_PATTERN')
-        if profile.overgeneralized: rules.append('OVERGENERALIZED')
-        if profile.source_failed and not profile.evidence_complete: rules.append('FAILED_SOURCE_NO_EVIDENCE')
-        if profile.source_failed and not profile.has_verification: rules.append('FAILED_SOURCE_NO_VERIFICATION')
-        if not profile.evidence_complete: rules.append('INCOMPLETE_EVIDENCE')
-        if profile.similar_skill_failures >= 3: rules.append('REPEAT_FAILURE')
-        if profile.has_medium_risk_tag: rules.append('MEDIUM_RISK_TAG')
-        if not profile.has_artifacts: rules.append('MISSING_ARTIFACTS')
+        if profile.has_high_risk_tag:
+            rules.append('HIGH_RISK_TAG')
+        if profile.dangerous_patterns_found:
+            rules.append('DANGEROUS_PATTERN')
+        if profile.overgeneralized:
+            rules.append('OVERGENERALIZED')
+        if profile.source_failed and not profile.evidence_complete:
+            rules.append('FAILED_SOURCE_NO_EVIDENCE')
+        if profile.source_failed and not profile.has_verification:
+            rules.append('FAILED_SOURCE_NO_VERIFICATION')
+        if not profile.evidence_complete:
+            rules.append('INCOMPLETE_EVIDENCE')
+        if profile.similar_skill_failures >= 3:
+            rules.append('REPEAT_FAILURE')
+        if profile.has_medium_risk_tag:
+            rules.append('MEDIUM_RISK_TAG')
+        if not profile.has_artifacts:
+            rules.append('MISSING_ARTIFACTS')
         return rules
 
     def _build_reason(self, decision, profile, rules):
         if decision == 'reject':
             return f"免疫拒绝：高危风险（{rules}），禁止入库"
-        elif decision == 'quarantine':
+        if decision == 'quarantine':
             return f"免疫隔离：待人工复核（触发规则: {rules}）"
-        else:
-            if profile.warnings:
-                return f"免疫放行：进入 draft（{profile.warnings}）"
-            return "免疫放行：进入 draft"
+        if profile.warnings:
+            return f"免疫放行：进入 draft（{profile.warnings}）"
+        return "免疫放行：进入 draft"

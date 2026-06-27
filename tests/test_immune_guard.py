@@ -1,10 +1,15 @@
 """Phoenix-Evo V0.2 Immune Guard Test Suite"""
 
-import sys, os, tempfile, shutil
+import os
+import shutil
+import sys
+import tempfile
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from core import PhoenixEvo, ImmuneGuard, ImmuneMemory
+
+from core import ImmuneGuard, ImmuneMemory, PhoenixEvo
 
 
 @pytest.fixture
@@ -39,7 +44,7 @@ def test_immune_memory_repeat_threshold_triggers_quarantine(immune_memory):
     skill = "repeat_fail_skill"
     tags = ["overgeneralization"]
     for i in range(3):
-        mem.record_failure(skill, reason="failure_{}".format(i), tags=tags)
+        mem.record_failure(skill, reason=f"failure_{i}", tags=tags)
     assert mem.is_quarantined(skill, tags=tags)
     assert mem.get_failure_count(skill, tags=tags) == 3
 
@@ -78,12 +83,12 @@ def test_immune_guard_unit_failed_source_quarantined():
         decision = guard.examine(candidate, trajectory, verification)
 
         assert decision.decision == "quarantine", (
-            "FAIL: expected quarantine, got {} | {}".format(decision.decision, decision.reason)
+            f"FAIL: expected quarantine, got {decision.decision} | {decision.reason}"
         )
         rules = set(decision.immune_rules_triggered)
         profile_tags = set(decision.risk_profile.tags)
         assert "FAILED_SOURCE_NO_EVIDENCE" in rules or "failed_source" in profile_tags, (
-            "FAIL: expected FAILED_SOURCE_NO_EVIDENCE, got {}".format(decision.immune_rules_triggered)
+            f"FAIL: expected FAILED_SOURCE_NO_EVIDENCE, got {decision.immune_rules_triggered}"
         )
         print("[PASS] test_immune_guard_unit_failed_source_quarantined")
     finally:
@@ -122,11 +127,11 @@ def test_immune_guard_unit_missing_evidence_quarantined():
         decision = guard.examine(candidate, trajectory, verification)
 
         assert decision.decision == "quarantine", (
-            "FAIL: expected quarantine, got {} | {}".format(decision.decision, decision.reason)
+            f"FAIL: expected quarantine, got {decision.decision} | {decision.reason}"
         )
         rules = set(decision.immune_rules_triggered)
         assert "INCOMPLETE_EVIDENCE" in rules or "MISSING_ARTIFACTS" in rules, (
-            "FAIL: expected INCOMPLETE_EVIDENCE/MISSING_ARTIFACTS, got {}".format(decision.immune_rules_triggered)
+            f"FAIL: expected INCOMPLETE_EVIDENCE/MISSING_ARTIFACTS, got {decision.immune_rules_triggered}"
         )
         print("[PASS] test_immune_guard_unit_missing_evidence_quarantined")
     finally:
@@ -165,7 +170,7 @@ def test_immune_guard_unit_draft_safe():
 
         decision = guard.examine(candidate, trajectory, verification)
 
-        assert decision.decision == "draft", "FAIL: expected draft, got {}".format(decision.reason)
+        assert decision.decision == "draft", f"FAIL: expected draft, got {decision.reason}"
         print("[PASS] test_immune_guard_unit_draft_safe")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -197,10 +202,10 @@ def test_immune_guard_unit_reject_high_risk():
 
         decision = guard.examine(candidate, trajectory, verification)
 
-        assert decision.decision == "reject", "FAIL: expected reject, got {}".format(decision.reason)
+        assert decision.decision == "reject", f"FAIL: expected reject, got {decision.reason}"
         rule_names = [r.lower() for r in decision.immune_rules_triggered]
         assert any("privilege" in r or "dangerous" in r for r in rule_names), (
-            "FAIL: no dangerous/privilege rule, got {}".format(decision.immune_rules_triggered)
+            f"FAIL: no dangerous/privilege rule, got {decision.immune_rules_triggered}"
         )
         print("[PASS] test_immune_guard_unit_reject_high_risk")
     finally:
@@ -214,7 +219,7 @@ def test_safe_skill_passes_to_draft(isolated_evo):
     evo = isolated_evo
     import time
     evo.run_full_loop(
-        task_goal="fix WSL Chinese path null bytes {}".format(time.time_ns()),
+        task_goal=f"fix WSL Chinese path null bytes {time.time_ns()}",
         task_type="debugging",
         risk_level="low",
     )
@@ -238,7 +243,7 @@ def test_dangerous_trajectory_rejected_by_verifier(isolated_evo):
     evo = isolated_evo
     import time
     evo.run_full_loop(
-        task_goal="bypass privilege check for passwords {}".format(time.time_ns()),
+        task_goal=f"bypass privilege check for passwords {time.time_ns()}",
         task_type="coding",
         risk_level="high",
     )
@@ -287,9 +292,7 @@ def test_immune_guard_unit_overgeneralized_quarantined():
 
         # 2 steps < 3 → evidence_complete=False → quarantine
         assert decision.decision == "quarantine", (
-            "FAIL: expected quarantine (evidence incomplete), got {} | {}".format(
-                decision.decision, decision.reason
-            )
+            f"FAIL: expected quarantine (evidence incomplete), got {decision.decision} | {decision.reason}"
         )
         print("[PASS] test_immune_guard_unit_overgeneralized_quarantined")
     finally:
@@ -309,7 +312,7 @@ if __name__ == "__main__":
     test_immune_guard_unit_draft_safe()
     test_immune_guard_unit_reject_high_risk()
 
-    for name, fn in [
+    for _name, fn in [
         ("safe->draft", test_safe_skill_passes_to_draft),
         ("dangerous->verifier reject", test_dangerous_trajectory_rejected_by_verifier),
     ]:

@@ -1,11 +1,15 @@
 """Tests for BenchmarkMetrics and BenchmarkRunner."""
 
-import sys, os, tempfile, shutil
+import os
+import shutil
+import sys
+import tempfile
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from core.benchmark_metrics import BenchmarkMetrics, MetricResult
 
+from core.benchmark_metrics import BenchmarkMetrics, MetricResult
 
 # ── BenchmarkMetrics tests ──────────────────────────────────
 
@@ -172,7 +176,6 @@ def test_report_markdown_generation():
     """Report generator should produce valid markdown."""
     from core.benchmark_report import BenchmarkReport
     from core.benchmark_runner import GroupRunResult
-    from core.benchmark_metrics import MetricResult
 
     results = [
         GroupRunResult(

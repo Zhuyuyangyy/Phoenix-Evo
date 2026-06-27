@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Retrieval Benchmark: Keyword vs. TF-IDF vs. Embedding
 ======================================================
@@ -19,22 +18,16 @@ Run:
 The -s flag is important to see the benchmark output table.
 """
 
-import json
-import shutil
-import tempfile
-from pathlib import Path
 
 import pytest
 
 from runtime.embedding_retriever import (
-    EmbeddingRetriever,
     _EMBEDDING_AVAILABLE,
-    _tokenize,
+    EmbeddingRetriever,
     _compute_idf,
-    _tfidf_vector,
     _cosine_sim_sparse,
+    _tokenize,
 )
-
 
 # ---------------------------------------------------------------------------
 # Test corpus: 10 skills covering distinct domains
@@ -404,7 +397,7 @@ class TestRetrievalBenchmark:
         avg_kw = sum(kw_recalls) / len(kw_recalls)
         avg_emb = sum(emb_recalls) / len(emb_recalls)
 
-        print(f"\n--- Paraphrase Query Recall ---")
+        print("\n--- Paraphrase Query Recall ---")
         print(f"  Keyword  avg recall: {avg_kw:.3f}")
         print(f"  Embedding avg recall: {avg_emb:.3f}")
 
@@ -489,7 +482,7 @@ class TestRetrievalBenchmark:
     # ------------------------------------------------------------------ #
 
     @pytest.mark.parametrize(
-        "query,expected,category",
+        ("query", "expected", "category"),
         BENCHMARK_QUERIES,
         ids=[f"{t[2]}_{t[0][:40]}" for t in BENCHMARK_QUERIES],
     )
@@ -508,7 +501,7 @@ class TestRetrievalBenchmark:
             )
 
     @pytest.mark.parametrize(
-        "query,expected,category",
+        ("query", "expected", "category"),
         BENCHMARK_QUERIES,
         ids=[f"{t[2]}_{t[0][:40]}" for t in BENCHMARK_QUERIES],
     )
@@ -582,6 +575,8 @@ class TestEmbeddingRetrieverUnit:
     def test_cache_invalidation(self):
         """Cache is invalidated when corpus changes."""
         retriever = EmbeddingRetriever()
+        if not retriever.is_semantic:
+            pytest.skip("Embeddings not available")
         corpus_a = ["text one", "text two"]
         corpus_b = ["text three", "text four"]
 
@@ -597,6 +592,8 @@ class TestEmbeddingRetrieverUnit:
         """clear_cache empties the cache."""
         retriever = EmbeddingRetriever()
         retriever.encode_corpus(["test"])
+        if not retriever.is_semantic:
+            pytest.skip("Embeddings not available")
         assert len(retriever._corpus_cache) > 0
         retriever.clear_cache()
         assert len(retriever._corpus_cache) == 0

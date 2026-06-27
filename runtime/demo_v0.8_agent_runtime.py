@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo V0.8 Agent Runtime Demo
 
@@ -12,20 +11,20 @@ Phoenix-Evo V0.8 Agent Runtime Demo
   Demo6: 失败路径 — execute_fn 异常触发 on_failure hook
 """
 
+import json
+import shutil
 import sys
 import tempfile
-import shutil
-import json
 from pathlib import Path
 
 PHOENIX_BASE = Path(__file__).parent.parent
 sys.path.insert(0, str(PHOENIX_BASE))
 
 from runtime.agent_runtime import (
-    AgentRuntime, TaskState, TaskContext,
-    HookManager, CancellationToken, TaskStore,
+    AgentRuntime,
+    TaskContext,
+    TaskState,
 )
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Mock Skill 环境
@@ -115,9 +114,9 @@ def demo1_full_lifecycle(tmp_path):
     print(f"  execute_fn called: {len(executed) == 1}")
 
     assert ctx.state == TaskState.SUCCESS,      f"expected SUCCESS, got {ctx.state}"
-    assert ctx.skill_found is True,             f"expected skill_found=True"
+    assert ctx.skill_found is True,             "expected skill_found=True"
     assert ctx.selected_skill_id is not None,   "selected_skill_id is None"
-    assert ctx.execution_result == "success",    f"expected success"
+    assert ctx.execution_result == "success",    "expected success"
     assert len(executed) == 1,                  "execute_fn not called"
     print("  PASS")
     return True
@@ -149,7 +148,7 @@ def demo2_hooks(tmp_path):
     runtime.hooks.on_after_cleanup(lambda ctx: hook_log.append(f"after_cleanup:{ctx.task_id}"))
     runtime.hooks.on_task_done(lambda ctx: hook_log.append(f"done:{ctx.task_id}"))
 
-    ctx = runtime.run(
+    runtime.run(
         task_description="WSL中文路径修复",
         task_id="t002",
         session_id="s002",

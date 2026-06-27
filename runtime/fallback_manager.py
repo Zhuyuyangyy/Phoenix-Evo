@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """FallbackManager: V0.6 Runtime Skill Router - Fallback when no skill matched or denied"""
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
-from runtime.runtime_guard import GuardDecision
+
 
 class FallbackReason(Enum):
     NO_SKILL_FOUND = "no_skill_found"
@@ -31,14 +29,13 @@ class FallbackManager:
         review_skills = review_skills or []
         if reason == FallbackReason.NO_SKILL_FOUND:
             return self._fallback_no_skill(task_description)
-        elif reason in (FallbackReason.ALL_DENIED, FallbackReason.DENIED):
+        if reason in (FallbackReason.ALL_DENIED, FallbackReason.DENIED):
             return self._fallback_denied(task_description, denied_skills, error_message)
-        elif reason in (FallbackReason.GUARD_REVIEW, FallbackReason.REVIEW_REQUIRED):
+        if reason in (FallbackReason.GUARD_REVIEW, FallbackReason.REVIEW_REQUIRED):
             return self._fallback_review(task_description, review_skills)
-        elif reason == FallbackReason.SKILL_EXECUTION_FAILED:
+        if reason == FallbackReason.SKILL_EXECUTION_FAILED:
             return self._fallback_execution_failed(task_description, error_message)
-        else:
-            return self._fallback_no_skill(task_description)
+        return self._fallback_no_skill(task_description)
 
     @staticmethod
     def _fallback_no_skill(task_description):

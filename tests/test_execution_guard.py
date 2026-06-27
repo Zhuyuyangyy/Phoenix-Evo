@@ -2,8 +2,7 @@
 Tests for ExecutionGuard module.
 """
 
-import pytest
-from core.execution_guard import ExecutionGuard, ExecutionGateResult
+from core.execution_guard import ExecutionGateResult, ExecutionGuard
 
 
 class TestExecutionGuard:

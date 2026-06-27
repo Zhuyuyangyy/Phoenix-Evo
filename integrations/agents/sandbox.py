@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-import json
 import os
 import re
 import subprocess
-import tempfile
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
 
 
 @dataclass
@@ -20,9 +17,9 @@ class SandboxConfig:
     max_memory_mb: int = 512
     max_cpu_seconds: int = 30
     network_disabled: bool = True
-    read_only_paths: List[str] = field(default_factory=lambda: ["/usr", "/lib", "/bin", "/sbin"])
-    writable_paths: List[str] = field(default_factory=lambda: ["/tmp", "/home"])
-    env_vars: Dict[str, str] = field(default_factory=dict)
+    read_only_paths: list[str] = field(default_factory=lambda: ["/usr", "/lib", "/bin", "/sbin"])
+    writable_paths: list[str] = field(default_factory=lambda: ["/tmp", "/home"])
+    env_vars: dict[str, str] = field(default_factory=dict)
     max_output_bytes: int = 1_000_000
 
 
@@ -35,8 +32,8 @@ class SandboxResult:
     timed_out: bool = False
     duration_seconds: float = 0.0
     memory_used_mb: float = 0.0
-    command_blocked: Optional[str] = None
-    secrets_redacted: List[str] = field(default_factory=list)
+    command_blocked: str | None = None
+    secrets_redacted: list[str] = field(default_factory=list)
 
 
 class CommandPolicyChecker:
@@ -61,7 +58,7 @@ class CommandPolicyChecker:
     ]
 
     @classmethod
-    def check(cls, command: str) -> Optional[str]:
+    def check(cls, command: str) -> str | None:
         """Check if a command is blocked. Returns reason if blocked, None if allowed."""
         for pattern, reason in cls.BLOCKED_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
@@ -101,7 +98,7 @@ class SecretRedactor:
     ]
 
     @classmethod
-    def redact(cls, text: str) -> Tuple[str, List[str]]:
+    def redact(cls, text: str) -> tuple[str, list[str]]:
         """Redact secrets from text. Returns (redacted_text, list_of_redacted_types)."""
         redacted_types = []
         for pattern, replacement in cls.SECRET_PATTERNS:
@@ -123,9 +120,9 @@ class DockerSandbox:
     3. Local fallback (subprocess with restrictions)
     """
 
-    def __init__(self, config: Optional[SandboxConfig] = None):
+    def __init__(self, config: SandboxConfig | None = None):
         self.config = config or SandboxConfig()
-        self._mode: Optional[str] = None
+        self._mode: str | None = None
 
     def _detect_mode(self) -> str:
         """Detect the best available execution mode."""
@@ -162,7 +159,7 @@ class DockerSandbox:
             self._detect_mode()
         return self._mode  # type: ignore[return-value]
 
-    def execute(self, command: str, cwd: Optional[str] = None) -> SandboxResult:
+    def execute(self, command: str, cwd: str | None = None) -> SandboxResult:
         """Execute a command in the sandbox."""
         # Check command policy
         block_reason = CommandPolicyChecker.check(command)
@@ -177,12 +174,11 @@ class DockerSandbox:
         mode = self.mode
         if mode == "sdk":
             return self._execute_sdk(command, cwd)
-        elif mode == "cli":
+        if mode == "cli":
             return self._execute_cli(command, cwd)
-        else:
-            return self._execute_local(command, cwd)
+        return self._execute_local(command, cwd)
 
-    def _execute_sdk(self, command: str, cwd: Optional[str] = None) -> SandboxResult:
+    def _execute_sdk(self, command: str, cwd: str | None = None) -> SandboxResult:
         """Execute using Docker SDK."""
         import docker
         client = docker.from_env()
@@ -232,7 +228,7 @@ class DockerSandbox:
                 duration_seconds=time.time() - start_time,
             )
 
-    def _execute_cli(self, command: str, cwd: Optional[str] = None) -> SandboxResult:
+    def _execute_cli(self, command: str, cwd: str | None = None) -> SandboxResult:
         """Execute using Docker CLI."""
         start_time = time.time()
         docker_cmd = [
@@ -281,7 +277,7 @@ class DockerSandbox:
                 duration_seconds=time.time() - start_time,
             )
 
-    def _execute_local(self, command: str, cwd: Optional[str] = None) -> SandboxResult:
+    def _execute_local(self, command: str, cwd: str | None = None) -> SandboxResult:
         """Execute locally with restrictions (fallback mode)."""
         start_time = time.time()
         try:

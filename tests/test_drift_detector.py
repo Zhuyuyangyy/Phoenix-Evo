@@ -3,16 +3,21 @@ Tests for DriftDetector module -- covers both legacy constant-based
 behavior and the new V1.1 adaptive threshold mechanism.
 """
 
-import pytest
 from datetime import datetime, timedelta
-from core.drift_detector import (
-    DriftDetector, DriftRecord, SkillHealthReport,
-    AdaptiveThresholds, compute_adaptive_thresholds,
-    # Backward-compatible constant aliases
-    STALENESS_DAYS, SUCCESS_RATE_WARNING, SUCCESS_RATE_CRITICAL,
-    USAGE_COUNT_CRITICAL, MIN_USAGE_FOR_DRIFT,
-)
 
+from core.drift_detector import (
+    MIN_USAGE_FOR_DRIFT,
+    # Backward-compatible constant aliases
+    STALENESS_DAYS,
+    SUCCESS_RATE_CRITICAL,
+    SUCCESS_RATE_WARNING,
+    USAGE_COUNT_CRITICAL,
+    AdaptiveThresholds,
+    DriftDetector,
+    DriftRecord,
+    SkillHealthReport,
+    compute_adaptive_thresholds,
+)
 
 # ---------------------------------------------------------------------------
 # Backward-compatible constants

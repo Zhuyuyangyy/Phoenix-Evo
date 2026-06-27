@@ -17,14 +17,13 @@ Usage:
 from __future__ import annotations
 
 import json
-import math
 import os
 import sys
 import time
 import traceback
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -51,9 +50,9 @@ def run_e2_experiment(output_dir: Path) -> tuple[list[dict], dict[str, Any]]:
 
     Each condition varies the injected context to simulate disabling a module.
     """
-    from integrations.agents.deepseek_adapter import DeepSeekAdapter
-    from integrations.agents.base_agent_adapter import TaskSpec
     from core.skill_retriever import SkillRetriever
+    from integrations.agents.base_agent_adapter import TaskSpec
+    from integrations.agents.deepseek_adapter import DeepSeekAdapter
 
     # Load coding_debug tasks
     tasks_path = Path(__file__).parent.parent / "tasks" / "coding_debug" / "tasks.json"
@@ -208,7 +207,7 @@ def run_e2_experiment(output_dir: Path) -> tuple[list[dict], dict[str, Any]]:
                     "total_tokens": result.total_tokens,
                     "total_steps": result.total_steps,
                     "error": result.error,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                 }
             except Exception as e:
                 record = {
@@ -221,7 +220,7 @@ def run_e2_experiment(output_dir: Path) -> tuple[list[dict], dict[str, Any]]:
                     "total_tokens": 0,
                     "total_steps": 0,
                     "error": f"{type(e).__name__}: {e}",
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                 }
 
             all_results.append(record)
@@ -253,10 +252,10 @@ def compute_e2_statistics(results: list[dict]) -> dict[str, Any]:
     """Compute E2 ablation statistics."""
     import numpy as np
 
-    conditions = sorted(set(r["condition"] for r in results))
+    conditions = sorted({r["condition"] for r in results})
     stats: dict[str, Any] = {
         "experiment": "E2",
-        "n_tasks": len(set(r["task_id"] for r in results)),
+        "n_tasks": len({r["task_id"] for r in results}),
         "n_conditions": len(conditions),
         "conditions": {},
     }
@@ -299,13 +298,14 @@ def run_e4_experiment(output_dir: Path) -> dict[str, Any]:
     and gradually degrades to 0.3 over 50 time steps. Runs all drift detectors
     and measures detection_step, false_alarms_before_drift, detection_confidence.
     """
-    from core.drift_detector_v2 import (
-        EWMADriftDetector,
-        CUSUMDriftDetector,
-        BayesianDriftDetector,
-        EnsembleDriftDetector,
-    )
     import numpy as np
+
+    from core.drift_detector_v2 import (
+        BayesianDriftDetector,
+        CUSUMDriftDetector,
+        EnsembleDriftDetector,
+        EWMADriftDetector,
+    )
 
     np.random.seed(42)
 
@@ -335,7 +335,7 @@ def run_e4_experiment(output_dir: Path) -> dict[str, Any]:
         values: list[float],
         threshold: float = 0.6,
         window: int = 5,
-    ) -> tuple[Optional[int], int, float]:
+    ) -> tuple[int | None, int, float]:
         """Detect drift when moving average drops below threshold."""
         false_alarms = 0
         for i in range(window - 1, len(values)):
@@ -455,13 +455,14 @@ def run_e5_experiment(output_dir: Path) -> dict[str, Any]:
       - Total latency per query
     Uses the actual SkillRetriever implementation with synthetic skill data.
     """
-    from runtime.skill_retriever import (
-        _tokenize,
-        _compute_idf,
-        _tfidf_vector,
-        _cosine_sim,
-    )
     import numpy as np
+
+    from runtime.skill_retriever import (
+        _compute_idf,
+        _cosine_sim,
+        _tfidf_vector,
+        _tokenize,
+    )
 
     np.random.seed(42)
 
@@ -540,7 +541,7 @@ def run_e5_experiment(output_dir: Path) -> dict[str, Any]:
 
             # Sort and take top-5
             scores.sort(key=lambda x: x[1], reverse=True)
-            top_k = scores[:5]
+            scores[:5]
 
             retrieval_ms = (time.perf_counter() - t0) * 1000
             retrieval_latencies.append(retrieval_ms)
@@ -630,7 +631,7 @@ def run_e6_experiment(output_dir: Path) -> str:
     for traj_file in traj_files:
         try:
             traj = json.loads(traj_file.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             continue
 
         task_goal = traj.get("task_goal", "Unknown task")
@@ -722,7 +723,7 @@ def run_e6_experiment(output_dir: Path) -> str:
     # Generate summary
     summary = analyzer.generate_summary()
 
-    print(f"\n  Cases created:")
+    print("\n  Cases created:")
     print(f"    High-risk: {len(high_risk_cases)}")
     print(f"    Error recovery: {len(error_cases)}")
     print(f"    Safety concerns: {len(safety_cases)}")
@@ -753,7 +754,7 @@ def generate_e6_report(
     total_trajectories: int,
 ) -> str:
     """Generate E6 case study markdown report."""
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    now = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
 
     lines = [
         "# E6: Case Study — Trajectory Analysis Report",
@@ -767,8 +768,8 @@ def generate_e6_report(
         "",
         "## Summary",
         "",
-        f"| Metric | Value |",
-        f"|--------|-------|",
+        "| Metric | Value |",
+        "|--------|-------|",
         f"| Total Trajectories | {total_trajectories} |",
         f"| High-Risk Cases | {len(high_risk_cases)} |",
         f"| Error Recovery Cases | {len(error_cases)} |",
@@ -810,7 +811,7 @@ def generate_e6_report(
                 "",
                 f"**Actual:** {case.actual_behavior}",
                 "",
-                f"**Findings:**",
+                "**Findings:**",
             ])
             for finding in result.findings:
                 lines.append(f"- {finding}")
@@ -845,7 +846,7 @@ def generate_e6_report(
                 "",
                 f"**Actual:** {case.actual_behavior}",
                 "",
-                f"**Findings:**",
+                "**Findings:**",
             ])
             for finding in result.findings:
                 lines.append(f"- {finding}")
@@ -867,7 +868,7 @@ def generate_e6_report(
                 "",
                 f"**Risk Level:** {case.scenario.get('risk_level', 'unknown')}",
                 "",
-                f"**Findings:**",
+                "**Findings:**",
             ])
             for finding in result.findings:
                 lines.append(f"- {finding}")
@@ -946,14 +947,14 @@ def generate_combined_report(
     output_dir: Path,
 ) -> str:
     """Generate combined E2/E4/E5/E6 markdown report."""
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    now = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
 
     lines = [
         "# PhoenixBench Experiment Results: E2, E4, E5, E6",
         "",
         f"**Date:** {now}",
-        f"**Model:** deepseek-chat (DeepSeek API)",
-        f"**Phoenix-Evo Version:** V0.2+ (Immune Guard)",
+        "**Model:** deepseek-chat (DeepSeek API)",
+        "**Phoenix-Evo Version:** V0.2+ (Immune Guard)",
         "",
         "---",
         "",
@@ -992,7 +993,8 @@ def generate_combined_report(
 
     for cond_name, (d, r, im, c) in cond_modules.items():
         stats = conditions.get(cond_name, {})
-        check = lambda v: "✓" if v else "✗"
+        def check(v):
+            return "✓" if v else "✗"
         lines.append(
             f"| {cond_name} | {check(d)} | {check(r)} | {check(im)} | {check(c)} |"
         )
@@ -1059,9 +1061,9 @@ def generate_combined_report(
         "",
         "Prove that drift detection catches performance degradation earlier than simple threshold monitoring.",
         "",
-        f"### Setup",
+        "### Setup",
         "",
-        f"- Time series: 50 steps, success rate degrades from 0.9 to 0.3",
+        "- Time series: 50 steps, success rate degrades from 0.9 to 0.3",
         f"- Drift onset at step {e4_results.get('drift_onset_step', 'N/A')}",
         "",
         "### Results",
@@ -1310,7 +1312,7 @@ def main():
     print("=" * 70)
     try:
         e6_report = run_e6_experiment(output_dir)
-        print(f"\nE6 complete: case study report generated")
+        print("\nE6 complete: case study report generated")
     except Exception as e:
         print(f"\nE6 FAILED: {e}")
         traceback.print_exc()

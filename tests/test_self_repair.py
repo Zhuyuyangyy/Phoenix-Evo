@@ -1,19 +1,16 @@
 """Tests for self-repair system."""
 
-import time
 
-import pytest
 
-from core.self_repair.degradation_detector import DegradationDetector, DegradationSignal
-from core.self_repair.repair_candidate_generator import RepairCandidate, RepairCandidateGenerator
-from core.self_repair.ab_testing import ABTestConfig, ABTestFramework, ABTestResult
+from core.self_repair.ab_testing import ABTestConfig, ABTestFramework
 from core.self_repair.auto_governance import (
     AutoGovernanceEngine,
     GovernanceAction,
-    GovernanceDecision,
     GovernancePolicy,
 )
-from core.self_repair.health_monitor import HealthCheck, SystemHealth, SystemHealthMonitor
+from core.self_repair.degradation_detector import DegradationDetector, DegradationSignal
+from core.self_repair.health_monitor import HealthCheck, SystemHealthMonitor
+from core.self_repair.repair_candidate_generator import RepairCandidate, RepairCandidateGenerator
 
 
 class TestDegradationDetector:
@@ -68,7 +65,7 @@ class TestDegradationDetector:
 
     def test_auto_baseline(self):
         det = DegradationDetector()
-        for i in range(20):
+        for _i in range(20):
             det.update("cpu", 0.5)
         assert "cpu" in det._baselines
 

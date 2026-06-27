@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 SkillRetriever: Phoenix active skills router for runtime skill dispatch
 V0.6 - Phoenix-Evo Runtime Skill Router
@@ -20,19 +19,17 @@ V1.2: Upgraded primary retrieval to sentence-embedding-based semantic search
       Finding #1: TF-IDF cannot capture semantic similarity between paraphrases.
 """
 
-import json
 import math
 import re
 from collections import Counter
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from core.skill_registry import SkillRegistry
 
 # V1.2: Import semantic retriever for sentence-embedding-based search
 try:
-    from .semantic_retriever import SemanticRetriever, _EMBEDDING_AVAILABLE
+    from .semantic_retriever import _EMBEDDING_AVAILABLE, SemanticRetriever
 except ImportError:
     _EMBEDDING_AVAILABLE = False
     SemanticRetriever = None
@@ -74,17 +71,16 @@ def _tokenize_chinese_segment(text: str) -> list[str]:
     if _JIEBA_AVAILABLE:
         # jieba.lcut returns a list of segmented words
         return [w for w in _jieba.lcut(text) if w.strip()]
-    else:
-        # Fallback: character-level + bigrams
-        chars = _CHINESE_CHAR_RE.findall(text)
-        if not chars:
-            return []
-        # Single characters
-        tokens = list(chars)
-        # Bigrams (pairs of adjacent characters)
-        for i in range(len(chars) - 1):
-            tokens.append(chars[i] + chars[i + 1])
-        return tokens
+    # Fallback: character-level + bigrams
+    chars = _CHINESE_CHAR_RE.findall(text)
+    if not chars:
+        return []
+    # Single characters
+    tokens = list(chars)
+    # Bigrams (pairs of adjacent characters)
+    for i in range(len(chars) - 1):
+        tokens.append(chars[i] + chars[i + 1])
+    return tokens
 
 
 def _tokenize(text: str) -> list[str]:
@@ -524,7 +520,7 @@ class SkillRetriever:
                 try:
                     text = file_path.read_text(encoding="utf-8")
                     return self._parse_skill_card(text)
-                except (UnicodeDecodeError, IOError):
+                except (OSError, UnicodeDecodeError):
                     pass
         return None
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo V1.0 PhoenixRuntimeDaemon
 ======================================
@@ -18,12 +17,38 @@ Usage:
 from __future__ import annotations
 
 import logging
+import os
 import threading
 import time
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
+
+
+# ── FastAPI application for health checks and API ──────────────────────────
+
+def _create_app() -> FastAPI:
+    """Create the FastAPI application (lazy to avoid import at module level)."""
+    from fastapi import FastAPI
+
+    app = FastAPI(title="Phoenix-Evo", version="1.1.0")
+
+    @app.get("/health")
+    async def health() -> dict[str, str]:
+        return {"status": "ok"}
+
+    return app
+
+
+app = None
+
+
+def get_app() -> FastAPI:
+    """Return the singleton FastAPI app instance."""
+    global app
+    if app is None:
+        app = _create_app()
+    return app
 
 
 class PhoenixRuntimeDaemon:
@@ -46,10 +71,10 @@ class PhoenixRuntimeDaemon:
         self.curator_interval = curator_interval
 
         self._stop_event = threading.Event()
-        self._outcome_thread: Optional[threading.Thread] = None
-        self._curator_thread: Optional[threading.Thread] = None
+        self._outcome_thread: threading.Thread | None = None
+        self._curator_thread: threading.Thread | None = None
         self._started = False
-        self._started_at: Optional[float] = None
+        self._started_at: float | None = None
 
         # Lazy imports — allow phoenix modules to be absent until needed
         self._outcome_tracker = None
@@ -112,7 +137,6 @@ class PhoenixRuntimeDaemon:
     def _outcome_loop(self) -> None:
         """Periodically call OutcomeTracker.process_pending()."""
         import sys
-        from pathlib import Path as _P
 
         # Lazy import — only import when the thread actually starts
         OutcomeTracker = None
@@ -213,7 +237,9 @@ class PhoenixRuntimeDaemon:
 # ─────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    import argparse, logging as _logging, sys
+    import argparse
+    import logging as _logging
+    import sys
 
     _logging.basicConfig(
         level=_logging.INFO,
@@ -234,8 +260,11 @@ if __name__ == "__main__":
     )
     daemon.start()
 
-    try:
-        while daemon.is_running():
-            time.sleep(10)
-    except KeyboardInterrupt:
-        daemon.stop()
+    # Start FastAPI server for health checks and API
+    host = os.environ.get("PHOENIX_HOST", "0.0.0.0")  # noqa: S104
+    port = int(os.environ.get("PHOENIX_PORT", "8000"))
+
+    import uvicorn
+
+    logger.info(f"Starting FastAPI server on {host}:{port}")
+    uvicorn.run(get_app(), host=host, port=port, log_level="info")

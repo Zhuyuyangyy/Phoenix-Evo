@@ -1,14 +1,20 @@
 """Tests for paper experiments."""
 
-import pytest
 
+from experiments.paper.ablation_runner import AblationRunner
+from experiments.paper.case_study import CaseStudyAnalyzer
 from experiments.paper.experiment_definitions import (
-    ALL_EXPERIMENTS, E1, E2, E3, E4, E5, E6, ExperimentDefinition,
+    ALL_EXPERIMENTS,
+    E1,
+    E2,
+    E3,
+    E4,
+    E5,
+    E6,
+    ExperimentDefinition,
 )
-from experiments.paper.ablation_runner import AblationRunner, AblationConfig, AblationResult
-from experiments.paper.case_study import CaseStudyAnalyzer, CaseStudy, CaseStudyResult
 from experiments.paper.paper_generator import PaperGenerator
-from experiments.paper.reproducibility import ReproducibilityManager, ExperimentRun
+from experiments.paper.reproducibility import ReproducibilityManager
 
 
 class TestExperimentDefinitions:

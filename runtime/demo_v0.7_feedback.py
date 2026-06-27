@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Phoenix-Evo V0.7 Feedback Dispatcher Test"""
 
 import sys

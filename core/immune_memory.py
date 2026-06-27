@@ -7,9 +7,9 @@ immune_memory.json 记录同类技能多次触发失败的历史。
 """
 
 import json
-from pathlib import Path
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from dataclasses import dataclass, field, asdict
+from pathlib import Path
 
 
 @dataclass

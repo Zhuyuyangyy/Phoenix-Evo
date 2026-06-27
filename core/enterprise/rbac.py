@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 
 class Role(Enum):
@@ -37,7 +37,7 @@ class Permission(Enum):
 
 
 # Default role-permission mappings
-ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
+ROLE_PERMISSIONS: dict[Role, set[Permission]] = {
     Role.SUPER_ADMIN: set(Permission),  # All permissions
     Role.ADMIN: {
         Permission.SKILL_READ, Permission.SKILL_WRITE, Permission.SKILL_DELETE, Permission.SKILL_PUBLISH,
@@ -74,12 +74,12 @@ class User:
     user_id: str
     username: str
     email: str = ""
-    roles: List[Role] = field(default_factory=list)
-    additional_permissions: Set[Permission] = field(default_factory=set)
+    roles: list[Role] = field(default_factory=list)
+    additional_permissions: set[Permission] = field(default_factory=set)
     active: bool = True
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "user_id": self.user_id,
             "username": self.username,
@@ -94,14 +94,14 @@ class RBACManager:
     """Manages Role-Based Access Control."""
 
     def __init__(self):
-        self._users: Dict[str, User] = {}
-        self._role_permissions: Dict[Role, Set[Permission]] = dict(ROLE_PERMISSIONS)
+        self._users: dict[str, User] = {}
+        self._role_permissions: dict[Role, set[Permission]] = dict(ROLE_PERMISSIONS)
 
     def add_user(self, user: User) -> None:
         """Add a user to the system."""
         self._users[user.user_id] = user
 
-    def get_user(self, user_id: str) -> Optional[User]:
+    def get_user(self, user_id: str) -> User | None:
         """Get a user by ID."""
         return self._users.get(user_id)
 
@@ -123,13 +123,9 @@ class RBACManager:
             return True
 
         # Check role-based permissions
-        for role in user.roles:
-            if permission in self._role_permissions.get(role, set()):
-                return True
+        return any(permission in self._role_permissions.get(role, set()) for role in user.roles)
 
-        return False
-
-    def get_user_permissions(self, user_id: str) -> Set[Permission]:
+    def get_user_permissions(self, user_id: str) -> set[Permission]:
         """Get all permissions for a user."""
         user = self._users.get(user_id)
         if not user or not user.active:
@@ -166,11 +162,11 @@ class RBACManager:
         user.additional_permissions.add(permission)
         return True
 
-    def set_role_permissions(self, role: Role, permissions: Set[Permission]) -> None:
+    def set_role_permissions(self, role: Role, permissions: set[Permission]) -> None:
         """Set the permissions for a role."""
         self._role_permissions[role] = permissions
 
-    def list_users(self, role: Optional[Role] = None) -> List[User]:
+    def list_users(self, role: Role | None = None) -> list[User]:
         """List users, optionally filtered by role."""
         users = list(self._users.values())
         if role:

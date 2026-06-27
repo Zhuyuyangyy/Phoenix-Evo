@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
-
+from typing import Any
 
 # PII patterns for detection
 PII_PATTERNS = {
@@ -40,15 +39,15 @@ class ComplianceViolation:
     resource_id: str
     detected_at: float = 0.0
     remediation: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ComplianceManager:
     """Manages compliance rules and detects violations."""
 
     def __init__(self):
-        self._rules: Dict[str, Dict[str, Any]] = {}
-        self._violations: List[ComplianceViolation] = []
+        self._rules: dict[str, dict[str, Any]] = {}
+        self._violations: list[ComplianceViolation] = []
         self._violation_counter = 0
 
     def add_rule(
@@ -56,7 +55,7 @@ class ComplianceManager:
         rule_id: str,
         description: str,
         severity: str = "medium",
-        check_fn: Optional[Any] = None,
+        check_fn: Any | None = None,
     ) -> None:
         """Add a compliance rule."""
         self._rules[rule_id] = {
@@ -68,10 +67,10 @@ class ComplianceManager:
 
     def check_compliance(
         self,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         resource_type: str = "",
         resource_id: str = "",
-    ) -> List[ComplianceViolation]:
+    ) -> list[ComplianceViolation]:
         """Check data against all compliance rules."""
         violations = []
 
@@ -115,16 +114,16 @@ class ComplianceManager:
 
     def get_violations(
         self,
-        severity: Optional[str] = None,
+        severity: str | None = None,
         limit: int = 100,
-    ) -> List[ComplianceViolation]:
+    ) -> list[ComplianceViolation]:
         """Get compliance violations."""
         violations = self._violations
         if severity:
             violations = [v for v in violations if v.severity == severity]
         return violations[-limit:]
 
-    def get_compliance_report(self) -> Dict[str, Any]:
+    def get_compliance_report(self) -> dict[str, Any]:
         """Generate a compliance report."""
         severity_counts = {}
         for v in self._violations:
@@ -137,7 +136,7 @@ class ComplianceManager:
         }
 
 
-def detect_pii(text: str) -> List[PIIDetection]:
+def detect_pii(text: str) -> list[PIIDetection]:
     """Detect PII in text.
 
     Args:
@@ -147,7 +146,7 @@ def detect_pii(text: str) -> List[PIIDetection]:
         List of PIIDetection objects.
     """
     detections = []
-    for pii_type, (pattern, description) in PII_PATTERNS.items():
+    for pii_type, (pattern, _description) in PII_PATTERNS.items():
         for match in re.finditer(pattern, text):
             detections.append(PIIDetection(
                 pii_type=pii_type,
@@ -158,7 +157,7 @@ def detect_pii(text: str) -> List[PIIDetection]:
     return detections
 
 
-def redact_pii(text: str, replacement: str = "[REDACTED]") -> Tuple[str, int]:
+def redact_pii(text: str, replacement: str = "[REDACTED]") -> tuple[str, int]:
     """Redact PII from text.
 
     Args:
@@ -169,7 +168,7 @@ def redact_pii(text: str, replacement: str = "[REDACTED]") -> Tuple[str, int]:
         Tuple of (redacted_text, count_of_redactions).
     """
     count = 0
-    for pii_type, (pattern, _) in PII_PATTERNS.items():
+    for _pii_type, (pattern, _) in PII_PATTERNS.items():
         new_text = re.sub(pattern, replacement, text)
         if new_text != text:
             count += len(re.findall(pattern, text))

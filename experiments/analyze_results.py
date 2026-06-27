@@ -5,10 +5,10 @@ Phoenix-Evo Experiment Results Analyzer
 
 import json
 import math
-from pathlib import Path
-from typing import Dict, List, Tuple, Any
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 
 @dataclass
@@ -26,20 +26,20 @@ class StatsSummary:
     effect_size: float  # Cohen's d
 
 
-def load_results(results_path: str) -> Dict[str, Any]:
+def load_results(results_path: str) -> dict[str, Any]:
     """加载实验结果"""
-    with open(results_path, "r", encoding="utf-8") as f:
+    with open(results_path, encoding="utf-8") as f:
         return json.load(f)
 
 
-def compute_mean(values: List[float]) -> float:
+def compute_mean(values: list[float]) -> float:
     """计算均值"""
     if not values:
         return 0.0
     return sum(values) / len(values)
 
 
-def compute_std(values: List[float], mean: float = None) -> float:
+def compute_std(values: list[float], mean: float = None) -> float:
     """计算标准差"""
     if len(values) < 2:
         return 0.0
@@ -49,7 +49,7 @@ def compute_std(values: List[float], mean: float = None) -> float:
     return math.sqrt(variance)
 
 
-def compute_paired_t_test(baseline: List[float], phoenix: List[float]) -> Tuple[float, float]:
+def compute_paired_t_test(baseline: list[float], phoenix: list[float]) -> tuple[float, float]:
     """
     配对t检验
     返回 (t统计量, p值)
@@ -59,7 +59,7 @@ def compute_paired_t_test(baseline: List[float], phoenix: List[float]) -> Tuple[
         return 0.0, 1.0
 
     # 计算差值
-    diffs = [b - p for b, p in zip(baseline, phoenix)]
+    diffs = [b - p for b, p in zip(baseline, phoenix, strict=False)]
     mean_diff = compute_mean(diffs)
     std_diff = compute_std(diffs, mean_diff)
 
@@ -95,11 +95,10 @@ def _t_cdf(t: float, df: int) -> float:
     x = df / (df + t * t)
     if t >= 0:
         return 1 - 0.5 * x ** (df / 2)
-    else:
-        return 0.5 * x ** (df / 2)
+    return 0.5 * x ** (df / 2)
 
 
-def compute_cohens_d(baseline: List[float], phoenix: List[float]) -> float:
+def compute_cohens_d(baseline: list[float], phoenix: list[float]) -> float:
     """计算Cohen's d效应量"""
     n1, n2 = len(baseline), len(phoenix)
     mean1, mean2 = compute_mean(baseline), compute_mean(phoenix)
@@ -114,7 +113,7 @@ def compute_cohens_d(baseline: List[float], phoenix: List[float]) -> float:
     return (mean1 - mean2) / pooled_std
 
 
-def analyze_metric(metric_name: str, baseline_values: List[float], phoenix_values: List[float]) -> StatsSummary:
+def analyze_metric(metric_name: str, baseline_values: list[float], phoenix_values: list[float]) -> StatsSummary:
     """分析单个指标"""
     baseline_mean = compute_mean(baseline_values)
     baseline_std = compute_std(baseline_values, baseline_mean)
@@ -122,10 +121,7 @@ def analyze_metric(metric_name: str, baseline_values: List[float], phoenix_value
     phoenix_std = compute_std(phoenix_values, phoenix_mean)
 
     # 改进百分比
-    if baseline_mean != 0:
-        improvement_pct = ((phoenix_mean - baseline_mean) / baseline_mean) * 100
-    else:
-        improvement_pct = 0.0
+    improvement_pct = (phoenix_mean - baseline_mean) / baseline_mean * 100 if baseline_mean != 0 else 0.0
 
     # 配对t检验
     t_stat, p_value = compute_paired_t_test(baseline_values, phoenix_values)
@@ -147,7 +143,7 @@ def analyze_metric(metric_name: str, baseline_values: List[float], phoenix_value
     )
 
 
-def aggregate_by_task(results: List[Dict], agent_type: str) -> Dict[str, Dict[str, List[float]]]:
+def aggregate_by_task(results: list[dict], agent_type: str) -> dict[str, dict[str, list[float]]]:
     """按任务聚合结果"""
     task_data = {}
 
@@ -174,7 +170,7 @@ def aggregate_by_task(results: List[Dict], agent_type: str) -> Dict[str, Dict[st
     return task_data
 
 
-def run_analysis(results_path: str, output_path: str = None) -> Dict[str, StatsSummary]:
+def run_analysis(results_path: str, output_path: str = None) -> dict[str, StatsSummary]:
     """运行完整分析"""
     print(f"Loading results from: {results_path}")
     data = load_results(results_path)
@@ -224,7 +220,7 @@ def run_analysis(results_path: str, output_path: str = None) -> Dict[str, StatsS
     return analyses
 
 
-def print_analysis_results(analyses: Dict[str, StatsSummary]):
+def print_analysis_results(analyses: dict[str, StatsSummary]):
     """打印分析结果"""
     print("\n" + "=" * 80)
     print("STATISTICAL ANALYSIS RESULTS")
@@ -241,7 +237,7 @@ def print_analysis_results(analyses: Dict[str, StatsSummary]):
         print(f"  Effect Size: {stats.effect_size:.4f} (Cohen's d)")
 
 
-def generate_report(analyses: Dict[str, StatsSummary], data: Dict, output_path: str):
+def generate_report(analyses: dict[str, StatsSummary], data: dict, output_path: str):
     """生成Markdown报告"""
     config = data["experiment_config"]
     timestamp = data["timestamp"]
@@ -276,7 +272,7 @@ def generate_report(analyses: Dict[str, StatsSummary], data: Dict, output_path: 
         sig_marker = "**" if stats.significant else ""
         report += f"| {metric_name.replace('_', ' ').title()} | {stats.baseline_mean:.4f} ± {stats.baseline_std:.4f} | {stats.phoenix_mean:.4f} ± {stats.phoenix_std:.4f} | {stats.improvement_pct:+.2f}% | {stats.p_value:.6f} | {sig_marker}{'YES' if stats.significant else 'NO'}{sig_marker} | {stats.effect_size:.4f} |\n"
 
-    report += f"""
+    report += """
 ---
 
 ## Detailed Analysis

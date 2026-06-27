@@ -8,7 +8,7 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class EventType(Enum):
@@ -32,18 +32,18 @@ class TrajectoryEvent:
     agent_id: str
     task_id: str
     event_type: EventType
-    input_context_hash: Optional[str] = None
-    tool_name: Optional[str] = None
-    tool_args_redacted: Optional[Dict[str, Any]] = None
-    tool_result_summary: Optional[str] = None
-    model_name: Optional[str] = None
-    prompt_tokens: Optional[int] = None
-    completion_tokens: Optional[int] = None
-    error_type: Optional[str] = None
-    error_message: Optional[str] = None
-    risk_signal: Optional[str] = None
-    verification_result: Optional[bool] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    input_context_hash: str | None = None
+    tool_name: str | None = None
+    tool_args_redacted: dict[str, Any] | None = None
+    tool_result_summary: str | None = None
+    model_name: str | None = None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    error_type: str | None = None
+    error_message: str | None = None
+    risk_signal: str | None = None
+    verification_result: bool | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -53,12 +53,12 @@ class TaskSpec:
     description: str
     task_type: str = "general"
     risk_level: str = "low"
-    allowed_tools: List[str] = field(default_factory=list)
+    allowed_tools: list[str] = field(default_factory=list)
     max_steps: int = 50
     max_tokens: int = 100000
     timeout_seconds: int = 600
-    injected_context: Optional[Dict[str, Any]] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    injected_context: dict[str, Any] | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -66,16 +66,16 @@ class AgentRunResult:
     """Result of an agent run."""
     task_id: str
     success: bool
-    final_output: Optional[str] = None
-    error: Optional[str] = None
-    events: List[TrajectoryEvent] = field(default_factory=list)
+    final_output: str | None = None
+    error: str | None = None
+    events: list[TrajectoryEvent] = field(default_factory=list)
     total_tokens: int = 0
     total_steps: int = 0
     duration_seconds: float = 0.0
-    artifacts: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    artifacts: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_trajectory(self) -> Dict[str, Any]:
+    def to_trajectory(self) -> dict[str, Any]:
         """Convert the run result to a trajectory dictionary."""
         return {
             "task_id": self.task_id,
@@ -127,7 +127,7 @@ class AgentAdapter(ABC):
     def __init__(self, agent_id: str, model_name: str = "unknown"):
         self.agent_id = agent_id
         self.model_name = model_name
-        self._events: List[TrajectoryEvent] = []
+        self._events: list[TrajectoryEvent] = []
 
     def _record_event(self, event_type: EventType, **kwargs: Any) -> TrajectoryEvent:
         """Record a trajectory event."""
@@ -155,11 +155,11 @@ class AgentAdapter(ABC):
             metadata={"task_type": task.task_type, "risk_level": task.risk_level},
         )
 
-    def before_context_injection(self, task: TaskSpec, context: Dict[str, Any]) -> Dict[str, Any]:
+    def before_context_injection(self, task: TaskSpec, context: dict[str, Any]) -> dict[str, Any]:
         """Hook called before injecting context into the agent. Returns possibly modified context."""
         return context
 
-    def before_tool_call(self, task_id: str, tool_name: str, tool_args: Dict[str, Any]) -> Dict[str, Any]:
+    def before_tool_call(self, task_id: str, tool_name: str, tool_args: dict[str, Any]) -> dict[str, Any]:
         """Hook called before a tool invocation. Returns possibly modified args."""
         self._record_event(
             EventType.TOOL_CALL,
@@ -204,7 +204,7 @@ class AgentAdapter(ABC):
         )
 
     @staticmethod
-    def _redact_args(args: Dict[str, Any]) -> Dict[str, Any]:
+    def _redact_args(args: dict[str, Any]) -> dict[str, Any]:
         """Redact sensitive values from tool arguments."""
         sensitive_keys = {
             "api_key", "token", "password", "secret", "credential",

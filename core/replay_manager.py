@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Phoenix-Evo V1.0 ReplayManager
 ===============================
@@ -19,11 +18,13 @@ Usage:
 from __future__ import annotations
 
 import json
-import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # ─────────────────────────────────────────────────────────────
 # Data Classes
@@ -214,7 +215,7 @@ class ReplayManager:
             and isinstance(data.get("procedure"), list)
         )
 
-    def _load_trajectory(self, task_id: str) -> Optional[dict]:
+    def _load_trajectory(self, task_id: str) -> dict | None:
         if not self.trajectories_dir.exists():
             return None
         # Try exact match first
@@ -339,6 +340,7 @@ if __name__ == "__main__":
                 return {"ok": True, "output": "parsed"}
             if step["name"] == "lint":
                 return {"ok": True, "output": "clean"}
+            return None
 
         result = manager.replay("task-demo-001", execute_fn=mock_execute_fn)
         print(f"verdict={result.verdict}  notes={result.notes}")

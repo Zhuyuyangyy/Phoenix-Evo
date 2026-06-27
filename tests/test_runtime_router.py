@@ -20,10 +20,8 @@ V0.5 核心验证点：
 import json
 import shutil
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import pytest
-
 
 # --------------------------------------------------------------------------
 # Fixtures
@@ -564,15 +562,15 @@ class TestRuntimeReporter:
     def test_create_report_generates_runtime_report(self, v05_root):
         """create_report() 应生成含 step_delta 和 improvement 的报告。"""
         from core.runtime_reporter import RuntimeReporter, SkillInvocation
-        from core.skill_router import RouterResult, RouterDecision
         from core.skill_retriever import SkillRetrievalResult
+        from core.skill_router import RouterDecision, RouterResult
         root, index = v05_root
         reporter = RuntimeReporter(root=root)
         inv = SkillInvocation(
             skill_id="skill_001", skill_name="测试技能", action="auto_use",
             confidence=0.85, guard_passed=True, called=True, success=True, execution_time_ms=150.0,
         )
-        retrieval = SkillRetrievalResult(task_goal="test", top_k=5, total_candidates=5, matches=[], retrieval_time_ms=2.0)
+        SkillRetrievalResult(task_goal="test", top_k=5, total_candidates=5, matches=[], retrieval_time_ms=2.0)
         routing = RouterResult(
             task_goal="test",
             auto_use=[RouterDecision(skill_id="skill_001", skill_name="测试", action="auto_use", confidence=0.85)],
@@ -590,12 +588,12 @@ class TestRuntimeReporter:
 
     def test_save_and_load_report(self, v05_root):
         """报告应能保存到 evidence/runtime_logs/。"""
-        from core.runtime_reporter import RuntimeReporter, SkillInvocation
-        from core.skill_router import RouterResult
+        from core.runtime_reporter import RuntimeReporter
         from core.skill_retriever import SkillRetrievalResult
+        from core.skill_router import RouterResult
         root, index = v05_root
         reporter = RuntimeReporter(root=root)
-        retrieval = SkillRetrievalResult(task_goal="t", top_k=3, total_candidates=3, matches=[], retrieval_time_ms=1.0)
+        SkillRetrievalResult(task_goal="t", top_k=3, total_candidates=3, matches=[], retrieval_time_ms=1.0)
         routing = RouterResult(task_goal="t", total_considered=3, routing_time_ms=1.0)
         report = reporter.create_report(
             task_goal="test", task_id="task_001", retrieval_count=3,
@@ -607,12 +605,12 @@ class TestRuntimeReporter:
     def test_batch_summary(self, v05_root):
         """批量汇总应返回关键指标。"""
         from core.runtime_reporter import RuntimeReporter, SkillInvocation
-        from core.skill_router import RouterResult, RouterDecision
         from core.skill_retriever import SkillRetrievalResult
+        from core.skill_router import RouterDecision, RouterResult
         root, index = v05_root
         reporter = RuntimeReporter(root=root)
         for i in range(3):
-            retrieval = SkillRetrievalResult(task_goal=f"t{i}", top_k=3, total_candidates=3, matches=[], retrieval_time_ms=1.0)
+            SkillRetrievalResult(task_goal=f"t{i}", top_k=3, total_candidates=3, matches=[], retrieval_time_ms=1.0)
             routing = RouterResult(
                 task_goal=f"t{i}",
                 auto_use=[RouterDecision(skill_id=f"s{i}", skill_name=f"s{i}", action="auto_use", confidence=0.8)],
@@ -631,11 +629,11 @@ class TestRuntimeReporter:
     def test_format_report_markdown(self, v05_root):
         """format_report_markdown() 返回 markdown 文本。"""
         from core.runtime_reporter import RuntimeReporter, SkillInvocation
-        from core.skill_router import RouterResult
         from core.skill_retriever import SkillRetrievalResult
+        from core.skill_router import RouterResult
         root, index = v05_root
         reporter = RuntimeReporter(root=root)
-        retrieval = SkillRetrievalResult(task_goal="test", top_k=3, total_candidates=3, matches=[], retrieval_time_ms=1.0)
+        SkillRetrievalResult(task_goal="test", top_k=3, total_candidates=3, matches=[], retrieval_time_ms=1.0)
         routing = RouterResult(task_goal="test", total_considered=3, routing_time_ms=1.0)
         inv = SkillInvocation(skill_id="s1", skill_name="技能1", action="auto_use", confidence=0.85, called=True, success=True)
         report = reporter.create_report(
@@ -656,9 +654,9 @@ class TestRuntimeE2E:
 
     def test_retrieve_route_guard_chain(self, v05_root):
         """完整链路：retrieve → route → guard。"""
+        from core.execution_guard import ExecutionGuard
         from core.skill_retriever import SkillRetriever
         from core.skill_router import SkillRouter
-        from core.execution_guard import ExecutionGuard
         root, index = v05_root
         retriever = SkillRetriever(root=root)
         router = SkillRouter(root=root)

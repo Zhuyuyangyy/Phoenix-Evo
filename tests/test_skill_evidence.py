@@ -2,11 +2,8 @@
 Tests for SkillEvidence module.
 """
 
-import pytest
-from pathlib import Path
-from datetime import datetime
 
-from core.skill_evidence import SkillEvidenceManager, SkillCard
+from core.skill_evidence import SkillCard, SkillEvidenceManager
 
 
 class TestSkillCard:

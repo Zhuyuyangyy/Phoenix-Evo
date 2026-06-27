@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 EmbeddingRetriever: Production-grade semantic retrieval engine
 V1.3 -- Phoenix-Evo Runtime Embedding Retriever
@@ -46,8 +45,8 @@ _embedding_model = None
 _model_lock = threading.Lock()
 
 try:
-    from sentence_transformers import SentenceTransformer
     import numpy as np
+    from sentence_transformers import SentenceTransformer
 
     def _get_model(model_name: str = _MODEL_NAME) -> SentenceTransformer:
         """Thread-safe lazy loading of the sentence-transformers model."""
@@ -239,16 +238,15 @@ class EmbeddingRetriever:
                     "sentence-transformers not installed; cannot use embedding method"
                 )
             return self._retrieve_embedding(query, corpus_texts, top_k, score_threshold)
-        elif method == "tfidf":
+        if method == "tfidf":
             return self._retrieve_tfidf(query, corpus_texts, top_k, score_threshold)
-        elif method == "keyword":
+        if method == "keyword":
             return self._retrieve_keyword(query, corpus_texts, top_k)
 
         # Automatic fallback chain
         if _EMBEDDING_AVAILABLE:
             return self._retrieve_embedding(query, corpus_texts, top_k, score_threshold)
-        else:
-            return self._retrieve_tfidf(query, corpus_texts, top_k, score_threshold)
+        return self._retrieve_tfidf(query, corpus_texts, top_k, score_threshold)
 
     def encode_corpus(self, texts: list[str]) -> Any:
         """
@@ -278,7 +276,7 @@ class EmbeddingRetriever:
 
         # Update cache
         self._corpus_cache = {}
-        for text, emb in zip(texts, embeddings):
+        for text, emb in zip(texts, embeddings, strict=False):
             self._corpus_cache[text] = emb
         self._corpus_hash = corpus_hash
 

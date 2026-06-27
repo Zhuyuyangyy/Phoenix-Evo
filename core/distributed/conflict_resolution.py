@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 class ConflictType(Enum):
@@ -29,10 +29,10 @@ class Conflict:
     conflict_id: str
     conflict_type: ConflictType
     resource_id: str
-    left_version: Dict[str, Any]
-    right_version: Dict[str, Any]
+    left_version: dict[str, Any]
+    right_version: dict[str, Any]
     detected_at: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -41,10 +41,10 @@ class Resolution:
     resolution_id: str
     conflict_id: str
     strategy: ResolutionStrategy
-    resolved_data: Dict[str, Any]
+    resolved_data: dict[str, Any]
     winner: str  # "left", "right", "merge", or "manual"
     resolved_at: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ConflictResolver:
@@ -57,20 +57,20 @@ class ConflictResolver:
     def __init__(
         self,
         default_strategy: ResolutionStrategy = ResolutionStrategy.LAST_WRITE_WINS,
-        source_priorities: Optional[Dict[str, int]] = None,
+        source_priorities: dict[str, int] | None = None,
     ):
         self.default_strategy = default_strategy
         self.source_priorities = source_priorities or {}
-        self._conflicts: List[Conflict] = []
-        self._resolutions: List[Resolution] = []
+        self._conflicts: list[Conflict] = []
+        self._resolutions: list[Resolution] = []
         self._conflict_counter = 0
 
     def detect_conflict(
         self,
         resource_id: str,
-        left_version: Dict[str, Any],
-        right_version: Dict[str, Any],
-    ) -> Optional[Conflict]:
+        left_version: dict[str, Any],
+        right_version: dict[str, Any],
+    ) -> Conflict | None:
         """Detect a conflict between two versions of a resource."""
         if left_version == right_version:
             return None
@@ -102,21 +102,20 @@ class ConflictResolver:
     def resolve(
         self,
         conflict: Conflict,
-        strategy: Optional[ResolutionStrategy] = None,
+        strategy: ResolutionStrategy | None = None,
     ) -> Resolution:
         """Resolve a conflict using the specified strategy."""
         strat = strategy or self.default_strategy
 
         if strat == ResolutionStrategy.LAST_WRITE_WINS:
             return self._resolve_last_write_wins(conflict)
-        elif strat == ResolutionStrategy.HIGHEST_VERSION:
+        if strat == ResolutionStrategy.HIGHEST_VERSION:
             return self._resolve_highest_version(conflict)
-        elif strat == ResolutionStrategy.MERGE:
+        if strat == ResolutionStrategy.MERGE:
             return self._resolve_merge(conflict)
-        elif strat == ResolutionStrategy.SOURCE_PRIORITY:
+        if strat == ResolutionStrategy.SOURCE_PRIORITY:
             return self._resolve_source_priority(conflict)
-        else:
-            return self._resolve_manual(conflict)
+        return self._resolve_manual(conflict)
 
     def _resolve_last_write_wins(self, conflict: Conflict) -> Resolution:
         """Resolve by selecting the most recently updated version."""
@@ -181,7 +180,7 @@ class ConflictResolver:
         conflict: Conflict,
         strategy: ResolutionStrategy,
         winner: str,
-        resolved_data: Dict[str, Any],
+        resolved_data: dict[str, Any],
     ) -> Resolution:
         """Create a resolution object."""
         resolution = Resolution(
@@ -194,18 +193,18 @@ class ConflictResolver:
         self._resolutions.append(resolution)
         return resolution
 
-    def get_conflicts(self, unresolved_only: bool = False) -> List[Conflict]:
+    def get_conflicts(self, unresolved_only: bool = False) -> list[Conflict]:
         """Get conflicts, optionally only unresolved ones."""
         if unresolved_only:
             resolved_ids = {r.conflict_id for r in self._resolutions if r.winner != "manual"}
             return [c for c in self._conflicts if c.conflict_id not in resolved_ids]
         return list(self._conflicts)
 
-    def get_resolutions(self) -> List[Resolution]:
+    def get_resolutions(self) -> list[Resolution]:
         """Get all resolutions."""
         return list(self._resolutions)
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get conflict resolution statistics."""
         return {
             "total_conflicts": len(self._conflicts),

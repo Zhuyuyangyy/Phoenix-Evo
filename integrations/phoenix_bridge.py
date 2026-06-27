@@ -36,14 +36,16 @@ V0.5 约束：
 
 from __future__ import annotations
 
-import json
 import logging
 import threading
 import time as time_module
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
-from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from core import PhoenixEvo
 
 # Phoenix-Evo 核心（延迟导入，避免未安装时 Hermes 崩溃）
 _PHOENIX_LOADED = False
@@ -53,7 +55,6 @@ try:
     _phoenix_path = str(Path(__file__).parent.parent)
     if _phoenix_path not in _sys.path:
         _sys.path.insert(0, _phoenix_path)
-    from core import PhoenixEvo
     _PHOENIX_LOADED = True
 except Exception as _e:
     _PHOENIX_ERR = str(_e)
@@ -141,7 +142,7 @@ class PhoenixBridge:
         self.auto_evolve = auto_evolve
 
         # Phoenix 核心（懒加载）
-        self._phoenix: Optional[PhoenixEvo] = None
+        self._phoenix: PhoenixEvo | None = None
         self._phoenix_lock = threading.Lock()
 
         # 事件累积
@@ -163,7 +164,7 @@ class PhoenixBridge:
 
     # ── Phoenix 懒加载 ─────────────────────────────────────────
 
-    def _get_phoenix(self) -> Optional[PhoenixEvo]:
+    def _get_phoenix(self) -> PhoenixEvo | None:
         if not self._phoenix_available:
             return None
         if self._phoenix is None:

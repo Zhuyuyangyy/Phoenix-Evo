@@ -2,15 +2,15 @@
 Run all experiments and generate reports
 """
 
-import sys
 import os
+import sys
 
 # 添加experiments目录到路径
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from run_experiment import ExperimentRunner, ExperimentConfig
+from ablation import analyze_ablation_results, generate_ablation_report, run_ablation_study, save_ablation_results
 from analyze_results import run_analysis
-from ablation import run_ablation_study, analyze_ablation_results, save_ablation_results, generate_ablation_report
+from run_experiment import ExperimentConfig, ExperimentRunner
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
 
     print("\n[1/4] Running main experiment...")
     runner = ExperimentRunner(config)
-    results = runner.run_experiment()
+    runner.run_experiment()
     runner.print_summary()
 
     print("\n[2/4] Saving main results...")

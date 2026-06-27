@@ -6,10 +6,12 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from .agent_roles import AgentProfile, AgentRole
-from .artifacts import Artifact, ArtifactType
+
+if TYPE_CHECKING:
+    from .artifacts import Artifact
 
 
 class PipelineStage(Enum):
@@ -26,12 +28,12 @@ class PipelineStep:
     """A single step in the collaboration pipeline."""
     stage: PipelineStage
     assigned_agent: str
-    input_artifacts: List[str] = field(default_factory=list)
-    output_artifacts: List[str] = field(default_factory=list)
+    input_artifacts: list[str] = field(default_factory=list)
+    output_artifacts: list[str] = field(default_factory=list)
     status: str = "pending"  # pending, in_progress, completed, failed
-    started_at: Optional[float] = None
-    completed_at: Optional[float] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    started_at: float | None = None
+    completed_at: float | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -39,12 +41,12 @@ class CollaborationSession:
     """A collaboration session between multiple agents."""
     session_id: str
     task_description: str
-    participants: List[AgentProfile]
-    pipeline: List[PipelineStep]
-    artifacts: Dict[str, Artifact] = field(default_factory=dict)
+    participants: list[AgentProfile]
+    pipeline: list[PipelineStep]
+    artifacts: dict[str, Artifact] = field(default_factory=dict)
     status: str = "created"
     created_at: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class CollaborationProtocol:
@@ -67,12 +69,12 @@ class CollaborationProtocol:
     }
 
     def __init__(self):
-        self._sessions: Dict[str, CollaborationSession] = {}
+        self._sessions: dict[str, CollaborationSession] = {}
 
     def create_session(
         self,
         task_description: str,
-        participants: List[AgentProfile],
+        participants: list[AgentProfile],
     ) -> CollaborationSession:
         """Create a new collaboration session with a 5-stage pipeline."""
         session_id = str(uuid.uuid4())[:8]
@@ -110,7 +112,7 @@ class CollaborationProtocol:
         self._sessions[session_id] = session
         return session
 
-    def advance_stage(self, session_id: str, artifact: Optional[Artifact] = None) -> Optional[PipelineStage]:
+    def advance_stage(self, session_id: str, artifact: Artifact | None = None) -> PipelineStage | None:
         """Advance a session to the next pipeline stage."""
         session = self._sessions.get(session_id)
         if not session:
@@ -143,15 +145,14 @@ class CollaborationProtocol:
             next_step.started_at = time.time()
             next_step.input_artifacts = list(current_step.output_artifacts)
             return next_step.stage
-        else:
-            session.status = "completed"
-            return None
+        session.status = "completed"
+        return None
 
-    def get_session(self, session_id: str) -> Optional[CollaborationSession]:
+    def get_session(self, session_id: str) -> CollaborationSession | None:
         """Get a session by ID."""
         return self._sessions.get(session_id)
 
-    def list_sessions(self) -> List[Dict[str, Any]]:
+    def list_sessions(self) -> list[dict[str, Any]]:
         """List all sessions."""
         return [
             {

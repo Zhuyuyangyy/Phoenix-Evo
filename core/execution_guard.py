@@ -12,7 +12,7 @@ V0.5 — Phoenix-Evo Runtime Skill Router
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -101,7 +101,7 @@ class ExecutionGuard:
     def check(
         self,
         skill: dict[str, Any],
-        router_decision: "RouterDecision",   # type: ignore[name-defined]
+        router_decision: RouterDecision,   # type: ignore[name-defined]
         task_context: dict[str, Any] | None = None,
     ) -> ExecutionGateResult:
         """
@@ -158,7 +158,7 @@ class ExecutionGuard:
                 context_match_score=context_score,
                 suggested_next="选择更匹配的技能或手动处理",
             )
-        elif context_score < self.CONTEXT_MATCH_WARN:
+        if context_score < self.CONTEXT_MATCH_WARN:
             warnings.append(f"任务上下文与技能匹配度较低（{context_score:.0%}）")
             gate_action = "warn"
             risk_tags.append("low_context_match")
@@ -242,8 +242,10 @@ class ExecutionGuard:
 
         import re
         # 提取中英文词
-        english = lambda t: re.findall(r"[a-zA-Z][a-zA-Z0-9]+", t.lower())
-        chinese = lambda t: re.findall(r"[\u4e00-\u9fff]+", t.lower())
+        def english(t):
+            return re.findall(r"[a-zA-Z][a-zA-Z0-9]+", t.lower())
+        def chinese(t):
+            return re.findall(r"[\u4e00-\u9fff]+", t.lower())
 
         task_words = set(english(task_goal) + chinese(task_goal))
         skill_words = set(english(skill_goal) + chinese(skill_goal))

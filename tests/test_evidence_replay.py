@@ -19,16 +19,13 @@ V0.4 核心验证点：
 
 import json
 import shutil
-import tempfile
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import pytest
 
-
-# ------------------------------------------------------------------ 
+# ------------------------------------------------------------------
 # Fixtures
-# ------------------------------------------------------------------ 
+# ------------------------------------------------------------------
 
 @pytest.fixture
 def v04_root(tmp_path):
@@ -185,7 +182,7 @@ class TestSkillEvidence:
         # 创建 2 个不同 status 的 card
         for i, (sid, status) in enumerate([("skill_001", "draft"), ("skill_002", "replay_pass")]):
             skill = {"skill_id": sid, "skill_name": f"测试{i}", "quality_score": 0.8, "risk_level": "low"}
-            card = mgr.create_card(skill, f"traj_{i:03d}")
+            mgr.create_card(skill, f"traj_{i:03d}")
             if status != "draft":
                 mgr.update_card(sid, status=status)
 
@@ -523,8 +520,7 @@ class TestEvidencePolicy:
 
     def test_replay_pass_rate_threshold(self):
         """通过率 < 70% → quarantine。"""
-        from core.skill_replay import ReplayReport, ReplayResult
-        from core.skill_replay import EvidencePolicy
+        from core.skill_replay import EvidencePolicy, ReplayReport
 
         policy = EvidencePolicy()
         report = ReplayReport(
@@ -541,8 +537,7 @@ class TestEvidencePolicy:
 
     def test_regression_blocks_promotion(self):
         """有 regression → quarantine。"""
-        from core.skill_replay import ReplayReport, ReplayResult
-        from core.skill_replay import EvidencePolicy
+        from core.skill_replay import EvidencePolicy, ReplayReport, ReplayResult
 
         policy = EvidencePolicy()
         report = ReplayReport(
@@ -561,8 +556,7 @@ class TestEvidencePolicy:
 
     def test_risk_increase_blocks_promotion(self):
         """风险上升 > 0.05 → quarantine。"""
-        from core.skill_replay import ReplayReport
-        from core.skill_replay import EvidencePolicy
+        from core.skill_replay import EvidencePolicy, ReplayReport
 
         policy = EvidencePolicy()
         report = ReplayReport(
@@ -581,8 +575,7 @@ class TestEvidencePolicy:
 
     def test_all_criteria_met_promotes(self):
         """所有条件满足 → promote。"""
-        from core.skill_replay import ReplayReport
-        from core.skill_replay import EvidencePolicy
+        from core.skill_replay import EvidencePolicy, ReplayReport
 
         policy = EvidencePolicy()
         report = ReplayReport(
@@ -601,8 +594,7 @@ class TestEvidencePolicy:
 
     def test_no_replay_cases_keeps_draft(self):
         """回放 case 数 < 1 → keep_draft。"""
-        from core.skill_replay import ReplayReport
-        from core.skill_replay import EvidencePolicy
+        from core.skill_replay import EvidencePolicy, ReplayReport
 
         policy = EvidencePolicy()
         report = ReplayReport(
@@ -627,8 +619,8 @@ class TestReplayReporter:
 
     def test_format_report_dict(self, v04_root):
         """format_report() 返回可序列化 dict。"""
-        from core.skill_replay import SkillReplay, ReplayReport, ReplayResult
         from core.replay_reporter import ReplayReporter
+        from core.skill_replay import ReplayReport, ReplayResult
 
         root, index = v04_root
         reporter = ReplayReporter(root=root)
@@ -658,8 +650,8 @@ class TestReplayReporter:
 
     def test_format_markdown(self, v04_root):
         """format_markdown() 返回 markdown 文本。"""
-        from core.skill_replay import ReplayReport, ReplayResult
         from core.replay_reporter import ReplayReporter
+        from core.skill_replay import ReplayReport, ReplayResult
 
         root, index = v04_root
         reporter = ReplayReporter(root=root)
@@ -683,9 +675,9 @@ class TestReplayReporter:
 
     def test_build_evidence_summary(self, v04_root):
         """build_evidence_summary() 生成带评分的证据摘要。"""
-        from core.skill_evidence import SkillEvidenceManager, SkillCard
-        from core.skill_replay import ReplayReport, ReplayResult
         from core.replay_reporter import ReplayReporter
+        from core.skill_evidence import SkillEvidenceManager
+        from core.skill_replay import ReplayReport
 
         root, index = v04_root
         evidence_mgr = SkillEvidenceManager(root=root)
@@ -721,8 +713,8 @@ class TestReplayReporter:
 
     def test_evidence_summary_no_replay(self, v04_root):
         """无回放报告时，evidence_summary 的 replay_validity 为 0。"""
-        from core.skill_evidence import SkillEvidenceManager
         from core.replay_reporter import ReplayReporter
+        from core.skill_evidence import SkillEvidenceManager
 
         root, index = v04_root
         evidence_mgr = SkillEvidenceManager(root=root)
@@ -737,8 +729,8 @@ class TestReplayReporter:
 
     def test_batch_summary(self, v04_root):
         """批量回放报告汇总。"""
-        from core.skill_replay import ReplayReport, ReplayResult
         from core.replay_reporter import ReplayReporter
+        from core.skill_replay import ReplayReport
 
         root, index = v04_root
         reporter = ReplayReporter(root=root)

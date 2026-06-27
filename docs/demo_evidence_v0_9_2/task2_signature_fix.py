@@ -1,7 +1,10 @@
 """
 Phoenix-Evo V0.9.2 - Task 2: Function Signature Error Fix
 """
-import sys, os, json, subprocess
+import json
+import os
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -65,6 +68,7 @@ os.environ["PHOENIX_EVO_ENABLED"] = "true"
 os.environ["PHOENIX_EVO_DIR"] = str(PHOENIX_DIR)
 
 from phoenix_runtime_bridge import PhoenixRuntimeBridge
+
 bridge = PhoenixRuntimeBridge(phoenix_base_dir=PHOENIX_DIR, phoenix_enabled=True)
 
 task_desc = (
@@ -85,6 +89,7 @@ print(f"  Advisory length: {len(advisory_msg)} chars")
 
 # Skill retrieval
 from runtime.skill_retriever import SkillRetriever
+
 retriever = SkillRetriever(base_dir=PHOENIX_DIR)
 retrieved = retriever.retrieve("TypeError 参数数量不对", top_k=5)
 retrieved_ids = [s["skill_id"] for s in retrieved]
@@ -188,7 +193,7 @@ report = (
 )
 
 (EVIDENCE_DIR / "task2_signature_fix.md").write_text(report, encoding="utf-8")
-print(f"\nEvidence files written.")
+print("\nEvidence files written.")
 print("\n" + "=" * 60)
 print("Task 2 完成")
 print("=" * 60)

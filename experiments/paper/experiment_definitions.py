@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -13,15 +13,15 @@ class ExperimentDefinition:
     title: str
     description: str
     hypothesis: str
-    independent_variables: List[str]
-    dependent_variables: List[str]
-    control_conditions: Dict[str, Any]
-    treatment_conditions: Dict[str, Any]
+    independent_variables: list[str]
+    dependent_variables: list[str]
+    control_conditions: dict[str, Any]
+    treatment_conditions: dict[str, Any]
     sample_size: int
     significance_level: float = 0.05
-    metrics: List[str] = field(default_factory=list)
-    expected_results: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metrics: list[str] = field(default_factory=list)
+    expected_results: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 # E1: Safety Intervention Effectiveness
