@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # ── FastAPI application for health checks and API ──────────────────────────
 
-def _create_app() -> "FastAPI":
+def _create_app() -> FastAPI:
     """Create the FastAPI application (lazy to avoid import at module level)."""
     from fastapi import FastAPI
 
@@ -43,7 +43,7 @@ def _create_app() -> "FastAPI":
 app = None
 
 
-def get_app() -> "FastAPI":
+def get_app() -> FastAPI:
     """Return the singleton FastAPI app instance."""
     global app
     if app is None:
@@ -261,7 +261,7 @@ if __name__ == "__main__":
     daemon.start()
 
     # Start FastAPI server for health checks and API
-    host = os.environ.get("PHOENIX_HOST", "0.0.0.0")
+    host = os.environ.get("PHOENIX_HOST", "0.0.0.0")  # noqa: S104
     port = int(os.environ.get("PHOENIX_PORT", "8000"))
 
     import uvicorn
