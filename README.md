@@ -326,6 +326,20 @@ Related technical documentation is available in the `docs/` directory, covering 
 | V1.0 | Production-ready: project routing, task classification, namespace governance | Completed |
 | V1.1 | Semantic retrieval (TF-IDF), adaptive drift detection | Completed |
 | V1.2 | Sentence-embedding semantic retrieval, SCI Q2 review fixes | Completed |
+| V1.5 | Engineering baseline: modern type annotations, lint compliance, real LLM experiment infrastructure, enterprise modules | **Current** |
+
+### V1.5 Engineering Baseline (Current Release)
+
+This version is an **engineering modernization + real experiment infrastructure** release, not a major feature release. Key changes:
+
+- **Python 3.12 modern type annotations** across all 176 source files (`Dict`→`dict`, `List`→`list`, `Optional[X]`→`X | None`, `str+Enum`→`StrEnum`)
+- **Full ruff lint compliance** with expanded rule set
+- **Real LLM experiment infrastructure**: DeepSeek API adapter, PhoenixBench E1-E6 experiment runners, statistical analysis framework (bootstrap CI, Cohen's d, Bonferroni correction)
+- **4 new enterprise-grade modules**: `core/distributed` (federated sharing, LRU+TTL cache), `core/enterprise` (RBAC, audit, compliance), `core/multi_agent` (collaboration protocol, consensus), `core/self_repair` (degradation detection, A/B testing)
+- **FastAPI health endpoint** on PhoenixRuntimeDaemon for Docker healthcheck support
+- **Build artifacts removed from git** (`coverage.xml`, `.phoenix_reproducibility/` added to `.gitignore`)
+
+**Important caveat**: E1 experiment results show ceiling effects (100% success in both conditions), making effectiveness claims preliminary. This release establishes the engineering foundation for future rigorous experimental validation.
 
 ### Future Directions
 
