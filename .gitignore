@@ -26,3 +26,8 @@ id_rsa.pub
 *~
 *.swp
 
+# build / test artifacts
+coverage.xml
+htmlcov/
+.phoenix_reproducibility/
+
