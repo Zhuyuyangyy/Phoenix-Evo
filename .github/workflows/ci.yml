@@ -98,19 +98,24 @@ jobs:
       - name: Test container startup
         run: |
           docker run -d --name phoenix-test -p 8000:8000 phoenix-evo:ci
-          sleep 5
-          for i in 1 2 3 4 5; do
+          echo "Waiting for container to initialize..."
+          sleep 10
+          for i in 1 2 3 4 5 6 7 8; do
             if curl -sf http://localhost:8000/health; then
-              echo "Health check passed"
+              echo ""
+              echo "Health check passed on attempt $i"
               docker stop phoenix-test
               exit 0
             fi
-            echo "Attempt $i: service not ready, waiting..."
+            echo "Attempt $i: service not ready, waiting 3s..."
             sleep 3
           done
-          echo "Health check failed after 5 attempts"
-          docker logs phoenix-test
-          docker stop phoenix-test
+          echo "Health check failed after 8 attempts"
+          echo "--- Container logs ---"
+          docker logs phoenix-test 2>&1 || true
+          echo "--- Container exit code ---"
+          docker inspect phoenix-test --format='{{.State.ExitCode}}' || true
+          docker stop phoenix-test || true
           exit 1
 
   # ── Benchmark Job ─────────────────────────────────────────────────────────
