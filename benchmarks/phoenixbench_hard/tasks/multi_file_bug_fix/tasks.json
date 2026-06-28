@@ -1,0 +1,562 @@
+[
+  {
+    "task_id": "mfbf_001",
+    "description": "Fix type mismatch between OrderService response DTO and PaymentGateway request DTO where order_id is sent as integer but gateway expects string, causing silent truncation of large IDs",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/order_service/models/response.py",
+      "services/payment_gateway/serializers.py",
+      "services/order_service/controllers/order_controller.py",
+      "shared/types/order_id.py"
+    ],
+    "bug_description": "OrderService returns order_id as int in its response DTO. PaymentGateway's serializer expects a string order_id. For large order IDs (>2^53), JavaScript-based gateway silently truncates the integer. The shared order_id type module defines it as int but should be a branded string type.",
+    "expected_fix_description": "Create a branded OrderId string type in shared/types/order_id.py, update OrderService response DTO to serialize order_id as string, update PaymentGateway serializer to validate the string format, and add integration tests verifying round-trip for large IDs.",
+    "test_criteria": [
+      "Order IDs larger than Number.MAX_SAFE_INTEGER survive round-trip serialization",
+      "PaymentGateway rejects non-string order_id values with clear error",
+      "Existing integration tests still pass after type change",
+      "OrderService response JSON has order_id as string, not number"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Without governed memory, an agent might fix the type in only one file, leaving the mismatch. Phoenix governance ensures the fix propagates across all files that share the type contract, and prevents regression by recording the cross-file dependency."
+  },
+  {
+    "task_id": "mfbf_002",
+    "description": "Fix config propagation bug where database connection pool settings from base config are overridden to defaults by an intermediate config loader that re-parses YAML as JSON, losing pool.min_size and pool.max_idle_time",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "config/base.yaml",
+      "config/loaders/config_loader.py",
+      "config/loaders/intermediate_adapter.py",
+      "config/validators/pool_config_validator.py",
+      "services/db/connection_pool.py"
+    ],
+    "bug_description": "The intermediate config adapter loads YAML, serializes to JSON (losing non-JSON types like timedelta), then re-parses. This converts pool.max_idle_time from '30s' string to '30s' as literal string (not parsed), and drops pool.min_size because JSON serialization skips nulls. The connection pool then uses hardcoded defaults, causing connection starvation under load.",
+    "expected_fix_description": "Refactor intermediate_adapter to pass parsed config objects directly instead of JSON round-trip. Update config_loader to preserve typed values. Add pool_config_validator that catches missing/invalid pool settings at startup. Add smoke test that verifies actual pool matches config values.",
+    "test_criteria": [
+      "pool.max_idle_time is correctly parsed as 30 seconds timedelta, not literal string",
+      "pool.min_size is preserved even when set to 0 or null in YAML",
+      "Connection pool logs its actual config at startup for verification",
+      "Config validator fails fast on missing pool parameters"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "An ungoverned agent might fix the YAML parsing locally without realizing the intermediate adapter is the root cause, or might 'fix' it by hardcoding values in the pool module. Phoenix governance traces the config propagation chain and ensures the fix addresses the actual data flow."
+  },
+  {
+    "task_id": "mfbf_003",
+    "description": "Fix data serialization inconsistency where UserSerializer in API v2 omits the 'permissions' field that v1 includes, but the frontend permission guard reads from v2 response, causing all users to appear unprivileged",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "api/v1/serializers/user_serializer.py",
+      "api/v2/serializers/user_serializer.py",
+      "api/v2/controllers/user_controller.py",
+      "frontend/guards/permission_guard.ts",
+      "shared/contracts/user_contract.py"
+    ],
+    "bug_description": "V1 UserSerializer includes a 'permissions' array field. V2 UserSerializer was refactored to use a nested 'role.permissions' structure but the 'permissions' top-level field was accidentally dropped. The frontend permission_guard.ts reads response.permissions (v1 format) from v2 API responses, always getting undefined. No runtime error occurs — users silently lose all UI capabilities.",
+    "expected_fix_description": "Add a computed 'permissions' property to v2 UserSerializer that flattens role.permissions for backward compatibility. Update the shared user_contract to document both formats. Add a deprecation notice for the flat format. Add E2E test that verifies permission_guard works with v2 responses.",
+    "test_criteria": [
+      "V2 API response includes top-level 'permissions' array for backward compatibility",
+      "V2 'permissions' matches flattened 'role.permissions'",
+      "Frontend permission_guard correctly reads permissions from v2 response",
+      "Deprecation warning is logged when flat 'permissions' is accessed"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "An ungoverned agent might fix only the serializer or only the frontend, creating a one-sided fix. Phoenix governance recognizes the API contract spans both backend and frontend, ensuring the fix maintains backward compatibility rather than breaking one side."
+  },
+  {
+    "task_id": "mfbf_004",
+    "description": "Fix circular state update bug where React component's useEffect updates Redux store, which triggers a selector that causes re-render, which fires useEffect again — infinite loop that only manifests when user has >50 notifications",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "frontend/components/NotificationPanel.tsx",
+      "frontend/store/selectors/notificationSelectors.ts",
+      "frontend/store/slices/notificationSlice.ts",
+      "frontend/hooks/useNotificationSync.ts"
+    ],
+    "bug_description": "NotificationPanel's useEffect depends on notificationCount from selector. When count > 50, the sync hook paginates, dispatching an action that mutates the store, changing the selector result (due to a sorting re-computation in the selector), causing re-render, re-firing useEffect. The bug is invisible with <=50 notifications because no pagination occurs.",
+    "expected_fix_description": "Memoize the notification selector with correct equality function to prevent re-computation on dispatch. Split the useEffect into sync trigger (runs once) and pagination handler (runs on page change). Use useRef to track sync status. Add a circular dependency detector in dev mode.",
+    "test_criteria": [
+      "NotificationPanel renders without infinite loop for users with 200+ notifications",
+      "Pagination still functions correctly after fix",
+      "Selector returns stable references for unchanged data",
+      "No unnecessary re-renders measured by React DevTools profiler"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "This bug spans React, Redux, and custom hooks — an agent might fix the symptom (add a debounce) without addressing the root cause (selector instability). Phoenix governance tracks the state flow across all involved files and validates the fix doesn't introduce new render issues."
+  },
+  {
+    "task_id": "mfbf_005",
+    "description": "Fix error handling gap where Kafka consumer's deserialization error is caught and logged but the message offset is never committed, causing the consumer to re-process the same poison pill message indefinitely, eventually exhausting the DLQ",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/kafka_consumer/handlers/message_handler.py",
+      "services/kafka_consumer/serializers/avro_deserializer.py",
+      "services/kafka_consumer/error_handlers/dlq_producer.py",
+      "services/kafka_consumer/offset_manager.py",
+      "services/kafka_consumer/config.py"
+    ],
+    "bug_description": "When avro_deserializer raises DeserializationError, message_handler catches it, logs the error, and calls dlq_producer.send(). But if DLQ send fails (e.g., DLQ topic doesn't exist), the exception propagates up and offset_manager.commit() is never reached. On restart, the consumer re-reads the same poison pill, creating an infinite retry loop that fills the DLQ with duplicates when DLQ eventually succeeds.",
+    "expected_fix_description": "Wrap DLQ send in try/except with fallback to commit offset anyway (with a critical alert). Make offset commit happen in a finally block regardless of DLQ success. Add a poison pill tracker that identifies repeated failures on the same offset and skips after N attempts. Add a DLQ health check at consumer startup.",
+    "test_criteria": [
+      "Poison pill messages are skipped after configurable retry count",
+      "Offset is always committed even when DLQ send fails",
+      "DLQ does not receive duplicate copies of the same message",
+      "Critical alert fires when message is skipped without DLQ delivery"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "An ungoverned agent might fix the offset commit but miss the DLQ duplicate problem, or add retry logic that creates different infinite loops. Phoenix governance ensures the error handling is complete across all failure modes, not just the first one observed."
+  },
+  {
+    "task_id": "mfbf_006",
+    "description": "Fix timezone-aware datetime mismatch where EventService stores datetimes in UTC but NotificationService converts to local time using pytz which handles DST transitions incorrectly, causing notifications to be sent 1 hour early/late during DST changes",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/event_service/models/event.py",
+      "services/notification_service/scheduler.py",
+      "services/notification_service/timezone_handler.py",
+      "shared/utils/datetime_helpers.py"
+    ],
+    "bug_description": "EventService stores event.trigger_at as UTC datetime (timezone-aware). NotificationService's timezone_handler converts to user's local time using pytz.localize() which doesn't handle DST transitions — it applies the current offset rather than the offset at the target datetime. This causes notifications to fire at wrong times during DST transition periods (affects ~5% of users seasonally).",
+    "expected_fix_description": "Replace pytz with zoneinfo (Python 3.9+) throughout notification_service. Use aware datetime arithmetic with .astimezone() instead of manual offset application. Update shared datetime_helpers to use zoneinfo. Add tests for DST transition scenarios (spring forward, fall back).",
+    "test_criteria": [
+      "Notifications fire at correct local time during DST spring-forward transition",
+      "Notifications fire at correct local time during DST fall-back transition",
+      "Existing non-DST notifications still fire at correct times",
+      "No pytz imports remain in notification_service codebase"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "DST bugs are subtle and seasonal — an agent might fix the immediate conversion without understanding DST edge cases. Phoenix governance preserves knowledge about timezone handling patterns, preventing regression to pytz or naive datetime usage."
+  },
+  {
+    "task_id": "mfbf_007",
+    "description": "Fix authentication token propagation bug where API gateway strips custom X-Auth-Token header but downstream services expect it, causing 401 errors only on requests that pass through the gateway (direct service calls work fine)",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "gateway/proxy/request_forwarder.py",
+      "gateway/middleware/auth_middleware.py",
+      "gateway/config/allowed_headers.yaml",
+      "services/user_service/auth/token_validator.py"
+    ],
+    "bug_description": "The API gateway's auth_middleware extracts X-Auth-Token, validates it, then the request_forwarder rebuilds headers from allowed_headers.yaml whitelist. X-Auth-Token is not in the whitelist (it was removed for security in a previous change), so it's stripped. Downstream user_service's token_validator then sees no auth token and returns 401. The bug only manifests through the gateway path.",
+    "expected_fix_description": "After auth_middleware validates the token, it should set a normalized internal header (X-Internal-Auth-Token) that IS in the whitelist. Update request_forwarder to inject this internal header from the validated token. Update downstream token_validator to accept both header formats. Add the internal header to allowed_headers.yaml. Document the header flow in gateway README.",
+    "test_criteria": [
+      "Requests through gateway reach downstream services with valid auth context",
+      "Direct service calls with X-Auth-Token still work",
+      "Original X-Auth-Token is never forwarded to external networks (stripped at gateway boundary)",
+      "Auth failures produce 401, not 500"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Security-related fixes are especially dangerous to get wrong — an ungoverned agent might simply re-add X-Auth-Token to the whitelist, recreating the security vulnerability. Phoenix governance ensures the fix maintains the security boundary while fixing the functional bug."
+  },
+  {
+    "task_id": "mfbf_008",
+    "description": "Fix database migration ordering bug where Migration_045 adds a NOT NULL column without default and Migration_046 populates it, but a parallel deployment runs Migration_046 before Migration_045 completes, causing INSERT failures",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "migrations/045_add_user_preferences_column.py",
+      "migrations/046_populate_user_preferences.py",
+      "migrations/runner/migration_runner.py",
+      "migrations/runner/lock_manager.py",
+      "services/user_service/repositories/user_repo.py"
+    ],
+    "bug_description": "Migration 045 adds user.preferences JSONB column as NOT NULL with no default. Migration 046 backfills existing rows. The migration_runner acquires a lock per-migration, not per-migration-set, so two app instances can run 045 and 046 concurrently. If 046's backfill starts before 045's ALTER TABLE commits, new INSERTs fail because the column exists but has no default and isn't yet populated for that row.",
+    "expected_fix_description": "Add a safe default (empty JSONB object '{}') to the column definition in Migration 045. Update migration_runner to acquire an advisory lock for the entire migration set, not per-migration. Make Migration 046 idempotent. Add a migration integration test that simulates concurrent deployment.",
+    "test_criteria": [
+      "New user INSERTs succeed during migration rollout",
+      "Migration 045 adds column with safe default '{}'",
+      "Concurrent migration execution is serialized via advisory lock",
+      "Migration 046 is idempotent — running twice produces same result"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Migration bugs in production are catastrophic. An ungoverned agent might add the default but miss the concurrency issue, or fix the lock but leave the column without a default. Phoenix governance ensures both the schema fix and the deployment safety fix are applied together."
+  },
+  {
+    "task_id": "mfbf_009",
+    "description": "Fix event sourcing projection bug where OrderProjection and InventoryProjection consume the same OrderCreated event but use different event versions, causing inventory to be decremented with stale price data that doesn't match the order total",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "projections/order_projection.py",
+      "projections/inventory_projection.py",
+      "events/order_events.py",
+      "events/event_schema_registry.py",
+      "shared/event_bus.py"
+    ],
+    "bug_description": "OrderCreated event was versioned to v2 (adding discount field) but inventory_projection still deserializes as v1 (ignoring discount). This means inventory projection records the full price, while order projection records the discounted price. Financial reconciliation fails silently because the two projections disagree on the same order's value.",
+    "expected_fix_description": "Update inventory_projection to handle v2 OrderCreated events (apply discount to inventory valuation). Add version compatibility check in event_schema_registry that warns when a projection subscribes to an older event version. Add a reconciliation check that compares order and inventory projections for the same order ID.",
+    "test_criteria": [
+      "Inventory projection correctly applies discount from v2 OrderCreated events",
+      "Event schema registry warns on version mismatch between event and projection",
+      "Reconciliation check detects price mismatch between projections",
+      "Existing v1 events are still processed correctly by both projections"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Event versioning bugs are systemic — fixing one projection without updating the schema registry leaves the system vulnerable to the same class of bug. Phoenix governance captures the event versioning pattern as a reusable rule, preventing future projections from falling behind."
+  },
+  {
+    "task_id": "mfbf_010",
+    "description": "Fix gRPC service contract mismatch where the proto file defines error codes as enum but the Python server returns string error codes, causing the Java client to receive UNIMPLEMENTED status for all business errors",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "protos/order_service.proto",
+      "services/order_service/grpc/server.py",
+      "services/order_service/grpc/error_mapper.py",
+      "clients/java/order_service_client.java"
+    ],
+    "bug_description": "The proto defines ErrorCode enum (INVALID_INPUT=1, NOT_FOUND=2, etc.). The Python server's error_mapper raises grpc.RpcError with string status messages instead of setting the enum in response metadata. The Java client's stub interprets unrecognized status details as UNIMPLEMENTED, making all business errors appear as 'method not found' to the caller.",
+    "expected_fix_description": "Update error_mapper to set the ErrorCode enum value in the gRPC trailing metadata. Update the proto to include error_code in the response message (not just as metadata). Update the Java client to read error_code from both metadata and response. Add cross-language integration tests.",
+    "test_criteria": [
+      "Java client receives correct ErrorCode enum for INVALID_INPUT, NOT_FOUND, etc.",
+      "Python server sets error_code in both response body and trailing metadata",
+      "Backward compatibility maintained for clients that only read metadata",
+      "Cross-language integration test passes between Python server and Java client"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Cross-language API bugs require understanding both sides of the contract. An ungoverned agent might fix only the Python server or only the Java client. Phoenix governance tracks the full gRPC contract and ensures fixes are applied on both sides."
+  },
+  {
+    "task_id": "mfbf_011",
+    "description": "Fix race condition in distributed lock implementation where lock renewal and lock release can execute concurrently, causing a released lock to be renewed by a stale timer, re-locking a resource that another process already acquired",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/locks/distributed_lock.py",
+      "shared/locks/lock_manager.py",
+      "shared/locks/renewal_timer.py",
+      "services/booking_service/concurrent_booking_handler.py"
+    ],
+    "bug_description": "DistributedLock starts a renewal_timer that extends the lock TTL every 10s. When release() is called, it deletes the lock key in Redis but doesn't cancel the renewal timer first. The timer can fire between release() deleting the key and release() canceling the timer, re-creating the lock key. If another process acquired the lock in that window, the stale renewal overwrites it, causing both processes to think they hold the lock.",
+    "expected_fix_description": "Add an atomic release-and-cancel operation: set a 'releasing' flag, cancel the renewal timer, then delete the Redis key. Make renewal_timer check the 'releasing' flag before renewing. Add fencing tokens to the lock value so stale renewals are rejected by Redis Lua script. Add a concurrent lock test.",
+    "test_criteria": [
+      "Lock renewal never fires after release() is called",
+      "Fencing tokens prevent stale renewals from overwriting new lock holders",
+      "No two processes ever simultaneously believe they hold the same lock",
+      "Lock release is atomic with timer cancellation"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Distributed lock bugs are notoriously difficult — naive fixes often introduce new race conditions. Phoenix governance preserves the correct lock protocol pattern and prevents agents from applying superficial fixes (like adding sleep/delay) instead of proper atomic operations."
+  },
+  {
+    "task_id": "mfbf_012",
+    "description": "Fix ORM lazy-loading bug where serializer accesses relationship attributes inside a transaction, triggering N+1 queries that cause 30-second page loads, but only for users with >100 related entities (small accounts work fine)",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/user_service/serializers/user_detail_serializer.py",
+      "services/user_service/repositories/user_repo.py",
+      "services/user_service/controllers/user_controller.py",
+      "shared/db/query_analyzer.py"
+    ],
+    "bug_description": "UserDetailSerializer iterates over user.orders and each order.items, accessing lazy-loaded relationships inside a serialization loop. For users with 100+ orders, this triggers 1 + N + N*M queries. The repo has a joinedload() but only on user.orders, not on order.items. Query analyzer isn't active in production, so the N+1 problem isn't detected until users complain.",
+    "expected_fix_description": "Add joinedload for order.items in the repo query. Add selectinload for user.orders.items to avoid Cartesian product with joinedload. Enable query_analyzer in production with alert threshold. Add a pagination limit that prevents unbounded eager loading. Add performance test with >100 orders.",
+    "test_criteria": [
+      "User detail API responds in <500ms for users with 200+ orders",
+      "No N+1 queries detected by query analyzer for user detail endpoint",
+      "Query count is bounded regardless of number of orders",
+      "Query analyzer alerts fire when query count exceeds threshold"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "N+1 bugs are easy to fix locally but hard to detect systematically. An ungoverned agent might add the eager load but not enable the query analyzer, leaving the system vulnerable to the same pattern elsewhere. Phoenix governance records the N+1 prevention pattern for reuse."
+  },
+  {
+    "task_id": "mfbf_013",
+    "description": "Fix WebSocket message ordering bug where the client sends messages on reconnect that were already processed by the server, causing duplicate state mutations — the server lacks idempotency keys on mutation messages",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "realtime/websocket/server.py",
+      "realtime/websocket/message_handler.py",
+      "realtime/websocket/reconnect_manager.py",
+      "frontend/services/realtime_client.ts",
+      "shared/protocols/ws_protocol.py"
+    ],
+    "bug_description": "On reconnect, the client replays messages from the last acknowledged sequence number. But the server's message_handler processes each message without checking for duplicates (no idempotency key). If the server processed a message but the client didn't receive the ack before disconnect, the replay causes the mutation to execute twice. For state-incrementing operations (like score updates), this causes incorrect totals.",
+    "expected_fix_description": "Add idempotency_key to the WS message protocol. Server's message_handler checks a recent-key cache before processing. Update reconnect_manager to track acknowledged messages. Client includes monotonically increasing message IDs. Add deduplication window configuration.",
+    "test_criteria": [
+      "Replayed messages are deduplicated on server without processing twice",
+      "Idempotency key is included in all mutation messages",
+      "Score updates and other incrementing operations are correct after reconnect",
+      "Deduplication cache has bounded size and TTL"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Idempotency bugs are subtle and require protocol-level fixes spanning client and server. An ungoverned agent might fix only the server dedup without updating the protocol, leaving the system fragile. Phoenix governance ensures the protocol change is applied end-to-end."
+  },
+  {
+    "task_id": "mfbf_014",
+    "description": "Fix feature flag evaluation bug where a percentage rollout flag evaluates differently for the same user across services because each service hashes the user ID with a different salt, causing inconsistent experience",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/feature_flags/evaluator.py",
+      "shared/feature_flags/hash_function.py",
+      "services/api_service/feature_flag_config.py",
+      "services/worker_service/feature_flag_config.py",
+      "shared/feature_flags/flag_repository.py"
+    ],
+    "bug_description": "Feature flag percentage rollout uses hash(user_id + salt) % 100 < percentage. The api_service uses hash_function with salt='default' while worker_service uses salt='worker-v2' (from an old config). Same user, same flag, different evaluation result. This means a user sees the new UI but the worker processes their data with old logic.",
+    "expected_fix_description": "Centralize salt configuration in flag_repository. Remove per-service salt overrides. Add a consistency check that evaluates all flags with both salts and alerts on mismatches. Migrate existing rollout percentages to account for salt change. Add cross-service evaluation test.",
+    "test_criteria": [
+      "Same user gets same feature flag result across all services",
+      "Salt is centralized — no per-service overrides exist",
+      "Consistency check runs on flag update and alerts on mismatches",
+      "Rollout percentages are adjusted for any salt migration to maintain user assignment"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Feature flag inconsistencies create split-brain user experiences. An ungoverned agent might sync the salts but not handle the migration of existing rollout percentages, causing users to suddenly switch experiences. Phoenix governance tracks the full flag lifecycle and prevents partial migrations."
+  },
+  {
+    "task_id": "mfbf_015",
+    "description": "Fix memory leak in event emitter where listeners are added per-request but never removed when the request completes, because the cleanup runs in a finally block that can be preempted by an async cancellation",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/events/emitter.py",
+      "shared/events/listener_registry.py",
+      "services/api_service/middleware/event_middleware.py",
+      "services/api_service/handlers/streaming_handler.py"
+    ],
+    "bug_description": "event_middleware adds per-request listeners to the global emitter for streaming responses. Cleanup is in a finally block that calls listener_registry.remove(). But in Python asyncio, finally blocks can be interrupted by Task.cancel(). When a client disconnects mid-stream, the task is cancelled, the finally block starts but is preempted, and the listener reference remains. Over time, the emitter's listener list grows unboundedly.",
+    "expected_fix_description": "Use weakref.WeakMethod for listener references so GC can collect them. Add a listener TTL that auto-expires stale listeners. Replace finally-block cleanup with a context manager that uses __aexit__ with shield(). Add monitoring for listener count growth. Add a load test that rapidly connects/disconnects.",
+    "test_criteria": [
+      "Listener count remains bounded under connect/disconnect stress",
+      "Cancelled async tasks don't leave orphaned listeners",
+      "Stale listeners are auto-expired after TTL",
+      "Memory usage is stable over 10k request cycle"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Async cleanup bugs are language-specific and subtle. An ungoverned agent might add the weakref fix but not address the asyncio cancellation issue, or vice versa. Phoenix governance captures the Python async cleanup pattern for reuse across the codebase."
+  },
+  {
+    "task_id": "mfbf_016",
+    "description": "Fix log correlation bug where distributed trace IDs are propagated via HTTP headers but lost when the service publishes to Kafka, breaking the trace chain and making cross-service debugging impossible",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/tracing/trace_context.py",
+      "shared/tracing/kafka_interceptor.py",
+      "shared/tracing/http_propagator.py",
+      "services/order_service/kafka/producer.py",
+      "services/notification_service/kafka/consumer.py"
+    ],
+    "bug_description": "HTTP requests carry trace_id in X-Trace-Id header, which http_propagator correctly extracts. But when order_service publishes to Kafka, the kafka_interceptor is not installed on the producer, so trace_id isn't set in Kafka message headers. notification_service's consumer starts a new trace, breaking the chain. The trace_context uses thread-local storage which doesn't propagate across async Kafka callbacks.",
+    "expected_fix_description": "Install kafka_interceptor on all Kafka producers/consumers. Switch trace_context from thread-local to contextvars (async-safe). Add trace_id to Kafka message headers in the interceptor. Add a trace continuity test that verifies trace_id is preserved across HTTP->Kafka->HTTP hops.",
+    "test_criteria": [
+      "Trace ID is preserved from HTTP request through Kafka message to downstream service",
+      "trace_context works correctly in async contexts (contextvars, not thread-local)",
+      "Kafka interceptor is installed on all producers and consumers",
+      "Distributed trace appears as single chain in tracing UI"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Tracing infrastructure bugs affect observability of all services. An ungoverned agent might fix the Kafka interceptor but miss the thread-local vs contextvars issue, leaving async traces broken. Phoenix governance ensures the fix covers both the propagation path and the storage mechanism."
+  },
+  {
+    "task_id": "mfbf_017",
+    "description": "Fix cache invalidation bug where cache key includes entity version but the invalidation message uses the OLD version, so the cache entry with the NEW version is never invalidated, serving stale data indefinitely",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/cache/cache_manager.py",
+      "shared/cache/key_builder.py",
+      "shared/cache/invalidation_handler.py",
+      "services/product_service/event_handlers.py",
+      "services/product_service/repositories/product_repo.py"
+    ],
+    "bug_description": "Product cache keys are built as 'product:{id}:v{version}'. When a product is updated, product_repo increments version and saves. Then event_handlers publishes an invalidation message with the product data — but the version in the message is the NEW version (post-increment), while the cache key that needs invalidation uses the OLD version. The invalidation handler looks up 'product:{id}:v{new_version}' which doesn't exist in cache, so nothing is invalidated.",
+    "expected_fix_description": "Change invalidation to target the old version: either include old_version in the invalidation event, or use a version-independent cache key strategy with version as a tag rather than part of the key. Update key_builder to support both keyed-by-version and keyed-by-id-with-version-tag strategies. Add cache consistency verification.",
+    "test_criteria": [
+      "Updated product data is immediately reflected after cache invalidation",
+      "No stale cache entries persist after product update",
+      "Cache invalidation works correctly regardless of version increment strategy",
+      "Cache consistency check detects and reports stale entries"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Cache invalidation is famously one of the hard problems in CS. An ungoverned agent might fix the version mismatch but not verify the invalidation actually works end-to-end. Phoenix governance requires proving the fix with a consistency check, not just fixing the code."
+  },
+  {
+    "task_id": "mfbf_018",
+    "description": "Fix GraphQL resolver N+1 bug where a batch resolver for User.orders is defined but a field-level resolver on Order.shippingStatus makes individual API calls, defeating the batch optimization and causing 1000+ HTTP calls per query",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "api/graphql/resolvers/user_resolver.py",
+      "api/graphql/resolvers/order_resolver.py",
+      "api/graphql/dataloaders/order_dataloader.py",
+      "services/shipping_service/client.py"
+    ],
+    "bug_description": "User.orders uses a DataLoader for batching. But Order.shippingStatus has a custom field resolver that calls shipping_service.client.get_status(order_id) individually. Since DataLoader only batches the orders fetch, the subsequent shipping status calls are unbatched — one per order. A query for 50 users with 10 orders each makes 500 individual shipping API calls.",
+    "expected_fix_description": "Create a ShippingStatusDataLoader that batches shipping status requests. Update order_resolver to use the DataLoader instead of direct API calls. Ensure the DataLoader is registered in the GraphQL context. Add query complexity analysis that alerts on unbatched resolvers. Add a load test measuring external API calls per GraphQL query.",
+    "test_criteria": [
+      "Shipping status requests are batched via DataLoader",
+      "A query for 50 users with 10 orders each makes <5 shipping API calls (batched)",
+      "No individual shipping API calls per order in batch scenarios",
+      "Query complexity analysis detects unbatched resolvers"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "N+1 in GraphQL is a systemic pattern — fixing one resolver doesn't prevent the same mistake in new resolvers. Phoenix governance captures the DataLoader pattern as a codebase rule, automatically flagging any resolver that makes individual service calls."
+  },
+  {
+    "task_id": "mfbf_019",
+    "description": "Fix concurrency bug in inventory reservation where two simultaneous checkout requests for the same product both read stock=1, both pass the availability check, and both decrement to -1, overselling inventory",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/inventory_service/reservation_handler.py",
+      "services/inventory_service/repositories/inventory_repo.py",
+      "services/checkout_service/checkout_flow.py",
+      "shared/db/transaction_manager.py"
+    ],
+    "bug_description": "checkout_flow calls reservation_handler.reserve() which reads inventory.available_count, checks > 0, then decrements. This read-check-write is not atomic — two concurrent requests both read available_count=1, both pass the check, and both decrement, resulting in available_count=-1. The transaction uses READ COMMITTED isolation which doesn't prevent this. No SELECT FOR UPDATE or optimistic locking is used.",
+    "expected_fix_description": "Use SELECT FOR UPDATE (pessimistic locking) on the inventory row in the reservation query. Alternatively, use an atomic UPDATE with WHERE available_count > 0 and check affected rows. Add an inventory consistency constraint (available_count >= 0) in the database. Add a concurrent checkout integration test. Add a reconciliation job that detects negative inventory.",
+    "test_criteria": [
+      "Concurrent reservations for the same product never result in negative inventory",
+      "Inventory consistency constraint prevents available_count < 0 at DB level",
+      "Second concurrent reservation gets a clear 'out of stock' error instead of overselling",
+      "Reconciliation job detects and alerts on any inventory inconsistencies"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Concurrency bugs in financial/inventory systems can cause real monetary loss. An ungoverned agent might add a lock but choose the wrong isolation level, or add the constraint but not the atomic update. Phoenix governance ensures the fix uses the correct concurrency primitive and has a database-level safety net."
+  },
+  {
+    "task_id": "mfbf_020",
+    "description": "Fix CI/CD pipeline bug where the deploy script checks container health by pinging /health but the new service version moved health to /healthz, causing the pipeline to think deploy failed and trigger rollback of a successful deployment",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "ci/deploy/scripts/health_check.sh",
+      "ci/deploy/config/deploy_config.yaml",
+      "services/api_service/health_controller.py",
+      "infrastructure/kubernetes/deployment.yaml"
+    ],
+    "bug_description": "The deploy script's health_check.sh curls /health endpoint with a 30s timeout. The new API service version (v3) moved the health endpoint to /healthz (Kubernetes convention) and removed /health. The deploy pipeline thinks the container is unhealthy, triggers rollback, but the new version is actually running fine. This creates a deploy-rollback loop.",
+    "expected_fix_description": "Update health_check.sh to try both /health and /healthz. Update deploy_config.yaml to make the health endpoint configurable per-service. Add /health as a redirect to /healthz in health_controller for backward compatibility. Update Kubernetes liveness/readiness probes to /healthz. Add a deploy smoke test.",
+    "test_criteria": [
+      "Deploy pipeline successfully detects healthy containers using /healthz",
+      "Backward-compatible /health endpoint still works (redirects to /healthz)",
+      "Health endpoint is configurable in deploy_config.yaml",
+      "Kubernetes probes use /healthz"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "CI/CD bugs can block all deployments. An ungoverned agent might update the health check script but not the Kubernetes probes, or vice versa. Phoenix governance tracks the full deployment pipeline and ensures all health check references are updated together."
+  },
+  {
+    "task_id": "mfbf_021",
+    "description": "Fix saga orchestration bug where compensation for step 2 runs before step 2 completes, because the saga orchestrator doesn't await the step before checking for failure and triggering compensation",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/saga/orchestrator.py",
+      "shared/saga/step_executor.py",
+      "shared/saga/compensation_runner.py",
+      "services/order_service/sagas/create_order_saga.py"
+    ],
+    "bug_description": "The saga orchestrator fires all steps and collects futures. When step 1 fails, it triggers compensation for steps 2-N. But step 2's future hasn't completed yet — the compensation runs while step 2 is still executing. Step 2's compensation (refund payment) runs before the payment was actually captured, resulting in a refund for a charge that never completed.",
+    "expected_fix_description": "Make saga execution sequential: await each step before starting the next. For compensation, await completion of in-flight steps before running their compensations. Add a saga state machine that tracks step status. Add a saga integration test that verifies compensation ordering. Document the execution model in the saga README.",
+    "test_criteria": [
+      "Compensation for a step never runs before the step completes",
+      "Saga steps execute in defined order with proper awaiting",
+      "Refund is only issued for payments that were actually captured",
+      "Saga state machine correctly tracks step status through execution and compensation"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Saga orchestration bugs can cause financial inconsistencies. An ungoverned agent might add await to the step execution but not to the compensation, or vice versa. Phoenix governance ensures the entire saga lifecycle — execution and compensation — follows correct ordering."
+  },
+  {
+    "task_id": "mfbf_022",
+    "description": "Fix data validation bug where the API accepts nested JSON with arbitrary depth, causing stack overflow in the recursive validator when a malicious payload has 1000+ nesting levels",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/validation/recursive_validator.py",
+      "shared/validation/schema_registry.py",
+      "api/middleware/request_validator.py",
+      "api/middleware/payload_size_limiter.py"
+    ],
+    "bug_description": "The recursive_validator validates JSON schemas by recursing into nested objects. There's no depth limit. A payload like {\"a\":{\"a\":{\"a\":...}}} with 1000 levels causes Python RecursionError (or stack overflow in the JSON parser). The payload_size_limiter checks byte size (which can be small for deeply nested JSON), and request_validator doesn't check depth.",
+    "expected_fix_description": "Add a max_depth parameter to recursive_validator (default 20). Check nesting depth during JSON parsing before validation. Update request_validator to reject payloads exceeding depth limit with 400 error. Add depth limit to payload_size_limiter config. Add a test with deeply nested payload.",
+    "test_criteria": [
+      "Payloads with nesting depth > 20 are rejected with 400 Bad Request",
+      "Legitimate payloads with nesting depth <= 20 are processed normally",
+      "No RecursionError or stack overflow occurs with malicious payloads",
+      "Error message clearly indicates depth limit exceeded"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Security vulnerabilities from unbounded recursion are a class of bugs that an ungoverned agent might fix locally without adding the depth check to the JSON parser itself. Phoenix governance ensures defense-in-depth: both the parser and the validator enforce the limit."
+  },
+  {
+    "task_id": "mfbf_023",
+    "description": "Fix file upload race condition where two concurrent uploads to the same key write to a temp file with the same name, causing one upload to read the other's data and store corrupted content",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/storage_service/upload_handler.py",
+      "services/storage_service/temp_file_manager.py",
+      "services/storage_service/validators/checksum_validator.py",
+      "shared/utils/file_naming.py"
+    ],
+    "bug_description": "upload_handler creates a temp file named /tmp/{upload_id}. Two uploads with the same key (e.g., user avatar) get the same upload_id because file_naming hashes the key. Both write to the same temp path. When the slower upload finishes, its checksum doesn't match because the file contains a mix of both uploads' data. The faster upload's data is also corrupted if the slower one overwrites mid-read.",
+    "expected_fix_description": "Add a unique nonce to temp file names (UUID). Use atomic write (write to temp, then rename) to prevent partial reads. Add file-level locking in temp_file_manager. Verify checksum after atomic rename. Add a concurrent upload test for the same key.",
+    "test_criteria": [
+      "Concurrent uploads to the same key never corrupt each other's data",
+      "Each upload gets a unique temp file path",
+      "Atomic write ensures no partial reads during upload",
+      "Checksum validation passes for all completed uploads"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "File corruption bugs are data-loss events. An ungoverned agent might add unique temp names but not atomic writes, leaving partial-read corruption possible. Phoenix governance ensures the complete write protocol (unique temp + atomic rename + checksum) is applied."
+  },
+  {
+    "task_id": "mfbf_024",
+    "description": "Fix rate limiter bug where the sliding window counter is implemented as two fixed windows, but the boundary calculation uses integer division that rounds down, causing the limiter to allow 2x the intended rate at certain times",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/rate_limiter/sliding_window.py",
+      "shared/rate_limiter/redis_backend.py",
+      "api/middleware/rate_limit_middleware.py",
+      "config/rate_limits.yaml"
+    ],
+    "bug_description": "Sliding window rate limiter approximates by combining current and previous fixed windows: count = prev_count * (1 - elapsed/window_size). But elapsed is calculated using integer division (elapsed_ms // 1000), which rounds down. At 500ms into a window, elapsed should be 0.5 but integer division gives 0, so prev_count is weighted at 100% instead of 50%. This effectively doubles the allowed rate at window boundaries.",
+    "expected_fix_description": "Use floating-point division for elapsed calculation. Add a Lua script in Redis that does the sliding window calculation atomically (to prevent TOCTOU between read and write). Add rate limit verification tests that confirm the actual allowed rate never exceeds the configured rate by more than 1 (boundary tolerance). Document the algorithm.",
+    "test_criteria": [
+      "Actual allowed rate never exceeds configured rate by more than 1 request (boundary tolerance)",
+      "Elapsed calculation uses floating-point precision",
+      "Sliding window calculation is atomic (single Redis Lua script)",
+      "Rate limit is enforced correctly at window boundaries"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Rate limiter bugs can expose APIs to abuse. An ungoverned agent might fix the division but not the TOCTOU race in Redis, leaving a different vulnerability. Phoenix governance ensures both the algorithmic fix and the atomicity fix are applied together."
+  },
+  {
+    "task_id": "mfbf_025",
+    "description": "Fix tenant isolation bug where a multi-tenant SaaS application's query builder omits the tenant_id filter when the query includes a JOIN, causing cross-tenant data leakage in list endpoints",
+    "category": "multi_file_bug_fix",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/db/tenant_query_builder.py",
+      "shared/db/tenant_context.py",
+      "services/project_service/repositories/project_repo.py",
+      "services/project_service/controllers/project_controller.py",
+      "api/middleware/tenant_middleware.py"
+    ],
+    "bug_description": "tenant_query_builder automatically adds WHERE tenant_id = :current_tenant to all queries. But when a JOIN is present (e.g., project JOIN user ON project.owner_id = user.id), the builder adds tenant_id to the FROM table but not the JOINed table. If the JOINed table also has tenant-scoped data (user belongs to a different tenant), the query returns cross-tenant records. The tenant_middleware sets tenant_context but doesn't validate that responses match the current tenant.",
+    "expected_fix_description": "Update tenant_query_builder to add tenant_id filter to ALL tables in the query (FROM and JOINs). Add a response validator in tenant_middleware that checks all returned records belong to the current tenant. Add row-level security policies in the database as a defense-in-depth measure. Add a multi-tenant isolation test with cross-tenant queries.",
+    "test_criteria": [
+      "No cross-tenant data is returned from any query, including JOINs",
+      "Response validator rejects any records with wrong tenant_id",
+      "Database row-level security policies prevent cross-tenant access at DB level",
+      "Multi-tenant isolation test passes with various JOIN scenarios"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Multi-tenant data leakage is a critical security vulnerability. An ungoverned agent might fix the query builder but not add response validation or RLS, leaving the system one bug away from a data breach. Phoenix governance mandates defense-in-depth for security-critical fixes."
+  }
+]

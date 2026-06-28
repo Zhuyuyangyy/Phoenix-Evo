@@ -1,0 +1,441 @@
+[
+  {
+    "task_id": "rnr_001",
+    "description": "The payment processing module has the same rounding bug that was fixed in the tax calculation module 3 months ago. Navigate the repo, find the previous fix, and apply the same pattern to the payment module.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/payment_service/calculators/rounding.py",
+      "services/tax_service/calculators/rounding.py",
+      "shared/utils/decimal_helpers.py"
+    ],
+    "bug_description": "Payment service uses float arithmetic for currency calculations, causing rounding errors (e.g., 0.1 + 0.2 != 0.3). Tax service had the identical bug and was fixed by switching to Decimal with quantize(). The fix involved a shared utility, but payment service wasn't updated at the time.",
+    "expected_fix_description": "Find the tax service fix in git history (commit that introduced decimal_helpers.py), understand the pattern, and apply the same Decimal-based calculation approach to payment_service/rounding.py, importing from the existing shared utility.",
+    "test_criteria": [
+      "Payment calculations use Decimal, not float",
+      "Rounding follows the same mode (ROUND_HALF_UP) as tax service",
+      "0.1 + 0.2 = 0.3 exactly in payment calculations",
+      "Git history of the tax fix is referenced in the payment fix commit"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Without governed memory, the agent would have to rediscover the rounding pattern from scratch. Phoenix governance remembers the tax service fix and proactively identifies the same pattern in the payment module, applying proven solutions instead of inventing new ones."
+  },
+  {
+    "task_id": "rnr_002",
+    "description": "A regression appeared: user avatars stopped loading after last week's deploy. Trace the git history to find which commit broke it and apply the inverse fix, without breaking the feature that commit introduced.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "frontend/components/Avatar.tsx",
+      "frontend/hooks/useImageUrl.ts",
+      "services/cdn_service/url_signer.py",
+      "config/cdn.yaml"
+    ],
+    "bug_description": "A commit changed CDN URL signing from query-param-based (?sig=xxx) to header-based (X-Cdn-Signature), but the frontend useImageUrl hook still generates URLs with query-param signatures, and the CDN now rejects query-param signatures. The commit also introduced TTL-based signature rotation, which should be kept.",
+    "expected_fix_description": "Find the breaking commit via git bisect or log analysis. Understand that the signing mechanism changed but the frontend wasn't updated. Update useImageUrl to generate header-based signed URLs. Keep the TTL rotation feature. Update CDN config to accept both during migration.",
+    "test_criteria": [
+      "Avatars load correctly after fix",
+      "TTL-based signature rotation still works",
+      "Frontend generates header-compatible signed URLs",
+      "Migration period allows both signing methods"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Regression tracing requires understanding git history and the intent behind changes. Phoenix governance stores the context of the CDN signing change, enabling the agent to understand that the signing change was intentional but the frontend update was accidentally omitted."
+  },
+  {
+    "task_id": "rnr_003",
+    "description": "The new reporting service needs pagination. The user service implemented a robust cursor-based pagination 6 months ago. Find that implementation and adapt it for the reporting service's different query patterns.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/reporting_service/repositories/report_repo.py",
+      "services/user_service/repositories/pagination.py",
+      "shared/db/cursor_encoder.py",
+      "api/v2/controllers/report_controller.py"
+    ],
+    "bug_description": "Reporting service currently uses offset-based pagination which is slow for large datasets and inconsistent with concurrent modifications. User service has a well-tested cursor-based implementation, but it's tailored for user queries (sorted by created_at). Reporting needs pagination sorted by multiple columns (date, category, severity).",
+    "expected_fix_description": "Study user_service's cursor pagination implementation. Adapt the cursor encoder to support composite sort keys (date + category). Update report_repo to use cursor-based queries. Ensure the cursor encoder handles multi-column sort correctly. Add pagination tests for reporting-specific sort orders.",
+    "test_criteria": [
+      "Reporting API uses cursor-based pagination, not offset-based",
+      "Pagination works correctly with composite sort keys",
+      "Existing cursor encoder is reused and extended, not rewritten",
+      "Pagination is consistent even with concurrent report creation"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Pattern reuse across services is a key governed memory use case. Phoenix governance identifies the cursor pagination pattern from user_service and guides adaptation rather than reimplementing, while flagging the differences (composite sort) that require new logic."
+  },
+  {
+    "task_id": "rnr_004",
+    "description": "The inventory service uses deprecated Kafka consumer API (v1) that will be removed in next Kafka upgrade. Find how the order service migrated to v2 consumer API last quarter and apply the same migration pattern.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/inventory_service/kafka/consumer.py",
+      "services/order_service/kafka/consumer.py",
+      "shared/kafka/consumer_factory.py",
+      "shared/kafka/v2_deserializer.py"
+    ],
+    "bug_description": "Inventory service still uses KafkaConsumer v1 API which uses poll() with manual offset management. Order service migrated to v2 which uses consume() with automatic offset management and built-in retry. The v1 API will be removed in Kafka 4.0, breaking inventory service.",
+    "expected_fix_description": "Review order_service's v2 migration (git log). Update inventory service to use consumer_factory's v2 consumer. Adapt the message handling to use the new consume() API with automatic offset commit. Update error handling to use v2's built-in retry mechanism. Remove manual offset management code.",
+    "test_criteria": [
+      "Inventory service uses Kafka v2 consumer API",
+      "Manual offset management code is removed",
+      "Built-in retry mechanism from v2 is configured",
+      "Consumer behavior is unchanged from external perspective"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "API deprecation migrations require knowledge of both old and new patterns. Phoenix governance remembers the order_service migration and its gotchas, enabling a smooth migration for inventory service without rediscovering the same pitfalls."
+  },
+  {
+    "task_id": "rnr_005",
+    "description": "The analytics pipeline has a subtle bug where events are counted twice when a retry occurs. The notification service had the exact same deduplication issue last year. Find that fix and apply the idempotency pattern to analytics.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/analytics_pipeline/processors/event_counter.py",
+      "services/notification_service/deduplication.py",
+      "shared/utils/idempotency_store.py",
+      "services/analytics_pipeline/config.yaml"
+    ],
+    "bug_description": "When the analytics pipeline retries a failed event batch, event_counter increments counts for events that were already partially processed. Notification service solved this with an idempotency_store that tracks processed event IDs with TTL. The analytics pipeline has no deduplication.",
+    "expected_fix_description": "Find the notification service's deduplication implementation. Instantiate idempotency_store for analytics event processing. Add event_id checking before incrementing counters. Configure TTL based on analytics retry window. Add a test that verifies counts are correct after retry.",
+    "test_criteria": [
+      "Event counts are correct after retry scenarios",
+      "Idempotency store is used to track processed event IDs",
+      "TTL is configured appropriately for analytics retry window",
+      "No duplicate increments occur in event_counter"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Idempotency is a pattern that should be reused, not reinvented. Phoenix governance maps the deduplication pattern from notification_service to analytics_pipeline, ensuring the proven solution is applied rather than an ad-hoc fix."
+  },
+  {
+    "task_id": "rnr_006",
+    "description": "The new microservice needs structured error responses. The API gateway established a standard error format 2 years ago that all existing services follow. Find the error format specification and implement it in the new service.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/new_service/error_handler.py",
+      "gateway/error_format.py",
+      "shared/contracts/error_contract.py",
+      "docs/api/error_format_spec.md"
+    ],
+    "bug_description": "New service returns errors in a custom format ({message, code}) instead of the established format ({error: {type, code, message, details, trace_id, timestamp}}). This breaks the gateway's error aggregation and the frontend's error display components.",
+    "expected_fix_description": "Find the error contract definition (likely in shared/contracts/ or gateway code). Implement the standard error format in new_service's error_handler. Include all required fields (type, code, message, details, trace_id, timestamp). Verify gateway can aggregate errors from the new service.",
+    "test_criteria": [
+      "New service errors match the established contract format",
+      "Gateway correctly aggregates errors from the new service",
+      "Frontend error display works for errors from the new service",
+      "All required error fields are populated (type, code, message, details, trace_id, timestamp)"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "API contracts should be discovered from existing patterns, not invented. Phoenix governance stores the error contract as a codebase rule, automatically flagging any service that deviates from the standard format."
+  },
+  {
+    "task_id": "rnr_007",
+    "description": "Database connection leaks are causing pool exhaustion in the scheduler service. The worker service had the same issue and fixed it by implementing a context manager pattern. Find that pattern and apply it to the scheduler.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/scheduler_service/db/session_manager.py",
+      "services/worker_service/db/session_context.py",
+      "shared/db/session_factory.py",
+      "services/scheduler_service/jobs/cleanup_job.py"
+    ],
+    "bug_description": "Scheduler service creates DB sessions with session_factory.create() but doesn't always close them — especially when jobs throw unexpected exceptions. Worker service fixed this with a @with_session decorator that guarantees session.close() in a finally block.",
+    "expected_fix_description": "Find worker_service's @with_session decorator or session_context context manager. Adapt it for scheduler service's job execution pattern. Apply it to all scheduler jobs. Verify sessions are closed even when jobs throw exceptions. Add a connection pool monitoring metric.",
+    "test_criteria": [
+      "DB sessions are always closed after job execution, even on exceptions",
+      "Context manager or decorator pattern from worker service is reused",
+      "Connection pool metrics show stable session count",
+      "No connection leaks detected over 1000 job executions"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Resource leak patterns should be identified from codebase history and applied proactively. Phoenix governance remembers the worker_service fix and can identify the same leak pattern in any new service."
+  },
+  {
+    "task_id": "rnr_008",
+    "description": "The search service needs to implement faceted filtering. The e-commerce service implemented faceted search 8 months ago with a complex aggregation pipeline. Navigate that implementation and extract a reusable module.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/search_service/filters/facet_builder.py",
+      "services/ecommerce_service/search/facet_aggregation.py",
+      "shared/search/facet_types.py",
+      "services/search_service/controllers/search_controller.py"
+    ],
+    "bug_description": "Search service currently returns flat result lists. Product team wants faceted filtering (filter by category, price range, brand with counts). E-commerce service has this, but it's tightly coupled to product-specific Elasticsearch mappings and can't be used directly.",
+    "expected_fix_description": "Study e-commerce facet implementation. Extract the facet building logic into a shared module with configurable field mappings. Adapt for search_service's document structure. Handle the differences in aggregation syntax between e-commerce's product fields and search's generic fields. Add facet caching.",
+    "test_criteria": [
+      "Search results include facet counts for configured fields",
+      "Facet logic is extracted into a shared, reusable module",
+      "Facet configuration is data-driven (not hardcoded to specific fields)",
+      "Performance is acceptable (<50ms overhead for facet calculation)"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Extracting reusable modules from service-specific code requires understanding both the source and target contexts. Phoenix governance guides the extraction to preserve the working algorithm while making it configurable for different document types."
+  },
+  {
+    "task_id": "rnr_009",
+    "description": "The auth service's JWT validation is vulnerable to algorithm confusion attack (accepting 'none' algorithm). The API gateway had the same vulnerability and fixed it by whitelisting allowed algorithms. Find that fix and apply the same defense.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/auth_service/jwt/validator.py",
+      "services/auth_service/jwt/config.py",
+      "gateway/middleware/jwt_validator.py",
+      "shared/security/jwt_defaults.py"
+    ],
+    "bug_description": "Auth service's JWT validator uses jwt.decode(token, algorithms=[token.header.alg]) which allows the token to specify its own algorithm, including 'none'. Gateway had the same bug and fixed it by hardcoding allowed algorithms to ['RS256', 'ES256'] and rejecting 'none' and 'HS256'.",
+    "expected_fix_description": "Find gateway's algorithm whitelist fix. Apply the same pattern: hardcode allowed algorithms in auth_service config. Move allowed algorithms to shared/security/jwt_defaults.py for single source of truth. Add a test that verifies 'none' algorithm tokens are rejected. Add a test for algorithm confusion attack.",
+    "test_criteria": [
+      "JWT tokens with 'none' algorithm are rejected",
+      "JWT tokens with HS256 algorithm (when RS256 expected) are rejected",
+      "Only whitelisted algorithms (RS256, ES256) are accepted",
+      "Allowed algorithms are centralized in shared security defaults"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Security vulnerabilities must be identified from historical fixes and applied across all affected services. Phoenix governance maps the JWT algorithm fix from gateway to auth_service and ensures the same vulnerability class is eliminated everywhere."
+  },
+  {
+    "task_id": "rnr_010",
+    "description": "The batch processing service needs to implement retry with exponential backoff. The email service has a sophisticated retry implementation with jitter and circuit breaker. Find and adapt that implementation.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/batch_service/processors/retry_handler.py",
+      "services/email_service/retry/backoff_handler.py",
+      "shared/retry/exponential_backoff.py",
+      "shared/retry/circuit_breaker.py"
+    ],
+    "bug_description": "Batch service retries failed jobs with a fixed 5-second delay, causing thundering herd when many jobs fail simultaneously (e.g., during downstream outage). Email service has exponential backoff with jitter (prevents synchronized retries) and a circuit breaker (prevents retrying when downstream is down).",
+    "expected_fix_description": "Study email_service's retry implementation including jitter formula and circuit breaker thresholds. Adapt for batch service's use case (potentially different base delay and max retries). Configure circuit breaker for batch-specific downstream dependencies. Add jitter to prevent synchronized retries across batch jobs.",
+    "test_criteria": [
+      "Batch service uses exponential backoff, not fixed delay",
+      "Jitter is applied to prevent thundering herd",
+      "Circuit breaker prevents retries when downstream is unavailable",
+      "Retry behavior is configurable per job type"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Retry patterns are complex to get right — jitter, backoff, and circuit breaking must work together. Phoenix governance preserves the correct retry composition from email_service and guides its adaptation rather than letting the agent invent an untested retry strategy."
+  },
+  {
+    "task_id": "rnr_011",
+    "description": "A recent commit changed the database schema but the ORM models weren't updated, causing runtime errors. Find the migration file, understand the schema change, and update the ORM models to match.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "migrations/067_add_subscription_tier.py",
+      "services/user_service/models/user.py",
+      "services/billing_service/models/subscription.py",
+      "shared/db/model_registry.py"
+    ],
+    "bug_description": "Migration 067 added a 'subscription_tier' enum column to the users table and changed the 'plan_id' foreign key to nullable. But user.py model still references plan_id as non-nullable and doesn't include subscription_tier. Billing service's subscription model also needs updating to reflect the new tier relationship.",
+    "expected_fix_description": "Read migration 067 to understand the schema change. Update user.py model: add subscription_tier column, make plan_id nullable. Update subscription.py model to reflect the new relationship. Update model_registry. Add a verification script that compares ORM models to actual DB schema.",
+    "test_criteria": [
+      "User model includes subscription_tier column",
+      "User model has plan_id as nullable",
+      "Subscription model reflects new tier relationship",
+      "Schema verification script confirms ORM matches database"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Schema-model drift is a common problem that requires cross-referencing migrations with ORM code. Phoenix governance tracks the relationship between migrations and models, alerting when they diverge."
+  },
+  {
+    "task_id": "rnr_012",
+    "description": "The monitoring service needs health check endpoints for all dependencies. The order service has a comprehensive health check implementation that checks DB, Redis, Kafka, and downstream services. Find and adapt that pattern.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/monitoring_service/health/checker.py",
+      "services/order_service/health/health_check.py",
+      "shared/health/check_types.py",
+      "services/monitoring_service/config/dependencies.yaml"
+    ],
+    "bug_description": "Monitoring service has a basic /health that only checks if the process is running. It doesn't check connectivity to its dependencies (timeseries DB, alert manager, metric collectors). Order service has a structured health check that reports status per-dependency with response times and error states.",
+    "expected_fix_description": "Study order_service's health check implementation. Create a health checker for monitoring service that checks all dependencies listed in dependencies.yaml. Use shared check_types for consistent status reporting. Include response time measurement and degraded-state reporting. Add a /health/detail endpoint for debugging.",
+    "test_criteria": [
+      "Health check reports status per-dependency (not just process alive)",
+      "Dependencies are configured via YAML, not hardcoded",
+      "Health check includes response times and error states",
+      "Degraded state (partial failure) is reported correctly"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Health check patterns should be consistent across services. Phoenix governance propagates the structured health check pattern from order_service to new services, ensuring operational consistency."
+  },
+  {
+    "task_id": "rnr_013",
+    "description": "The logging configuration uses deprecated Python logging patterns. The platform team established a structured logging standard (JSON format with trace IDs) that's implemented in the core service. Find that configuration and apply it to the legacy services.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/legacy_service/logging_config.py",
+      "services/core_service/logging/structured_logger.py",
+      "shared/logging/json_formatter.py",
+      "shared/logging/trace_injector.py"
+    ],
+    "bug_description": "Legacy service uses basic Python logging with text format and no trace IDs. Core service has structured JSON logging with automatic trace_id injection, request context, and log level aggregation. Platform team mandates structured logging for all services but legacy service hasn't been migrated.",
+    "expected_fix_description": "Find core_service's structured logging setup. Replace legacy_service's logging_config.py with the shared structured logger. Configure JSON formatter and trace injector. Update any log calls that use string formatting to use structured fields. Verify log output matches platform standard.",
+    "test_criteria": [
+      "Legacy service outputs JSON-structured logs",
+      "Trace IDs are automatically included in all log entries",
+      "Log format matches platform standard",
+      "String-formatted log messages are converted to structured fields"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Infrastructure standards should be discovered from reference implementations and applied consistently. Phoenix governance maps the structured logging pattern from core_service and ensures legacy services are migrated correctly."
+  },
+  {
+    "task_id": "rnr_014",
+    "description": "The webhook service needs request signature verification. The payment service implemented HMAC-SHA256 signature verification with replay attack protection. Find that implementation and adapt it for webhook signature verification.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/webhook_service/security/signature_verifier.py",
+      "services/payment_service/security/hmac_verifier.py",
+      "shared/security/replay_guard.py",
+      "services/webhook_service/config/webhook_sources.yaml"
+    ],
+    "bug_description": "Webhook service accepts incoming webhooks without signature verification, allowing spoofed webhook deliveries. Payment service has HMAC-SHA256 verification with timestamp-based replay attack protection (rejects requests with timestamps >5 minutes old). Webhook service needs the same but for multiple webhook sources with different signing keys.",
+    "expected_fix_description": "Study payment_service's HMAC verifier. Create a multi-source signature verifier that loads keys from webhook_sources.yaml. Adapt the replay guard for webhook timestamps (which vary by source). Add signature algorithm negotiation (some sources use SHA256, others SHA512). Add per-source rate limiting.",
+    "test_criteria": [
+      "Webhook requests are verified against source-specific HMAC signatures",
+      "Replay attacks are prevented via timestamp validation",
+      "Multiple webhook sources with different keys are supported",
+      "Invalid signatures result in 401, not 500"
+    ],
+    "risk_level": "critical",
+    "governance_relevance": "Security patterns like HMAC verification must be reused from proven implementations, not reimplemented. Phoenix governance preserves the payment_service's security pattern and guides its adaptation to the multi-source webhook context."
+  },
+  {
+    "task_id": "rnr_015",
+    "description": "The data export service needs to stream large CSV files. The report service implemented chunked file streaming with backpressure handling. Find that implementation and apply the streaming pattern to data export.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/export_service/handlers/csv_streamer.py",
+      "services/report_service/handlers/chunked_streamer.py",
+      "shared/io/backpressure_handler.py",
+      "services/export_service/config.yaml"
+    ],
+    "bug_description": "Export service loads entire result sets into memory before writing CSV, causing OOM for large exports (>1M rows). Report service solved this with chunked streaming that reads/writes in configurable batch sizes with backpressure (pauses DB query when client can't consume fast enough).",
+    "expected_fix_description": "Study report_service's chunked streaming implementation. Adapt for CSV format (row-by-row writing instead of JSON). Configure chunk size for export use case. Implement backpressure using the shared handler. Add memory monitoring. Add a test that exports >1M rows without OOM.",
+    "test_criteria": [
+      "Exports of >1M rows complete without OOM",
+      "Memory usage is bounded regardless of export size",
+      "Backpressure prevents buffer overflow when client is slow",
+      "Chunk size is configurable"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Streaming patterns are performance-critical and easy to get wrong. Phoenix governance preserves the proven backpressure implementation from report_service and ensures it's adapted correctly for the different data format (CSV vs JSON)."
+  },
+  {
+    "task_id": "rnr_016",
+    "description": "The config service uses environment variables with inconsistent naming (SNAKE_CASE vs kebab-case vs camelCase). The core service established a naming convention for env vars. Find the convention and standardize config service.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/config_service/settings.py",
+      "services/core_service/config/env_settings.py",
+      "shared/config/naming_convention.py",
+      "docs/standards/env_vars.md"
+    ],
+    "bug_description": "Config service reads env vars with inconsistent naming: DATABASE_URL (correct), redis-host (wrong), kafkaBrokers (wrong). Core service follows a documented convention: all UPPER_SNAKE_CASE, prefixed with service name (CORE_DB_URL, CORE_REDIS_HOST). Config service doesn't follow this.",
+    "expected_fix_description": "Find the env var naming convention in docs/standards/ or core_service. Add a naming validator that checks env var names at startup. Rename all config_service env vars to follow convention (CONFIG_DB_URL, CONFIG_REDIS_HOST, etc.). Add backward compatibility for old names with deprecation warnings. Update deployment configs.",
+    "test_criteria": [
+      "All config service env vars follow UPPER_SNAKE_CASE convention",
+      "Env vars are prefixed with CONFIG_",
+      "Old env var names work with deprecation warnings",
+      "Naming validator runs at startup and rejects non-conforming names"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Naming conventions are codebase rules that should be enforced, not just documented. Phoenix governance stores the env var convention and can automatically flag violations in any service."
+  },
+  {
+    "task_id": "rnr_017",
+    "description": "The queue processor needs dead letter queue handling. The event processor has a sophisticated DLQ implementation with retry tracking, alerting, and poison message detection. Find and reuse that pattern.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/queue_processor/handlers/error_handler.py",
+      "services/event_processor/dlq/dead_letter_handler.py",
+      "shared/messaging/dlq_config.py",
+      "services/queue_processor/config.yaml"
+    ],
+    "bug_description": "Queue processor currently logs and drops failed messages. Event processor has a proper DLQ: failed messages are sent to a dead letter topic with failure metadata, retry count, and original timestamp. After N retries, messages are flagged as poison and alerts are sent. Queue processor needs the same.",
+    "expected_fix_description": "Study event_processor's DLQ implementation. Create a DLQ handler for queue_processor using the same pattern. Configure retry thresholds and alerting. Add poison message detection. Ensure DLQ messages include sufficient metadata for debugging. Add a DLQ consumer for manual replay.",
+    "test_criteria": [
+      "Failed messages are sent to DLQ with failure metadata",
+      "Poison messages are detected after N retries and alerted",
+      "DLQ messages include original timestamp, retry count, and error details",
+      "Manual replay from DLQ is supported"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Error handling patterns like DLQ should be consistent across all message processors. Phoenix governance ensures the proven DLQ pattern from event_processor is reused, not reimplemented with different semantics."
+  },
+  {
+    "task_id": "rnr_018",
+    "description": "The audit service needs to track entity changes. The user service implemented change tracking with before/after snapshots and actor attribution. Find that implementation and generalize it for the audit service.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/audit_service/trackers/change_tracker.py",
+      "services/user_service/audit/change_logger.py",
+      "shared/audit/snapshot_builder.py",
+      "shared/audit/actor_resolver.py"
+    ],
+    "bug_description": "Audit service needs to track changes to any entity (not just users). User service has change logging that captures before/after snapshots and attributes changes to the acting user. But it's hardcoded for user entities. Audit service needs to track changes across all entity types with a unified format.",
+    "expected_fix_description": "Study user_service's change_logger. Extract the snapshot building logic into a shared module that works for any entity type. Generalize actor_resolver to handle system-level actors (not just users). Create a change_tracker for audit_service that uses the shared components. Add entity-type-specific field filtering.",
+    "test_criteria": [
+      "Change tracking works for any entity type, not just users",
+      "Before/after snapshots are captured for all tracked fields",
+      "Changes are attributed to the correct actor (user or system)",
+      "Field filtering prevents tracking sensitive fields (passwords, tokens)"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Audit infrastructure should be generalized from service-specific implementations. Phoenix governance identifies the user_service change tracking as a candidate for generalization and guides the extraction into shared components."
+  },
+  {
+    "task_id": "rnr_019",
+    "description": "A performance regression was introduced in the product listing endpoint 2 weeks ago. Use git history to bisect the regression to a specific commit, understand the change, and apply a targeted fix without reverting the entire commit.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/product_service/repositories/product_repo.py",
+      "services/product_service/controllers/product_controller.py",
+      "services/product_service/indexing/search_index.py",
+      "benchmark/product_listing_perf.py"
+    ],
+    "bug_description": "Product listing P95 latency went from 50ms to 800ms two weeks ago. The likely commit changed search_index to use a new ranking algorithm. But the commit also includes a legitimate relevance improvement that should be kept. The regression is specifically from the ranking algorithm doing a full-table scan for score normalization.",
+    "expected_fix_description": "Use git bisect with the performance benchmark to identify the exact commit. Analyze the commit to separate the ranking algorithm from the relevance improvement. Fix the ranking algorithm to use pre-computed normalization factors instead of full-table scan. Keep the relevance improvement. Add a performance regression test.",
+    "test_criteria": [
+      "Product listing P95 latency returns to <100ms",
+      "Relevance improvement from the original commit is preserved",
+      "Ranking uses pre-computed normalization, not full-table scan",
+      "Performance regression test is added to CI"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Performance regression analysis requires understanding both the problem and the value of the change that caused it. Phoenix governance stores performance baselines and can identify regressions automatically, then guide surgical fixes that preserve improvements."
+  },
+  {
+    "task_id": "rnr_020",
+    "description": "The new mobile API needs response compression. The web API has gzip compression with content-type-aware settings and edge cases for already-compressed formats. Find that configuration and apply it to the mobile API gateway.",
+    "category": "repo_navigation_reuse",
+    "difficulty": "hard",
+    "files_involved": [
+      "gateways/mobile_api/compression_middleware.py",
+      "gateways/web_api/middleware/compression.py",
+      "shared/compression/config.py",
+      "gateways/mobile_api/config.yaml"
+    ],
+    "bug_description": "Mobile API sends uncompressed responses, causing high bandwidth usage on mobile networks. Web API has compression middleware that compresses JSON/text but skips already-compressed formats (images, videos). It also handles edge cases like SSE streams and small responses. Mobile API needs the same with mobile-specific tuning (lower compression level for battery savings).",
+    "expected_fix_description": "Study web_api's compression middleware. Adapt for mobile API with mobile-specific settings: lower compression level (1 instead of 6) for battery savings, minimum size threshold for compression (skip <1KB responses), and content-type filtering. Share the content-type allowlist. Add compression ratio monitoring.",
+    "test_criteria": [
+      "Mobile API compresses JSON/text responses",
+      "Already-compressed formats (images, videos) are not double-compressed",
+      "Compression level is appropriate for mobile (lower than web)",
+      "Small responses are not compressed (not worth the CPU cost)"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Infrastructure patterns like compression should be adapted from proven implementations with context-specific tuning. Phoenix governance preserves the web_api's compression logic and guides the mobile-specific adjustments."
+  }
+]

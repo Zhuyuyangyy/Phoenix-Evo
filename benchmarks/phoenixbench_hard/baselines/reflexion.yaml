@@ -1,0 +1,42 @@
+name: reflexion
+description: Reflexion baseline with self-reflection loop for failure-driven retries and self-critique, no persistent memory across sessions and no safety governance
+version: "1.0"
+
+agent:
+  type: openai_compatible
+  model: deepseek-chat
+  temperature: 0.0
+  max_tokens: 4096
+
+memory:
+  type: none
+  persistent: false
+  cross_session: false
+
+reflection:
+  enabled: true
+  max_reflections: 3
+  strategy: self_critique
+
+safety:
+  enabled: false
+  context_injection: false
+  tool_policy: permissive
+  sandbox: none
+
+governance:
+  immune_guard: false
+  replay_verification: false
+  skill_curator: false
+  quarantine: false
+  drift_detection: false
+
+evaluation:
+  metrics:
+    - task_success_rate
+    - skill_reuse_precision
+    - unsafe_activation_rate
+    - replay_caught_regression_rate
+    - drift_detection_delay
+    - cost_per_success
+    - latency_overhead

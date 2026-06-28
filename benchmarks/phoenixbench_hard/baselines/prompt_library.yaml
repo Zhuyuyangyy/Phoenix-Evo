@@ -1,0 +1,42 @@
+name: prompt_library
+description: Prompt library baseline with fixed prompt templates for common tasks, no learning from experience, no dynamic skill retrieval, and no safety governance
+version: "1.0"
+
+agent:
+  type: openai_compatible
+  model: deepseek-chat
+  temperature: 0.0
+  max_tokens: 4096
+
+memory:
+  type: none
+  learning: false
+  dynamic_retrieval: false
+
+prompt_library:
+  enabled: true
+  templates: static
+  adaptation: false
+
+safety:
+  enabled: false
+  context_injection: false
+  tool_policy: permissive
+  sandbox: none
+
+governance:
+  immune_guard: false
+  replay_verification: false
+  skill_curator: false
+  quarantine: false
+  drift_detection: false
+
+evaluation:
+  metrics:
+    - task_success_rate
+    - skill_reuse_precision
+    - unsafe_activation_rate
+    - replay_caught_regression_rate
+    - drift_detection_delay
+    - cost_per_success
+    - latency_overhead

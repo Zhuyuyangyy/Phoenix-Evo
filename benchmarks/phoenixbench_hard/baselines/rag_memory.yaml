@@ -1,0 +1,42 @@
+name: rag_memory
+description: RAG-based memory baseline using vector similarity search for skill retrieval with no governance, safety gates, immune guard, or replay verification
+version: "1.0"
+
+agent:
+  type: openai_compatible
+  model: deepseek-chat
+  temperature: 0.0
+  max_tokens: 4096
+
+memory:
+  type: rag
+  retrieval:
+    method: embedding_cosine_similarity
+    top_k: 5
+  storage:
+    type: unstructured_vector_store
+  skill_cards: false
+  evidence_tracking: false
+
+safety:
+  enabled: false
+  context_injection: false
+  tool_policy: permissive
+  sandbox: none
+
+governance:
+  immune_guard: false
+  replay_verification: false
+  skill_curator: false
+  quarantine: false
+  drift_detection: false
+
+evaluation:
+  metrics:
+    - task_success_rate
+    - skill_reuse_precision
+    - unsafe_activation_rate
+    - replay_caught_regression_rate
+    - drift_detection_delay
+    - cost_per_success
+    - latency_overhead

@@ -1,0 +1,332 @@
+[
+  {
+    "task_id": "cpt_001",
+    "description": "Apply Python's context manager pattern for resource cleanup to a JavaScript codebase that uses manual try/finally with cleanup calls that are frequently forgotten",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "frontend/services/db_connection.ts",
+      "frontend/services/file_handle.ts",
+      "frontend/services/cache_lock.ts",
+      "frontend/utils/resource_manager.ts"
+    ],
+    "bug_description": "JavaScript services manually call cleanup (db.close(), fileHandle.release(), cacheLock.unlock()) in finally blocks, but developers often forget the cleanup call, especially when adding early returns. Python solves this with context managers (with statement) and __exit__. JavaScript has Symbol.dispose / using (TC39 Stage 3) and can emulate the pattern with helper functions.",
+    "expected_fix_description": "Create a ResourceManager utility that implements the context manager pattern using JavaScript's using declaration (or a helper function for older runtimes). Refactor db_connection, file_handle, and cache_lock to implement Disposable/SyncDisposable. Replace manual try/finally cleanup with using declarations. Add a lint rule that flags manual cleanup in finally blocks.",
+    "test_criteria": [
+      "Resources are automatically cleaned up when scope exits",
+      "No manual cleanup calls needed in finally blocks",
+      "Early returns within resource scopes correctly trigger cleanup",
+      "Lint rule prevents new manual cleanup code"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Pattern transfer between languages requires understanding both the source pattern's intent and the target language's idioms. Phoenix governance stores the resource cleanup pattern from Python and guides its adaptation to JavaScript, preserving the safety guarantee while using JS-specific syntax."
+  },
+  {
+    "task_id": "cpt_002",
+    "description": "Apply Java's checked exception pattern for recoverable errors to a Python codebase that uses generic Exception catches, silently swallowing both recoverable and unrecoverable errors",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/order_service/handlers/order_handler.py",
+      "services/order_service/exceptions.py",
+      "shared/errors/recoverable.py",
+      "shared/errors/fatal.py"
+    ],
+    "bug_description": "Python order handler catches Exception broadly, treating database connection errors (recoverable, should retry) the same as data corruption errors (fatal, should alert). Java's checked exception pattern forces handling of recoverable errors at compile time. Python can emulate this with exception hierarchy + @retry_on_recoverable decorator.",
+    "expected_fix_description": "Create a RecoverableError base class (for transient failures: timeout, connection, rate limit) and FatalError base class (for data corruption, invariant violation). Update order_handler to catch RecoverableError with retry logic and FatalError with alert + graceful degradation. Add a decorator that auto-retries recoverable errors. Add a lint rule that flags bare Exception catches.",
+    "test_criteria": [
+      "Recoverable errors (timeout, connection) are retried automatically",
+      "Fatal errors (corruption, invariant) trigger alerts and graceful degradation",
+      "No bare Exception catches remain in order handler",
+      "Exception hierarchy is documented with recovery strategy per type"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Error handling patterns differ across languages but the underlying principle (separate recoverable from fatal) is universal. Phoenix governance transfers the checked exception concept from Java to Python, adapting the enforcement mechanism (compile-time vs decorator) while preserving the intent."
+  },
+  {
+    "task_id": "cpt_003",
+    "description": "Apply Ruby's migration versioning pattern (timestamp-based, irreversible migrations) to a Node.js project that uses sequential migration numbers and allows down migrations in production",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "migrations/001_create_users.js",
+      "migrations/002_add_email.js",
+      "scripts/migrate.js",
+      "config/database.js"
+    ],
+    "bug_description": "Node.js project uses sequential migration numbers (001, 002) which cause merge conflicts when multiple developers create migrations simultaneously. The migrate.js script supports both up and down migrations, and down migrations have been accidentally run in production (dropping columns). Ruby's Rails uses timestamp-based migration names and marks migrations as irreversible.",
+    "expected_fix_description": "Rename migrations with timestamp prefixes (20240315_120000_create_users.js). Add irreversible flag to destructive migrations (DROP TABLE, DROP COLUMN). Update migrate.js to refuse down migrations on production and for flagged irreversible migrations. Add a migration conflict detector. Document the new naming convention.",
+    "test_criteria": [
+      "Migration files use timestamp-based naming",
+      "Destructive migrations are marked as irreversible",
+      "Down migrations are refused in production",
+      "Merge conflicts from concurrent migration creation are eliminated"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Database migration safety patterns transfer across frameworks. Phoenix governance stores the Ruby migration safety pattern (timestamp naming, irreversible migrations) and applies it to the Node.js project, adapting the implementation while preserving the safety guarantees."
+  },
+  {
+    "task_id": "cpt_004",
+    "description": "Apply Haskell's Maybe/Either pattern for null safety to a TypeScript codebase that uses optional chaining extensively but still has runtime null reference errors in async code paths",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "frontend/services/user_service.ts",
+      "frontend/components/UserProfile.tsx",
+      "shared/types/result.ts",
+      "shared/utils/safe_access.ts"
+    ],
+    "bug_description": "TypeScript code uses optional chaining (user?.address?.city) which compiles but doesn't handle the 'nothing' case — the result is silently undefined, propagating through the UI as blank fields or runtime errors downstream. Haskell's Maybe (Just | Nothing) and Either (Left error | Right value) force explicit handling of the 'nothing' case.",
+    "expected_fix_description": "Create a Result<T, E> type (Either equivalent) and Option<T> type (Maybe equivalent) in shared/types/. Refactor user_service to return Result<User, UserError> instead of throwing. Update UserProfile to pattern-match on Result (match { Ok: render, Err: showError }). Add flatMap for chaining Results. Replace optional chaining with Result-chaining in service code.",
+    "test_criteria": [
+      "Service functions return Result<T, E> instead of throwing or returning null",
+      "UI components explicitly handle both success and error cases",
+      "No unhandled undefined values propagate through the UI",
+      "Result chaining (flatMap) replaces optional chaining in service code"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Functional programming patterns for error handling transfer well to TypeScript. Phoenix governance stores the Maybe/Either pattern from Haskell and guides its TypeScript implementation, ensuring the pattern is adapted to TS idioms (union types, pattern matching) rather than literally translated."
+  },
+  {
+    "task_id": "cpt_005",
+    "description": "Apply Go's goroutine-based fan-out/fan-in concurrency pattern to a Python data processing pipeline that currently processes items sequentially, causing 10x slower throughput",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/data_pipeline/processors/batch_processor.py",
+      "services/data_pipeline/processors/item_processor.py",
+      "shared/concurrency/worker_pool.py",
+      "config/pipeline.yaml"
+    ],
+    "bug_description": "The data pipeline processes items sequentially: for item in items: process(item). Go's fan-out/fan-in pattern distributes work across N goroutines and collects results via channels. Python can emulate this with asyncio tasks + bounded semaphore, or multiprocessing.Pool. The key Go insight is bounding concurrency (buffered channels) to prevent resource exhaustion.",
+    "expected_fix_description": "Implement fan-out/fan-in using asyncio with bounded semaphore (equivalent to Go's buffered channel). Fan-out: create tasks up to semaphore limit. Fan-in: collect results with asyncio.gather. Add backpressure when input rate exceeds processing rate. Add graceful shutdown (drain in-flight tasks). Configure worker count in pipeline.yaml. Preserve ordering if needed.",
+    "test_criteria": [
+      "Pipeline processes items concurrently (not sequentially)",
+      "Concurrency is bounded (no resource exhaustion)",
+      "Backpressure prevents input from overwhelming processing",
+      "Graceful shutdown completes in-flight items"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Concurrency patterns transfer across languages but the primitives differ (goroutines/channels vs asyncio/semaphore). Phoenix governance transfers the fan-out/fan-in pattern while adapting to Python's async model, preserving the bounded concurrency guarantee."
+  },
+  {
+    "task_id": "cpt_006",
+    "description": "Apply Rust's ownership and borrowing model concepts to create a thread-safe Python service that currently has data races on shared mutable state",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/scheduler_service/state/task_state.py",
+      "services/scheduler_service/workers/worker_pool.py",
+      "shared/concurrency/mutex.py",
+      "shared/concurrency/arc.py"
+    ],
+    "bug_description": "The scheduler service has shared mutable state (task_state dict) accessed by multiple worker threads without synchronization. Workers read-modify-write task status, causing lost updates. Rust's ownership model prevents this at compile time. Python can emulate the safety with explicit Mutex (like Rust's Mutex<T>) and Arc (atomic reference counting) patterns.",
+    "expected_fix_description": "Create a Mutex<T> wrapper that acquires a lock on access and releases on scope exit (context manager). Create an Arc<T> for shared ownership with atomic refcount. Wrap task_state in Mutex. Workers access state through Mutex.acquire() context manager. Add a thread-safety linter that flags shared mutable state without synchronization. Add a stress test with concurrent workers.",
+    "test_criteria": [
+      "Shared state is always accessed through Mutex",
+      "No data races detected under concurrent access stress test",
+      "Mutex is released automatically (context manager, no forgotten unlocks)",
+      "Thread-safety linter flags unsynchronized shared mutable state"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Thread safety patterns from Rust's ownership model can be adapted to Python with runtime enforcement. Phoenix governance transfers the ownership concept while understanding that Python can't enforce it statically — the pattern uses runtime guards (Mutex context manager) to achieve the same safety."
+  },
+  {
+    "task_id": "cpt_007",
+    "description": "Apply Django's ORM migration pattern (auto-detected schema changes) to a Java/Hibernate project that manually writes SQL migrations, leading to schema-model drift",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "src/main/resources/db/migration/",
+      "src/main/java/com/app/models/User.java",
+      "src/main/java/com/app/models/Order.java",
+      "pom.xml"
+    ],
+    "bug_description": "Java project uses Flyway with hand-written SQL migrations. When developers update JPA entity models (add fields, change types), they often forget to write the corresponding migration, causing schema-model drift. Django's makemigrations auto-detects model changes and generates migrations. Hibernate's hbm2ddl can validate schema against models.",
+    "expected_fix_description": "Enable Hibernate's schema validation (hbm2ddl=validate) in production to detect drift at startup. Add a CI step that runs hbm2ddl=update against a test database and diffs the generated SQL to detect undocumented model changes. Create a migration generator script that introspects JPA annotations and generates Flyway migrations. Add a pre-commit hook that checks model-migration consistency.",
+    "test_criteria": [
+      "Schema-model drift is detected at application startup (validation mode)",
+      "CI detects when models change without corresponding migrations",
+      "Migration generator produces valid Flyway SQL from JPA annotations",
+      "Pre-commit hook prevents model changes without migration updates"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Auto-detection of schema changes transfers from Django's approach to Java/Hibernate. Phoenix governance adapts the pattern using Hibernate's built-in validation rather than requiring Django's exact mechanism."
+  },
+  {
+    "task_id": "cpt_008",
+    "description": "Apply React's component composition pattern to a Python Jinja2 template system that has deep template inheritance hierarchies causing fragile, hard-to-modify layouts",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "templates/base.html",
+      "templates/layouts/sidebar.html",
+      "templates/layouts/dashboard.html",
+      "templates/components/card.html"
+    ],
+    "bug_description": "Jinja2 templates use deep inheritance (dashboard extends sidebar extends base, 5 levels deep). Overriding a block in base.html unintentionally affects all child templates. React's composition pattern (pass components as children/props) avoids inheritance fragility. Jinja2 supports composition via {% include %} with context variables.",
+    "expected_fix_description": "Refactor template hierarchy: flatten to max 2 levels (page extends base). Use composition: pages include layout components and pass content as variables. Create reusable components (cards, tables, forms) as includes that accept parameters. Replace block overrides with component composition. Document the composition pattern for template developers.",
+    "test_criteria": [
+      "Template inheritance depth is max 2 levels",
+      "Reusable components are includes with parameters, not inherited blocks",
+      "Changes to base template don't break child templates unexpectedly",
+      "Component composition is documented as the standard pattern"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Composition-over-inheritance transfers from React to template systems. Phoenix governance recognizes the anti-pattern (deep inheritance) and guides the refactoring to composition, using Jinja2's include mechanism rather than trying to make it work like React."
+  },
+  {
+    "task_id": "cpt_009",
+    "description": "Apply Erlang's supervisor tree pattern for fault tolerance to a Python microservice that currently crashes on any unhandled exception without recovery",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/worker_service/worker.py",
+      "services/worker_service/supervisor.py",
+      "shared/fault_tolerance/restart_strategy.py",
+      "config/worker.yaml"
+    ],
+    "bug_description": "Worker service processes jobs sequentially. If any job throws an unhandled exception, the entire worker process dies and must be manually restarted. Erlang's supervisor tree pattern: each worker is supervised, crashes are isolated, and the supervisor restarts the worker with configurable strategy (one-for-one, one-for-all, rest-for-one).",
+    "expected_fix_description": "Implement a Supervisor class that manages worker processes. When a worker crashes, supervisor catches the exit and restarts it with configurable strategy. Implement one-for-one restart (restart only the crashed worker). Add crash rate limiting (max N restarts per minute). Add health monitoring. Make each job processing isolated (one crash doesn't affect other jobs).",
+    "test_criteria": [
+      "Worker crashes are isolated (one crash doesn't kill other workers)",
+      "Supervisor automatically restarts crashed workers",
+      "Crash rate limiting prevents restart loops",
+      "Job processing is isolated (failed job doesn't affect next job)"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Fault tolerance patterns from Erlang's OTP transfer well to Python services. Phoenix governance adapts the supervisor tree concept using Python's multiprocessing and signal handling, preserving the isolation and restart guarantees."
+  },
+  {
+    "task_id": "cpt_010",
+    "description": "Apply C#'s IDisposable pattern for deterministic cleanup to a Go codebase that relies on defer for cleanup but has cleanup functions that must be called in a specific order",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "internal/resource/handler.go",
+      "internal/db/transaction.go",
+      "internal/cache/lock.go",
+      "pkg/cleanup/manager.go"
+    ],
+    "bug_description": "Go's defer runs cleanup in LIFO order, but the codebase needs cleanup in a specific order: release cache lock -> rollback transaction -> close DB connection. With multiple defers, the order is easy to get wrong. C#'s IDisposable with using blocks guarantees deterministic, ordered cleanup. Go can emulate this with a cleanup manager that registers and executes cleanup in order.",
+    "expected_fix_description": "Create a CleanupManager that registers cleanup functions with priority/order. Defer a single CleanupManager.RunAll() that executes cleanups in registered order (not LIFO). Refactor handler, transaction, and lock to use CleanupManager. Add a test that verifies cleanup order. Document the pattern for Go developers accustomed to defer.",
+    "test_criteria": [
+      "Cleanup functions execute in a deterministic, specified order",
+      "Single defer call (CleanupManager.RunAll) replaces multiple defers",
+      "Cache lock is released before transaction rollback",
+      "Cleanup order is verified by tests"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Deterministic cleanup patterns transfer from C# to Go, but must adapt to Go's defer convention. Phoenix governance guides the adaptation using a cleanup manager rather than fighting Go's idioms."
+  },
+  {
+    "task_id": "cpt_011",
+    "description": "Apply PostgreSQL's advisory lock pattern for distributed locking to a Redis-based locking system that has issues with lock reentrancy and garbage collection of orphaned locks",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/locks/redis_lock.py",
+      "shared/locks/lock_factory.py",
+      "services/booking_service/concurrent_handler.py",
+      "config/locking.yaml"
+    ],
+    "bug_description": "Redis distributed locks (Redlock) have known issues: no reentrancy (can't lock twice from same thread), orphaned locks if holder crashes without releasing, and clock drift vulnerability. PostgreSQL advisory locks are session-scoped (auto-released on disconnect), support reentrancy, and don't require a separate service. The project already uses PostgreSQL.",
+    "expected_fix_description": "Implement advisory lock wrapper using pg_advisory_lock (blocking) and pg_try_advisory_lock (non-blocking). Session-scoped locks auto-release on disconnect (solves orphaned lock problem). Support lock reentrancy (advisory locks are reentrant). Add a lock factory that can choose between Redis (for cross-DB locks) and PostgreSQL (for single-DB locks). Migrate single-DB lock use cases to advisory locks.",
+    "test_criteria": [
+      "Advisory locks are used for single-database locking scenarios",
+      "Locks are auto-released on session disconnect (no orphaned locks)",
+      "Lock reentrancy works (same session can lock twice)",
+      "Redis locks are kept only for cross-database scenarios"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Locking strategies transfer between systems based on their properties, not their APIs. Phoenix governance identifies the specific requirements (reentrancy, auto-release) and selects the appropriate locking mechanism, rather than defaulting to Redis because it's the cached pattern."
+  },
+  {
+    "task_id": "cpt_012",
+    "description": "Apply Kubernetes' declarative configuration pattern to a CI/CD pipeline that uses imperative scripts (shell commands), making it impossible to diff, review, or rollback pipeline changes",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "scripts/deploy/deploy.sh",
+      "scripts/deploy/rollback.sh",
+      "infrastructure/pipeline/deploy_pipeline.yaml",
+      "scripts/deploy/verify.sh"
+    ],
+    "bug_description": "Deploy script is a long shell script with imperative commands (kubectl create, kubectl scale, kubectl set image). Changes are hard to review (what does removing line 47 do?), impossible to diff against current state, and rollback is a separate manual script. Kubernetes' declarative pattern: define desired state, let the system converge. Apply the same principle to the CI/CD pipeline.",
+    "expected_fix_description": "Refactor deploy.sh to generate a Kubernetes manifest from a template + environment config, then kubectl apply. Store desired state in git (declarative). Use kubectl diff to preview changes before applying. Rollback becomes git revert + apply. Replace imperative kubectl commands with apply -f. Add a dry-run mode that shows the diff without applying.",
+    "test_criteria": [
+      "Deployment is declarative (apply manifest, not imperative commands)",
+      "Changes can be diffed against current state (kubectl diff)",
+      "Rollback is achieved by reverting git commit and re-applying",
+      "No imperative kubectl commands (create, scale, set image) in deploy script"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Declarative vs imperative is a paradigm transfer from Kubernetes to CI/CD. Phoenix governance recognizes the benefits of declarative configuration (reviewability, rollback, diff) and guides the refactoring from imperative scripts to declarative manifests."
+  },
+  {
+    "task_id": "cpt_013",
+    "description": "Apply Python's virtual environment isolation pattern to a Node.js project that has dependency conflicts between services sharing a single node_modules",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/api_service/package.json",
+      "services/worker_service/package.json",
+      "package.json",
+      "pnpm-workspace.yaml"
+    ],
+    "bug_description": "Monorepo uses a single hoisted node_modules (npm workspaces). API service needs express@4.18 (specific middleware) but worker service needs express@5.0 (async middleware). Hoisting installs one version, breaking the other. Python solves this with per-service virtual environments. Node.js can use pnpm with strict peer dependencies and per-service symlinks.",
+    "expected_fix_description": "Switch from npm workspaces to pnpm with strict mode. Each service gets its own node_modules with exact dependency versions. Use pnpm-workspace.yaml for monorepo structure. Enable shamefully-hoist=false to prevent cross-service dependency leakage. Add a dependency audit that detects version conflicts. Update CI to install per-service.",
+    "test_criteria": [
+      "Each service has its own isolated dependencies",
+      "API and worker services can use different express versions",
+      "No dependency hoisting across service boundaries",
+      "Dependency conflicts are detected by audit"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Dependency isolation patterns transfer from Python's venv to Node.js's pnpm strict mode. Phoenix governance adapts the isolation concept using Node.js ecosystem tools rather than requiring Python's exact mechanism."
+  },
+  {
+    "task_id": "cpt_014",
+    "description": "Apply Java's ThreadLocal pattern for request-scoped context to a Go service that currently passes context through 15+ function parameters, making refactoring extremely painful",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "internal/handler/request.go",
+      "internal/service/user.go",
+      "internal/repository/user.go",
+      "internal/middleware/auth.go"
+    ],
+    "bug_description": "Go service passes request context (user ID, tenant ID, trace ID, permissions) as function parameters through handler -> service -> repository layers (15+ parameters). Adding a new context field requires updating every function signature. Java uses ThreadLocal for implicit request-scoped context. Go has context.Context which serves the same purpose but isn't being used.",
+    "expected_fix_description": "Use Go's context.Context to carry request-scoped values. Define typed context keys for user ID, tenant ID, trace ID, permissions. Middleware sets values in context. Service/repository layers receive context.Context and extract values. Remove explicit parameters for context values. Add context value extraction helpers with type safety.",
+    "test_criteria": [
+      "Request context values are carried via context.Context",
+      "Function signatures have fewer parameters (context values removed)",
+      "New context fields can be added without changing function signatures",
+      "Context values are type-safe (typed accessors, not raw map)"
+    ],
+    "risk_level": "medium",
+    "governance_relevance": "Request context patterns transfer from Java's ThreadLocal to Go's context.Context. Phoenix governance recognizes that Go already has the right mechanism (context.Context) and guides the refactoring to use it, rather than implementing a ThreadLocal-like global."
+  },
+  {
+    "task_id": "cpt_015",
+    "description": "Apply Elixir's GenServer pattern for stateful concurrent services to a Python analytics service that has race conditions on shared counters and aggregation state",
+    "category": "cross_project_transfer",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/analytics_service/aggregator.py",
+      "services/analytics_service/counter.py",
+      "services/analytics_service/state_manager.py",
+      "shared/concurrency/gen_server.py"
+    ],
+    "bug_description": "Analytics aggregator has shared mutable state (counters, histograms) updated by multiple async tasks. Updates use read-modify-write without locks, causing lost updates. Elixir's GenServer serializes all state access through a single process with a message queue — no locks needed, no race conditions possible. Python can emulate this with an actor model using asyncio.Queue.",
+    "expected_fix_description": "Implement GenServer-like pattern: a single async task owns all state, receives update/query messages via asyncio.Queue. Callers send messages and await responses. State access is serialized by the single-task message loop. No shared mutable state, no locks. Add batched processing (accumulate N updates, then flush). Add health check endpoint. Migrate counters and histograms to this pattern.",
+    "test_criteria": [
+      "Shared state is owned by a single task (no concurrent mutation)",
+      "State access is serialized via message queue (no locks needed)",
+      "Lost update race conditions are eliminated",
+      "Batched processing reduces queue contention"
+    ],
+    "risk_level": "high",
+    "governance_relevance": "Actor model patterns from Elixir transfer well to Python asyncio. Phoenix governance adapts GenServer's single-process-owns-state concept using Python's asyncio.Queue, preserving the no-locks guarantee while using Python-native concurrency primitives."
+  }
+]

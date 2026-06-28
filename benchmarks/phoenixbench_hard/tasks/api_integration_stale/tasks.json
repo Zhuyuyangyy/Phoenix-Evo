@@ -1,0 +1,337 @@
+[
+  {
+    "task_id": "ais_001",
+    "description": "Integrate with Stripe payment API using the current Patterns API (2024-11+), not the deprecated Charges API that was sunset in 2023 but still appears in many cached code examples",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/payment_service/gateways/stripe_gateway.py",
+      "services/payment_service/models/charge.py",
+      "config/payment_providers.yaml"
+    ],
+    "bug_description": "The payment gateway uses Stripe's deprecated Charges API (stripe.Charge.create) which was replaced by the Payment Intents API. The Charges API no longer supports 3D Secure, SCA, or newer payment methods. Code examples cached in skill memory still show Charges API usage.",
+    "expected_fix_description": "Migrate to Payment Intents API (stripe.PaymentIntent.create). Update the charge model to handle PaymentIntent response format. Add 3D Secure authentication flow. Update webhook handlers for payment_intent.* events instead of charge.* events. Configure API version header to pin to a specific Stripe API version.",
+    "test_criteria": [
+      "Payment creation uses PaymentIntents API, not Charges API",
+      "3D Secure authentication flow is implemented",
+      "Webhook handlers process payment_intent.* events",
+      "Stripe API version is pinned in configuration"
+    ],
+    "risk_level": "high",
+    "stale_skill_description": "Cached knowledge of Stripe Charges API (deprecated 2023). An agent using stale skill memory would implement charge creation with stripe.Charge.create(), which fails for 3D Secure-required cards and doesn't support SCA compliance.",
+    "governance_relevance": "API version knowledge has a shelf life. Phoenix governance timestamps API knowledge and alerts when cached patterns may be stale, forcing the agent to verify against current documentation rather than relying on memory."
+  },
+  {
+    "task_id": "ais_002",
+    "description": "Implement GitHub OAuth using the current device flow and fine-grained tokens, not the deprecated OAuth web application flow with classic personal access tokens",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/auth_service/providers/github_oauth.py",
+      "services/auth_service/token_manager.py",
+      "config/oauth_providers.yaml"
+    ],
+    "bug_description": "The auth service uses GitHub's deprecated OAuth web application flow with classic PATs. GitHub now requires fine-grained personal access tokens with specific repository permissions. The old flow creates tokens with overly broad scope (repo scope grants full access to all repos).",
+    "expected_fix_description": "Implement GitHub's device flow for CLI/headless auth. Use fine-grained token scope requesting only needed permissions. Update token refresh logic for fine-grained token expiration. Add scope validation that rejects overly broad permissions. Update OAuth callback handler for new flow.",
+    "test_criteria": [
+      "GitHub auth uses fine-grained tokens, not classic PATs",
+      "Token scope is limited to minimum required permissions",
+      "Device flow is implemented for headless auth",
+      "Overly broad token scopes are rejected"
+    ],
+    "risk_level": "high",
+    "stale_skill_description": "Cached knowledge of GitHub classic OAuth flow and personal access tokens. The old flow grants 'repo' scope which gives full access to all repositories — fine-grained tokens now require specifying individual repos and permissions.",
+    "governance_relevance": "OAuth patterns evolve with platform security requirements. Phoenix governance tracks API deprecation timelines and ensures the integration uses the current security model, not the one that was current when the skill was first learned."
+  },
+  {
+    "task_id": "ais_003",
+    "description": "Implement AWS S3 integration using path-style requests and Signature V2, but S3 now requires virtual-hosted-style for new buckets and Signature V4 — old patterns still work for legacy buckets but fail for new ones",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/storage_service/providers/s3_provider.py",
+      "services/storage_service/s3_client.py",
+      "config/storage.yaml"
+    ],
+    "bug_description": "The S3 client uses path-style URLs (s3.amazonaws.com/bucket/key) and Signature V2. AWS deprecated path-style for new buckets (2020+) and Signature V2 (2023). New buckets created after 2020 reject path-style requests. Signature V2 is no longer accepted by any S3 endpoint.",
+    "expected_fix_description": "Switch to virtual-hosted-style URLs (bucket.s3.amazonaws.com/key). Update signature to V4 (AWS SDK handles this automatically with correct configuration). Remove manual signature computation. Use AWS SDK's S3 client which handles endpoint style and signature version automatically. Add integration test with a new-style bucket.",
+    "test_criteria": [
+      "S3 requests use virtual-hosted-style URLs",
+      "Signature V4 is used (or SDK default which is V4)",
+      "New buckets (post-2020) work correctly",
+      "No manual signature computation in code"
+    ],
+    "risk_level": "high",
+    "stale_skill_description": "Cached knowledge of S3 path-style URLs and Signature V2. These patterns work for legacy buckets but fail for any new bucket, and Signature V2 is completely deprecated. An agent using stale memory would implement manual V2 signing.",
+    "governance_relevance": "Cloud API evolution requires staying current with deprecation timelines. Phoenix governance tracks AWS API versions and alerts when cached patterns use deprecated authentication or endpoint styles."
+  },
+  {
+    "task_id": "ais_004",
+    "description": "Implement Slack integration using the Conversations API, not the deprecated RTM API and Channels API that are removed from newer Slack workspaces",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/notification_service/channels/slack_channel.py",
+      "services/notification_service/slack/rtm_client.py",
+      "config/notification_channels.yaml"
+    ],
+    "bug_description": "The notification service uses Slack's RTM API (real-time messaging via WebSocket) which is deprecated. It also uses channels.list and channels.create instead of conversations.list and conversations.create. New Slack apps can't use RTM — they must use the Events API and Socket Mode.",
+    "expected_fix_description": "Replace RTM client with Socket Mode (WebSocket connection that receives Events API events). Replace channels.* API calls with conversations.* equivalents. Update app manifest to request Socket Mode scope. Add event subscription handler for message events. Remove RTM-specific token handling.",
+    "test_criteria": [
+      "Slack integration uses Socket Mode, not RTM API",
+      "conversations.* API is used instead of channels.*",
+      "App manifest requests Socket Mode scope",
+      "Message events are received via Events API"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of Slack RTM API and Channels API. RTM is deprecated and unavailable for new apps. Channels API was replaced by Conversations API. An agent using stale memory would implement RTM-based real-time messaging.",
+    "governance_relevance": "Messaging platform APIs evolve frequently. Phoenix governance tracks Slack API versions and ensures integrations use the current API (Socket Mode + Events API) rather than deprecated patterns."
+  },
+  {
+    "task_id": "ais_005",
+    "description": "Implement Elasticsearch queries using the current _search API with search_after for deep pagination, not the deprecated scroll API or from/size pagination that performs poorly",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/search_service/repositories/search_repo.py",
+      "services/search_service/pagination/cursor_builder.py",
+      "config/elasticsearch.yaml"
+    ],
+    "bug_description": "Search repository uses scroll API for deep pagination, which is deprecated in ES 8.x and removed in ES 9.x. Scroll creates search contexts that consume server memory. The from/size pagination is also used for shallow results but hits the 10,000 result limit by default. The current pattern is search_after with point-in-time (PIT) API.",
+    "expected_fix_description": "Replace scroll API with search_after + PIT API for deep pagination. Keep from/size for shallow pagination (first 10 pages). Add a combined pagination strategy: from/size for page 1-10, search_after for page 11+. Update cursor builder to encode search_after values. Add ES 8.x compatibility test.",
+    "test_criteria": [
+      "Deep pagination uses search_after + PIT, not scroll",
+      "Shallow pagination uses from/size efficiently",
+      "No scroll API calls remain in codebase",
+      "Pagination works correctly with ES 8.x and 9.x"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of Elasticsearch scroll API for pagination. Scroll is deprecated in ES 8.x and removed in ES 9.x. An agent using stale memory would implement scroll-based export, which will break on ES 9.x.",
+    "governance_relevance": "Search engine APIs evolve with each major version. Phoenix governance tracks ES API versions and ensures pagination uses the current recommended pattern (search_after + PIT)."
+  },
+  {
+    "task_id": "ais_006",
+    "description": "Implement Twilio integration using the current Messaging Services API with content templates, not the deprecated Messages resource with raw body text that now requires pre-approved templates for A2P 10DLC",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/notification_service/providers/twilio_provider.py",
+      "services/notification_service/sms/template_manager.py",
+      "config/sms_providers.yaml"
+    ],
+    "bug_description": "The SMS provider uses Twilio's Messages resource with raw body text. US carriers now require A2P 10DLC registration and pre-approved message templates for application-to-person messaging. Messages without templates are blocked or delivered with 'unregistered sender' warning. The old API still 'works' for non-US numbers but fails for US.",
+    "expected_fix_description": "Switch to Messaging Services API with Content API for template management. Create and register message templates via Twilio Content API. Use template SIDs instead of raw body text. Add A2P 10DLC campaign registration. Fall back to raw text only for non-US numbers. Add template approval status checking.",
+    "test_criteria": [
+      "US SMS uses pre-approved templates via Content API",
+      "A2P 10DLC registration is verified before sending",
+      "Non-US SMS can use raw body text as fallback",
+      "Template approval status is checked before campaign launch"
+    ],
+    "risk_level": "high",
+    "stale_skill_description": "Cached knowledge of Twilio Messages API with raw body text. US carriers now require A2P 10DLC and templates. An agent using stale memory would send messages without templates, causing delivery failures for US numbers.",
+    "governance_relevance": "Telecom regulations change per-country. Phoenix governance tracks regulatory requirements (A2P 10DLC) and ensures messaging integrations comply with current carrier rules, not just API syntax."
+  },
+  {
+    "task_id": "ais_007",
+    "description": "Implement Docker image builds using BuildKit and multi-stage builds, not the legacy builder that is removed in Docker 25+ and produces larger, less secure images",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "Dockerfile",
+      "Dockerfile.prod",
+      "scripts/build/docker_build.sh",
+      "ci/containers/build.yml"
+    ],
+    "bug_description": "Docker builds use the legacy builder (docker build without DOCKER_BUILDKIT=1). The Dockerfile uses single-stage build, bundling build tools and source code into the production image. Legacy builder doesn't support RUN --mount=type=cache for build caching. Docker 25+ removes the legacy builder entirely.",
+    "expected_fix_description": "Refactor to multi-stage Dockerfile: stage 1 (build) installs dependencies and compiles, stage 2 (runtime) copies only artifacts. Add BuildKit-specific features: cache mounts for pip/npm, secret mounts for private registries. Update docker_build.sh to set DOCKER_BUILDKIT=1. Add .dockerignore for smaller build context. Add image size verification in CI.",
+    "test_criteria": [
+      "Production image uses multi-stage build (no build tools in final image)",
+      "BuildKit is enabled for all builds",
+      "Build cache mounts speed up dependency installation",
+      "Production image is <100MB (no unnecessary files)"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of Docker legacy builder and single-stage builds. Legacy builder is removed in Docker 25+. An agent using stale memory would create single-stage Dockerfiles that bundle build dependencies into production images.",
+    "governance_relevance": "Build tooling evolves with each major version. Phoenix governance tracks Docker version requirements and ensures builds use current features (BuildKit, multi-stage) rather than deprecated patterns."
+  },
+  {
+    "task_id": "ais_008",
+    "description": "Implement Redis integration using RESP3 protocol and client-side caching, not the RESP2 protocol and server-assisted caching patterns that miss new RESP3 efficiency features",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/cache/redis_client.py",
+      "shared/cache/cache_provider.py",
+      "config/redis.yaml"
+    ],
+    "bug_description": "The Redis client uses RESP2 protocol (default in redis-py < 5.0). RESP3 supports client-side caching, pushing server updates to clients without polling, and more efficient boolean/map/set types. The current implementation uses pub/sub for cache invalidation (server-assisted) which requires a separate connection and adds latency.",
+    "expected_fix_description": "Upgrade to redis-py 5.0+ with RESP3 protocol. Enable client-side caching with server push invalidation (replaces pub/sub invalidation). Use native RESP3 types (no need to serialize maps/sets as JSON). Configure protocol=3 in Redis connection. Add client-side cache hit/miss metrics. Test backward compatibility with RESP2 Redis servers.",
+    "test_criteria": [
+      "Redis client uses RESP3 protocol when available",
+      "Client-side caching replaces pub/sub invalidation",
+      "Native types are used (maps, sets) without JSON serialization",
+      "Backward compatibility with RESP2 servers is maintained"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of Redis RESP2 protocol and pub/sub-based cache invalidation. RESP3 (Redis 6.0+) provides native client-side caching that is more efficient. An agent using stale memory would implement pub/sub invalidation instead of RESP3 push-based invalidation.",
+    "governance_relevance": "Cache protocol efficiency matters at scale. Phoenix governance tracks Redis protocol features and ensures the client uses the most efficient available protocol rather than patterns from older versions."
+  },
+  {
+    "task_id": "ais_009",
+    "description": "Implement GitHub Actions workflow using OIDC for cloud authentication, not the deprecated access key + secret key approach that creates long-lived credentials",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      ".github/workflows/deploy.yml",
+      "infrastructure/terraform/iam_github.tf",
+      "scripts/deploy/authenticate.sh"
+    ],
+    "bug_description": "The deploy workflow uses AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY stored as GitHub secrets. These are long-lived credentials that, if leaked, provide persistent access. GitHub Actions now supports OIDC federation — the workflow can assume an IAM role using short-lived tokens without storing any secrets.",
+    "expected_fix_description": "Configure GitHub OIDC provider in IAM. Update deploy.yml to use aws-actions/configure-aws-credentials with role-to-assume and oidc-token. Remove AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from GitHub secrets. Add trust policy limiting which repos/branches can assume the role. Update authenticate.sh to use web identity token.",
+    "test_criteria": [
+      "No long-lived AWS credentials stored in GitHub secrets",
+      "OIDC federation is used for authentication",
+      "IAM trust policy restricts which repos can assume the role",
+      "Credentials are short-lived (1 hour max)"
+    ],
+    "risk_level": "critical",
+    "stale_skill_description": "Cached knowledge of AWS authentication with access keys stored as CI secrets. OIDC federation (2022+) eliminates the need for stored secrets. An agent using stale memory would continue using access keys, leaving long-lived credentials vulnerable to exposure.",
+    "governance_relevance": "CI/CD authentication patterns have shifted from secrets to federation. Phoenix governance tracks authentication best practices and ensures workflows use OIDC federation instead of stored secrets."
+  },
+  {
+    "task_id": "ais_010",
+    "description": "Implement Kubernetes client using the current server-side apply and structured logging, not the deprecated client-side apply and text logging that are removed in k8s 1.30+",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/kubernetes/client.py",
+      "shared/kubernetes/apply.py",
+      "infrastructure/kubernetes/manifests/",
+      "config/kubernetes.yaml"
+    ],
+    "bug_description": "The Kubernetes client uses kubectl apply (client-side) which is deprecated in k8s 1.27+ and removed in 1.30. Client-side apply uses annotation-based field management which has known conflict resolution bugs. Server-side apply uses field management on the server with proper conflict detection. Also, klog text logging is deprecated in favor of structured logging.",
+    "expected_fix_description": "Switch to server-side apply (kubectl apply --server-side). Update the apply module to handle managed fields and field conflicts. Add force-conflict resolution strategy for owned fields. Update Kubernetes client to use structured logging. Pin k8s client version. Add compatibility test for k8s 1.27+.",
+    "test_criteria": [
+      "All kubectl apply uses --server-side flag",
+      "Field conflicts are handled with explicit resolution strategy",
+      "Structured logging is used for all k8s client operations",
+      "Compatibility verified with k8s 1.27+"
+    ],
+    "risk_level": "high",
+    "stale_skill_description": "Cached knowledge of kubectl client-side apply. Server-side apply (k8s 1.22+, default in 1.27+) uses different conflict resolution semantics. An agent using stale memory would apply manifests without --server-side, hitting deprecated behavior.",
+    "governance_relevance": "Kubernetes API evolution is rapid. Phoenix governance tracks k8s API deprecation timelines and ensures the client uses current APIs (server-side apply) rather than deprecated patterns that will break on upgrade."
+  },
+  {
+    "task_id": "ais_011",
+    "description": "Implement SendGrid email using the current Mail Send API v3 with dynamic templates, not the legacy v2 API with inline HTML that has been sunset",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "services/email_service/providers/sendgrid_provider.py",
+      "services/email_service/templates/template_renderer.py",
+      "config/email_providers.yaml"
+    ],
+    "bug_description": "The email provider uses SendGrid v2 API with inline HTML content. SendGrid v2 was sunset in 2023. The current v3 Mail Send API supports dynamic templates (stored in SendGrid), scheduled sends, and Suppression Management. Inline HTML emails bypass SendGrid's click/open tracking and template analytics.",
+    "expected_fix_description": "Migrate to SendGrid v3 Mail Send API. Move email templates to SendGrid dynamic templates (stored and versioned in SendGrid UI). Use template IDs with dynamic data substitution. Enable click/open tracking via SendGrid settings. Remove inline HTML rendering from the service. Add template version management.",
+    "test_criteria": [
+      "Emails use SendGrid v3 Mail Send API",
+      "Templates are managed in SendGrid (not inline HTML)",
+      "Dynamic data substitution works correctly",
+      "Click and open tracking is enabled"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of SendGrid v2 API with inline HTML. SendGrid v2 was sunset in 2023. An agent using stale memory would compose emails with inline HTML instead of using SendGrid's dynamic template system.",
+    "governance_relevance": "Email API versions have significant feature differences (templates, analytics, suppression). Phoenix governance tracks SendGrid API versions and ensures the integration uses v3 features rather than composing emails the v2 way."
+  },
+  {
+    "task_id": "ais_012",
+    "description": "Implement CloudWatch monitoring using the current EMF (Embedded Metric Format) for structured metrics, not the deprecated PutMetricData API that is rate-limited and expensive",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/monitoring/metrics_client.py",
+      "shared/monitoring/cloudwatch_publisher.py",
+      "config/monitoring.yaml"
+    ],
+    "bug_description": "The metrics client uses CloudWatch PutMetricData API which has a 150 TPS rate limit per account and costs $0.30/metric/month. For high-cardinality metrics (per-request latency), this is prohibitively expensive and rate-limited. EMF publishes metrics as structured log entries, which CloudWatch auto-extracts as metrics — no rate limit and no per-metric cost.",
+    "expected_fix_description": "Switch to EMF: output metrics as structured JSON logs following the EMF specification. CloudWatch Logs auto-extracts these as metrics. Remove PutMetricData calls. Add metric directives (namespace, dimensions, units) to the EMF log output. Update dashboards and alarms to reference the new metric format. Add EMF validation.",
+    "test_criteria": [
+      "Metrics are published via EMF (structured logs), not PutMetricData",
+      "No PutMetricData API calls remain in codebase",
+      "High-cardinality metrics work without rate limiting",
+      "Existing dashboards and alarms work with new metric format"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of CloudWatch PutMetricData API for custom metrics. EMF (2021+) is the current recommended approach. An agent using stale memory would use PutMetricData, hitting rate limits and incurring unnecessary costs for high-cardinality metrics.",
+    "governance_relevance": "Observability patterns evolve with cloud platform features. Phoenix governance tracks CloudWatch best practices and ensures metrics use the current cost-efficient approach (EMF) rather than the legacy API."
+  },
+  {
+    "task_id": "ais_013",
+    "description": "Implement PostgreSQL connection using the current asyncpg driver with prepared statements, not the deprecated psycopg2 sync driver that blocks the event loop and doesn't support pipeline mode",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/db/connection_pool.py",
+      "shared/db/query_executor.py",
+      "config/database.yaml",
+      "services/api_service/app.py"
+    ],
+    "bug_description": "The API service uses async (FastAPI/asyncio) but the database driver is psycopg2 (synchronous). Each DB query blocks the event loop, limiting concurrency to 1 query at a time per worker. psycopg2 doesn't support pipeline mode (batching multiple queries in one round trip) which asyncpg supports. The async wrapper (run_in_executor) adds overhead and doesn't pipeline.",
+    "expected_fix_description": "Switch to asyncpg for async-native PostgreSQL access. Use prepared statements for frequently-run queries (parse once, execute many). Enable pipeline mode for batched operations. Update connection pool to use asyncpg.create_pool(). Remove run_in_executor wrappers. Add query latency comparison between drivers.",
+    "test_criteria": [
+      "Database driver is asyncpg, not psycopg2",
+      "No event loop blocking during query execution",
+      "Prepared statements are used for hot queries",
+      "Pipeline mode is enabled for batched operations"
+    ],
+    "risk_level": "high",
+    "stale_skill_description": "Cached knowledge of psycopg2 as the Python PostgreSQL driver. For async applications, asyncpg is the current standard. An agent using stale memory would wrap psycopg2 in run_in_executor, missing the performance benefits of asyncpg.",
+    "governance_relevance": "Driver selection must match the application's concurrency model. Phoenix governance tracks database driver compatibility with async frameworks and ensures the correct driver is used."
+  },
+  {
+    "task_id": "ais_014",
+    "description": "Implement Terraform using the current cloud backend and workspaces, not the deprecated local backend and terraform workspace which have state isolation issues",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "infrastructure/terraform/backend.tf",
+      "infrastructure/terraform/environments/",
+      "scripts/infra/plan.sh",
+      "scripts/infra/apply.sh"
+    ],
+    "bug_description": "Terraform uses local backend with terraform workspace for environment isolation. Workspaces share the same backend config and can accidentally reference each other's state. Terraform Cloud/Enterprise is the current recommended backend with proper workspace isolation, RBAC, and cost estimation. The local backend also lacks state locking in multi-engineer teams.",
+    "expected_fix_description": "Migrate to Terraform Cloud backend with remote execution. Use Terraform Cloud workspaces (separate state per environment) instead of local workspaces. Add workspace-level RBAC (production workspace requires approval). Enable cost estimation for planned changes. Update plan.sh and apply.sh to use remote backend. Add run triggers between dependent workspaces.",
+    "test_criteria": [
+      "Terraform state is stored in Terraform Cloud",
+      "Workspaces are isolated per environment",
+      "Production workspace requires approval for applies",
+      "Cost estimation runs on every plan"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of Terraform local backend with terraform workspace. Terraform Cloud is the current recommended backend. An agent using stale memory would configure local backend, missing RBAC, cost estimation, and proper state isolation.",
+    "governance_relevance": "Infrastructure-as-code backend choice affects security and collaboration. Phoenix governance tracks Terraform backend best practices and ensures the configuration uses proper state isolation rather than the convenient local approach."
+  },
+  {
+    "task_id": "ais_015",
+    "description": "Implement Datadog monitoring using the current OpenTelemetry-based instrumentation, not the deprecated dd-trace Python client that uses proprietary instrumentation and will lose support",
+    "category": "api_integration_stale",
+    "difficulty": "hard",
+    "files_involved": [
+      "shared/monitoring/tracer.py",
+      "shared/monitoring/metrics.py",
+      "config/datadog.yaml",
+      "services/api_service/instrumentation.py"
+    ],
+    "bug_description": "The monitoring uses dd-trace-py (Datadog's proprietary tracer) with @tracer.wrap decorators. Datadog is transitioning to OpenTelemetry as the primary instrumentation standard. The dd-trace library will continue to work but won't receive new features. OpenTelemetry provides vendor-neutral instrumentation that works with any backend.",
+    "expected_fix_description": "Replace dd-trace with opentelemetry-sdk + opentelemetry-datadog exporter. Use OpenTelemetry decorators and context propagation instead of dd-trace specific APIs. Configure Datadog as an OTel backend (no feature loss). Add vendor-neutral instrumentation that could export to other backends. Update custom metrics to OTel semantic conventions.",
+    "test_criteria": [
+      "Instrumentation uses OpenTelemetry SDK, not dd-trace",
+      "Datadog is configured as an OTel exporter (not proprietary integration)",
+      "Traces and metrics export correctly to Datadog",
+      "Instrumentation is vendor-neutral (could switch backends without code changes)"
+    ],
+    "risk_level": "medium",
+    "stale_skill_description": "Cached knowledge of dd-trace-py proprietary instrumentation. Datadog is moving to OpenTelemetry. An agent using stale memory would use @tracer.wrap and dd-trace-specific APIs instead of OTel standard instrumentation.",
+    "governance_relevance": "Observability standards evolve (OpenTelemetry is the industry standard). Phoenix governance tracks instrumentation library versions and ensures the codebase uses vendor-neutral standards rather than proprietary APIs."
+  }
+]
