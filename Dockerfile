@@ -56,6 +56,7 @@ COPY runtime/ /phoenix/runtime/
 COPY integrations/ /phoenix/integrations/
 COPY cli/ /phoenix/cli/
 COPY __init__.py /phoenix/
+COPY daemon_entry.py /phoenix/
 COPY start.sh /phoenix/
 
 # Create data directories
@@ -95,4 +96,4 @@ VOLUME ["/phoenix/skills", "/phoenix/data", "/phoenix/evidence", "/phoenix/logs"
 ENTRYPOINT ["tini", "--"]
 
 # Default: start the PhoenixRuntimeDaemon
-CMD ["python", "-m", "runtime.phoenix_daemon", "/phoenix"]
+CMD ["python", "/phoenix/daemon_entry.py", "/phoenix"]

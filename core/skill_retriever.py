@@ -26,8 +26,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-# Import TF-IDF engine from the runtime module (single source of truth)
-from runtime.skill_retriever import (
+# Import TF-IDF engine from the runtime.tfidf_utils module (breaks circular import)
+from runtime.tfidf_utils import (
     _compute_idf,
     _cosine_sim,
     _tfidf_vector,
