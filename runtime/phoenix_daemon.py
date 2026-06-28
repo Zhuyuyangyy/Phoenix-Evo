@@ -253,12 +253,17 @@ if __name__ == "__main__":
     parser.add_argument("--curator-interval", type=int, default=3600, help="SkillCurator scan interval (sec)")
     args = parser.parse_args()
 
-    daemon = PhoenixRuntimeDaemon(
-        phoenix_base_dir=args.base_dir,
-        check_interval=args.check_interval,
-        curator_interval=args.curator_interval,
-    )
-    daemon.start()
+    # Start daemon threads (non-blocking; errors logged but don't crash the process)
+    try:
+        daemon = PhoenixRuntimeDaemon(
+            phoenix_base_dir=args.base_dir,
+            check_interval=args.check_interval,
+            curator_interval=args.curator_interval,
+        )
+        daemon.start()
+        logger.info("PhoenixRuntimeDaemon threads started")
+    except Exception:
+        logger.exception("Failed to start PhoenixRuntimeDaemon — continuing with HTTP server only")
 
     # Start FastAPI server for health checks and API
     host = os.environ.get("PHOENIX_HOST", "0.0.0.0")  # noqa: S104
@@ -267,4 +272,8 @@ if __name__ == "__main__":
     import uvicorn
 
     logger.info(f"Starting FastAPI server on {host}:{port}")
-    uvicorn.run(get_app(), host=host, port=port, log_level="info")
+    try:
+        uvicorn.run(get_app(), host=host, port=port, log_level="info")
+    except Exception:
+        logger.exception("FastAPI server failed to start")
+        sys.exit(1)
