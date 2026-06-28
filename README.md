@@ -298,7 +298,7 @@ Phoenix-Evo/
 
 ## Benchmarks & Results
 
-Benchmarks and comparative experiments are defined in the test suite (`tests/test_retrieval_comparison.py`). Formal benchmark results are pending publication.
+Benchmarks and comparative experiments are defined in the test suite (`tests/test_retrieval_comparison.py`). PhoenixBench infrastructure exists; E1–E6 preliminary results (using real DeepSeek API) are available in [`docs/experiments/E1_E6_DEEPSEEK_PRELIMINARY.md`](docs/experiments/E1_E6_DEEPSEEK_PRELIMINARY.md). Note: E1 shows a ceiling effect and does not demonstrate a significant governance advantage. A harder benchmark (PhoenixBench-Hard) is planned — see [`docs/NEXT_EXPERIMENTS_HARD.md`](docs/NEXT_EXPERIMENTS_HARD.md).
 
 ## Research & Publications
 
