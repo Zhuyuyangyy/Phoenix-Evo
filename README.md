@@ -298,7 +298,15 @@ Phoenix-Evo/
 
 ## Benchmarks & Results
 
-Benchmarks and comparative experiments are defined in the test suite (`tests/test_retrieval_comparison.py`). PhoenixBench infrastructure exists; E1–E6 preliminary results (using real DeepSeek API) are available in [`docs/experiments/E1_E6_DEEPSEEK_PRELIMINARY.md`](docs/experiments/E1_E6_DEEPSEEK_PRELIMINARY.md). Note: E1 shows a ceiling effect and does not demonstrate a significant governance advantage. A harder benchmark (PhoenixBench-Hard) is planned — see [`docs/NEXT_EXPERIMENTS_HARD.md`](docs/NEXT_EXPERIMENTS_HARD.md).
+**Real measurements (reproducible):**
+
+- **Retrieval benchmark** — a labeled benchmark (40-skill corpus, 48 judged + 12 negative queries, graded relevance) measuring the actual retrieval implementations in `runtime/`. Reports P@k, R@k, MRR, nDCG@5 with bootstrap CIs and paired permutation tests, comparing TF-IDF, BM25, keyword, and (where the model is available) sentence-embedding retrieval. Results: [`experiments/results/retrieval_benchmark_report.md`](experiments/results/retrieval_benchmark_report.md). Reproduce: `python -m experiments.retrieval_benchmark.run_benchmark`.
+- **Threshold sensitivity analysis** — empirical justification for the retrieval acceptance threshold (the production default of 0.0 injects an irrelevant skill for every out-of-scope query). Results: [`experiments/results/threshold_sensitivity_report.md`](experiments/results/threshold_sensitivity_report.md). Reproduce: `python -m experiments.retrieval_benchmark.sensitivity`.
+- **E1–E6 preliminary results** (real DeepSeek API): [`docs/experiments/E1_E6_DEEPSEEK_PRELIMINARY.md`](docs/experiments/E1_E6_DEEPSEEK_PRELIMINARY.md). Note: E1 shows a ceiling effect and does not demonstrate a significant governance advantage.
+
+**Simulated scaffolding (not evidence):** the PhoenixBench-Hard runner (`benchmarks/phoenixbench_hard/`) currently *simulates* outcomes from hardcoded probabilities to exercise the pipeline; its outputs are labeled `provenance: SIMULATED` and must not be cited as results. Real execution is tracked in [`docs/NEXT_EXPERIMENTS_HARD.md`](docs/NEXT_EXPERIMENTS_HARD.md).
+
+Formal related-work positioning (Voyager, Reflexion, ExpeL, Generative Agents, MemoryBank, AWM, PoisonedRAG, AgentPoison): [`docs/RELATED_WORK.md`](docs/RELATED_WORK.md).
 
 ## Research & Publications
 

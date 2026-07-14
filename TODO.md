@@ -1,6 +1,6 @@
 # Phoenix-Evo TODO
 
-## Current Status: V1.2 (Post Q2 SCI Review)
+## Current Status: V1.6-dev (Post Q2 SCI Review Round 4 — real experiments landed)
 
 ### Completed Features (V0.1 - V1.2)
 - [x] V0.1: Trajectory to skill extraction
@@ -28,10 +28,22 @@
 - [ ] Implement skill signing and verification
 
 ### Q2 SCI Review Remaining Fixes
-- [ ] Implement real retrieval benchmark with human-annotated relevance judgments
-- [ ] Add formal related work section (Voyager, Reflexion, ExpeL, MemoryBank)
+- [x] Implement real retrieval benchmark with annotated relevance judgments
+      (`experiments/retrieval_benchmark/`; single-annotator qrels — multi-annotator
+      validation with inter-annotator agreement still open)
+- [x] Add formal related work section (docs/RELATED_WORK.md: Voyager, Reflexion,
+      ExpeL, Generative Agents, MemoryBank, AWM, PoisonedRAG, AgentPoison)
+- [x] Justify retrieval score thresholds empirically
+      (`experiments/retrieval_benchmark/sensitivity.py`)
+- [ ] Adopt the recommended score_threshold in runtime skill_retriever defaults
+      (tfidf: 0.15; embedding: rerun sensitivity once model is available)
+- [ ] Run retrieval benchmark embedding column on a machine with HF access
+      (`python -m experiments.retrieval_benchmark.run_benchmark`)
+- [ ] Replace PhoenixBench-Hard simulated runner with real agent execution
+      (outputs now labeled `provenance: SIMULATED`)
 - [ ] Run ablation study on real trajectory data
 - [ ] Add case study on real trajectories from data/trajectories/
+- [ ] Collect multi-annotator relevance judgments + report inter-annotator agreement
 - [ ] Standardize all documentation to English
 
 ### V1.4: Automated Replay Test Framework

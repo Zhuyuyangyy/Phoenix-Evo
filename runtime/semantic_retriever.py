@@ -31,6 +31,7 @@ from typing import Any
 # ---------------------------------------------------------------------------
 
 _EMBEDDING_AVAILABLE = False
+_EMBEDDING_UNAVAILABLE_REASON = ""
 _embedding_model = None
 _MODEL_NAME = "all-MiniLM-L6-v2"
 
@@ -45,8 +46,23 @@ try:
         return _embedding_model
 
     _EMBEDDING_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as _exc:
+    _EMBEDDING_UNAVAILABLE_REASON = f"sentence-transformers not installed: {_exc}"
+
+
+def _mark_embedding_unavailable(reason: str) -> None:
+    """
+    Permanently downgrade the embedding path for this process.
+
+    Importing sentence-transformers successfully does not guarantee the
+    model can be loaded: the first encode may still fail (e.g. the model
+    weights are not cached and the network policy blocks the download).
+    Once that happens, keep falling back to TF-IDF instead of paying a
+    network timeout on every retrieval call.
+    """
+    global _EMBEDDING_AVAILABLE, _EMBEDDING_UNAVAILABLE_REASON
+    _EMBEDDING_AVAILABLE = False
+    _EMBEDDING_UNAVAILABLE_REASON = reason
 
 
 # ---------------------------------------------------------------------------
@@ -84,8 +100,11 @@ def encode_texts(texts: list[str]) -> Any:
         RuntimeError: If neither sentence-transformers nor TF-IDF is available.
     """
     if _EMBEDDING_AVAILABLE:
-        model = _load_model()
-        return model.encode(texts, show_progress_bar=False, normalize_embeddings=True)
+        try:
+            model = _load_model()
+            return model.encode(texts, show_progress_bar=False, normalize_embeddings=True)
+        except Exception as exc:
+            _mark_embedding_unavailable(f"model load/encode failed: {exc}")
     return None
 
 
@@ -176,8 +195,12 @@ class SemanticRetriever:
             numpy array of embeddings, or None if falling back to TF-IDF.
         """
         if _EMBEDDING_AVAILABLE:
-            model = _load_model()
-            embeddings = model.encode(texts, show_progress_bar=False, normalize_embeddings=True)
+            try:
+                model = _load_model()
+                embeddings = model.encode(texts, show_progress_bar=False, normalize_embeddings=True)
+            except Exception as exc:
+                _mark_embedding_unavailable(f"model load/encode failed: {exc}")
+                return None
             # Cache
             for text, emb in zip(texts, embeddings, strict=False):
                 self._corpus_cache[text] = emb
@@ -210,7 +233,13 @@ class SemanticRetriever:
             return []
 
         if _EMBEDDING_AVAILABLE:
-            return self._retrieve_embedding(query, corpus_texts, corpus_vecs, top_k, score_threshold)
+            try:
+                return self._retrieve_embedding(query, corpus_texts, corpus_vecs, top_k, score_threshold)
+            except Exception as exc:
+                # Model load can fail even when the package imports (offline
+                # environment, blocked download). Degrade for good and fall
+                # through to TF-IDF.
+                _mark_embedding_unavailable(f"model load/encode failed: {exc}")
         if _TFIDF_AVAILABLE:
             return self._retrieve_tfidf(query, corpus_texts, top_k, score_threshold)
         return self._retrieve_keyword(query, corpus_texts, top_k)

@@ -62,6 +62,19 @@ except ImportError:
     np = None  # type: ignore[assignment]
 
 
+def _mark_embedding_unavailable() -> None:
+    """
+    Permanently downgrade the embedding path for this process.
+
+    A successful sentence-transformers import does not guarantee the model
+    can be loaded: the first encode may still fail when the weights are not
+    cached and the network blocks the download. After that, keep using the
+    TF-IDF path instead of retrying the network on every call.
+    """
+    global _EMBEDDING_AVAILABLE
+    _EMBEDDING_AVAILABLE = False
+
+
 # ---------------------------------------------------------------------------
 # Text tokenization (shared with skill_retriever.py)
 # ---------------------------------------------------------------------------
@@ -245,7 +258,13 @@ class EmbeddingRetriever:
 
         # Automatic fallback chain
         if _EMBEDDING_AVAILABLE:
-            return self._retrieve_embedding(query, corpus_texts, top_k, score_threshold)
+            try:
+                return self._retrieve_embedding(query, corpus_texts, top_k, score_threshold)
+            except Exception:
+                # Model load can fail even when the package imports (offline
+                # environment, blocked download). Degrade for good and fall
+                # through to TF-IDF.
+                _mark_embedding_unavailable()
         return self._retrieve_tfidf(query, corpus_texts, top_k, score_threshold)
 
     def encode_corpus(self, texts: list[str]) -> Any:

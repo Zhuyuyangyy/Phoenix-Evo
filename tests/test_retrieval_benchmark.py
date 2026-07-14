@@ -29,6 +29,18 @@ from runtime.embedding_retriever import (
     _tokenize,
 )
 
+# _EMBEDDING_AVAILABLE only proves the package imports. In sandboxed or
+# offline environments the model download itself can still fail (e.g. HTTP
+# 403 from a network policy), so probe an actual embedding call once and
+# downgrade to the fallback paths if it fails.
+if _EMBEDDING_AVAILABLE:
+    try:
+        _probe = EmbeddingRetriever().retrieve("probe", ["probe document"], top_k=1)
+        if not _probe or _probe[0]["method"] != "embedding":
+            _EMBEDDING_AVAILABLE = False
+    except Exception:
+        _EMBEDDING_AVAILABLE = False
+
 # ---------------------------------------------------------------------------
 # Test corpus: 10 skills covering distinct domains
 # ---------------------------------------------------------------------------

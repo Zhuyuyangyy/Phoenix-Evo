@@ -33,6 +33,17 @@ python demo.py
 ## Run Benchmark
 
 ```bash
+# Real retrieval benchmark (labeled dataset, real measurements):
+python -m experiments.retrieval_benchmark.run_benchmark
+# -> experiments/results/retrieval_benchmark_{results.json,report.md}
+
+# Threshold sensitivity analysis:
+python -m experiments.retrieval_benchmark.sensitivity
+# -> experiments/results/threshold_sensitivity_{results.json,report.md}
+
+# Both run offline (TF-IDF / BM25 / keyword). The embedding column is added
+# automatically when sentence-transformers + all-MiniLM-L6-v2 are available.
+
 # Pre-existing benchmark data:
 cat data/benchmarks/cases_009_030.json
 # Trajectory data in data/trajectories/

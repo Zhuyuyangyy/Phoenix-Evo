@@ -18,13 +18,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
-import os
 import random
-import sys
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -161,10 +160,18 @@ def run_single_task(
     """
     Run a single task with a baseline agent.
 
-    In smoke/dry-run mode, this simulates the result.
-    For real execution, this would call the DeepSeek API.
+    WARNING -- SIMULATION ONLY. This function draws outcomes from hardcoded
+    per-baseline probabilities; it does not execute any agent or measure any
+    real system. Its output exists to exercise the pipeline (schemas,
+    aggregation, reporting) and MUST NOT be quoted as experimental evidence.
+    Real execution (DeepSeek/Claude API) is tracked in docs/NEXT_EXPERIMENTS_HARD.md.
     """
-    rng = random.Random(seed + hash(task["task_id"]))
+    # hash() is salted per process (PYTHONHASHSEED), which would make even the
+    # simulation non-reproducible; use a stable digest of the task id instead.
+    stable_id = int.from_bytes(
+        hashlib.md5(task["task_id"].encode()).digest()[:4], "big"
+    )
+    rng = random.Random(seed + stable_id)
 
     # Determine if this is an adversarial task
     is_adversarial = task.get("category") == "unsafe_adversarial"
@@ -285,6 +292,12 @@ def run_experiment(
     summary = aggregate_results(all_results)
 
     return {
+        "provenance": (
+            "SIMULATED -- outcomes drawn from hardcoded per-baseline "
+            "probabilities in run_single_task(); no agent was executed and "
+            "no real system was measured. Pipeline scaffolding only; do not "
+            "cite these numbers as experimental results."
+        ),
         "total_runs": total_runs,
         "categories": categories,
         "baselines": baselines,
