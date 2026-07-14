@@ -29,11 +29,18 @@ Usage:
 from __future__ import annotations
 
 import hashlib
-import math
 import re
 import threading
-from collections import Counter
 from typing import Any, Literal
+
+from .tfidf_utils import (
+    _compute_idf,
+    _tfidf_vector,
+    _tokenize,
+)
+from .tfidf_utils import (
+    _cosine_sim as _cosine_sim_sparse,
+)
 
 # ---------------------------------------------------------------------------
 # Try to load sentence-transformers
@@ -60,95 +67,6 @@ try:
     _EMBEDDING_AVAILABLE = True
 except ImportError:
     np = None  # type: ignore[assignment]
-
-
-# ---------------------------------------------------------------------------
-# Text tokenization (shared with skill_retriever.py)
-# ---------------------------------------------------------------------------
-
-_CHINESE_CHAR_RE = re.compile(r'[一-鿿]')
-_ENGLISH_TOKEN_RE = re.compile(r'[A-Za-z0-9]+')
-_MIN_TOKEN_LEN = 2
-
-_JIEBA_AVAILABLE = False
-try:
-    import jieba as _jieba
-    _jieba.setLogLevel(20)
-    _JIEBA_AVAILABLE = True
-except ImportError:
-    pass
-
-
-def _tokenize_chinese(text: str) -> list[str]:
-    """Segment Chinese text into word-level tokens."""
-    if _JIEBA_AVAILABLE:
-        return [w for w in _jieba.lcut(text) if w.strip()]
-    chars = _CHINESE_CHAR_RE.findall(text)
-    if not chars:
-        return []
-    tokens = list(chars)
-    for i in range(len(chars) - 1):
-        tokens.append(chars[i] + chars[i + 1])
-    return tokens
-
-
-def _tokenize(text: str) -> list[str]:
-    """Split text into word tokens for TF-IDF."""
-    tokens: list[str] = []
-    tokens.extend(_tokenize_chinese(text))
-    for t in _ENGLISH_TOKEN_RE.findall(text):
-        tl = t.lower()
-        if len(tl) >= _MIN_TOKEN_LEN:
-            tokens.append(tl)
-    return tokens
-
-
-def _tokenize_to_set(text: str) -> set[str]:
-    """Return deduplicated token set."""
-    return set(_tokenize(text))
-
-
-# ---------------------------------------------------------------------------
-# TF-IDF implementation
-# ---------------------------------------------------------------------------
-
-def _compute_idf(documents: list[list[str]]) -> dict[str, float]:
-    """Compute smoothed IDF for each term across a corpus."""
-    N = len(documents)
-    doc_freq: Counter = Counter()
-    for doc in documents:
-        for term in set(doc):
-            doc_freq[term] += 1
-    return {
-        term: math.log((N + 1) / (df + 1)) + 1
-        for term, df in doc_freq.items()
-    }
-
-
-def _tfidf_vector(tokens: list[str], idf: dict[str, float]) -> dict[str, float]:
-    """Convert a token list to a sparse TF-IDF vector (dict)."""
-    if not tokens:
-        return {}
-    tf: Counter = Counter(tokens)
-    total = max(sum(tf.values()), 1)
-    return {
-        term: (count / total) * idf[term]
-        for term, count in tf.items()
-        if term in idf
-    }
-
-
-def _cosine_sim_sparse(vec_a: dict[str, float], vec_b: dict[str, float]) -> float:
-    """Cosine similarity between two sparse TF-IDF vectors."""
-    common = set(vec_a) & set(vec_b)
-    if not common:
-        return 0.0
-    dot = sum(vec_a[k] * vec_b[k] for k in common)
-    norm_a = math.sqrt(sum(v * v for v in vec_a.values()))
-    norm_b = math.sqrt(sum(v * v for v in vec_b.values()))
-    if norm_a == 0 or norm_b == 0:
-        return 0.0
-    return dot / (norm_a * norm_b)
 
 
 # ---------------------------------------------------------------------------

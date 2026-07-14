@@ -54,7 +54,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 
 try:
-    from .skill_retriever import (
+    from .tfidf_utils import (
         _compute_idf,
         _cosine_sim,
         _tfidf_vector,
