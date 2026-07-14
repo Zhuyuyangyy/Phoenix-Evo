@@ -76,7 +76,7 @@ class DeepSeekAdapter(AgentAdapter):
     def _call_with_retry(self, messages: list[dict], tools: list[dict] | None = None) -> Any:
         """Call the DeepSeek API with exponential backoff retry."""
         client = self._get_client()
-        last_error = None
+        last_error: Exception | None = None
         for attempt in range(self.max_retries):
             try:
                 kwargs: dict[str, Any] = {
@@ -92,7 +92,7 @@ class DeepSeekAdapter(AgentAdapter):
                 if attempt < self.max_retries - 1:
                     delay = self.retry_base_delay * (2 ** attempt)
                     time.sleep(delay)
-        raise last_error  # type: ignore[misc]
+        raise last_error if last_error is not None else RuntimeError("max_retries must be > 0")
 
     def run_task(self, task: TaskSpec) -> AgentRunResult:
         """Execute a task using the DeepSeek API with tool calling."""

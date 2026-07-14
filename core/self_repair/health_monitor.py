@@ -92,9 +92,9 @@ class SystemHealthMonitor:
 
         scores = [1.0 if c.healthy else 0.0 for c in self._checks.values()]
         # Factor in latency (penalize slow components)
-        for check in self._checks.values():
+        for idx, check in enumerate(self._checks.values()):
             if check.healthy and check.latency_ms > 1000:
-                scores[self._checks.values().__iter__()._idx] = max(0.5, 1.0 - check.latency_ms / 10000)  # type: ignore
+                scores[idx] = max(0.5, 1.0 - check.latency_ms / 10000)
 
         overall = float(np.mean([1.0 if c.healthy else 0.0 for c in self._checks.values()]))
 

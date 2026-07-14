@@ -29,6 +29,12 @@ def main():
     parser.add_argument("--curator-interval", type=int, default=3600)
     args = parser.parse_args()
 
+    # Validate base_dir exists
+    if not args.base_dir.exists():
+        logger.error(f"Base directory does not exist: {args.base_dir}")
+        logger.error("Creating it now...")
+        args.base_dir.mkdir(parents=True, exist_ok=True)
+
     # Start daemon threads (non-blocking; errors logged but don't crash the process)
     try:
         from runtime.phoenix_daemon import PhoenixRuntimeDaemon
@@ -54,9 +60,23 @@ def main():
 
         logger.info(f"Starting FastAPI server on {host}:{port}")
         uvicorn.run(get_app(), host=host, port=port, log_level="info")
+    except OSError as e:
+        if e.errno == 98:  # EADDRINUSE
+            logger.error(
+                f"Port {port} is already in use. "
+                f"Set PHOENIX_PORT to a different value."
+            )
+        else:
+            logger.exception(f"OS error starting server: {e}")
+        sys.exit(1)
+    except SystemExit as e:
+        if e.code is not None and e.code != 0:
+            logger.error(f"uvicorn exited with code {e.code}")
+        raise
     except Exception:
         logger.exception("FastAPI server failed to start")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
