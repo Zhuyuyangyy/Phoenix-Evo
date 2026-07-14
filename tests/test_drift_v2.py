@@ -1,8 +1,10 @@
 """Tests for drift detector v2."""
 
-import numpy as np
+import pytest
 
-from core.drift_detector_v2 import (
+np = pytest.importorskip("numpy")
+
+from core.drift_detector_v2 import (  # noqa: E402
     BayesianDriftDetector,
     CUSUMDriftDetector,
     DriftPoint,
